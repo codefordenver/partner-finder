@@ -7,93 +7,83 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
 - LinkedIn?
 
 
-# Backend Development Setup (For Unix systems)
-1. Run the database, message queue, and celery backend in docker containers: `docker-compose up -d`
-1. Change to the `backend` directory.
-1. Activate virtual environment: `source venv/bin/activate`
-1. Create a development .env file with the following contents:
+# Getting Started
+## Running the Backend locally
+1. Get the code.
+    1. Go to the project's [github page](https://github.com/codefordenver/partner-finder).
+    1. Find the green "Code" button
+    1. Click the clipboard icon to copy a link to the git repo.
+        ![](./docs/github-code-button.png)
+    1. In a terminal, navigate to the directory where you want to create the project folder and clone the repo:
+        ```bash
+        git clone <git-repo-name>
+        ```
+1. Install Docker and Docker-compose
+1. Run the backend
+    ```bash
+    docker-compose up --build -d
     ```
-    export FLASK_APP=api.app.py
-    export POSTGRES_PASSWORD=password
-    export POSTGRES_USER=cfd_partner_finder
-    export POSTGRES_DB=cfd_partner_finder
-    export POSTGRES_HOST=localhost
-    export POSTGRES_PORT=5432
+1. Check the containers are running
+    ```bash
+    docker ps
     ```
-1. Source the .env file: `source .env`
-1. Start a Celery worker in a terminal: `celery -A tasks worker --loglevel=INFO`
-1. Run the flask api in development mode in another terminal: `flask run`
-1. Run the database migrations: from `backend`, run `alembic upgrade head`
-1. Run a database population script: from `backend` run `python database/scrape_socrata.py`
+    - you should see something like
+        ![](./docs/docker-ps-output.png)
+1. Check that the api works
+    - http://localhost:8000/leads
+    - or do it the hard way:
+        ```bash
+        curl http://localhost:8000/leads
+        ```
+    - either way, you should see a bunch of json displayed
+        ![](./docs/get-leads-json.png)
+## Running the Frontend locally
+1. Start a new terminal
+1. Move to the project root directory
+1. Change to the frontend folder
+    ```bash
+    cd ./frontend/cfd-partner-finder
+    ```
+1. Create a file called `.env` the following contents:
+    ```bash
+    export REACT_APP_BACKEND_HOST="http://localhost:8000
+    ```
+1. Install dependencies
+    ```
+    npm install
+    ```
+1. Run the app on localhost
+    ```
+    npm start
+    ```
+1. A browser should open with the app running. It looks like this (for now)
+    ![](./docs/homepage.jpg)
+    - If no browser opens, go to http://localhost:3000
 
-
-# Frontend
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `yarn start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Running a data analysis jupyter notebook
+1. Make sure python 3 is installed on your system
+1. from the project root directory, change to the data analysis directory
+    - `cd ./data_analysis`
+1. Create a virtual environment
+    ```python
+    python3 -m venv --prompt data_analysis venv
+    ```
+    - You should see a newly created folder called `venv`
+1. Activate the virtual environment
+    ```bash
+    source venv/bin/activate
+    ```
+    - Your terminal prompt should change to display `(data_analysis)` on the left while the virtual environment is active.
+1. Upgrade the virtual environment's installation of pip
+    - `pip install --upgrade pip`
+1. Install dependencies
+    - `pip install -r requirements.txt`
+1. Run a jupyter server:
+    ```
+    jupyter notebook
+    ```
+1. You should see a file system open in a web browser. If not, go to http://localhost:8888/tree
+    ![](./docs/jupyter-notebook.png)
+1. Click on `notebooks`, and then `businesses.ipynb`. You should now see a notebook
+    ![](./docs/jpyter-notebook-2.png)
+1. When you are done, stop the jupyter server with `Ctrl+C` and deactivate the virtual environment with `deactivate`.
