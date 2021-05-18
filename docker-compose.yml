@@ -1,0 +1,30 @@
+version: '3'
+services:
+    postgres:
+        image: postgres
+        environment:
+           - POSTGRES_PASSWORD=password
+           - POSTGRES_USER=cfd_partner_finder
+           - POSTGRES_DB=cfd_partner_finder
+        ports:
+            - "5432:5432"
+    api:
+        build: ./backend
+        environment:
+            - FLASK_APP=api.app.py
+            - FLASK_ENV=development
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_USER=cfd_partner_finder
+            - POSTGRES_DB=cfd_partner_finder
+            - POSTGRES_HOST=postgres
+            - POSTGRES_PORT=5432
+            - ALLOW_CORS=true
+        ports:
+            - "8000:8000"
+        depends_on:
+            - postgres
+        command: >
+            /bin/bash -c "alembic upgrade head
+            && python database/scrape_socrata.py
+            && gunicorn main:app -w 1 --threads 1 -b 0.0.0.0:8000"
+
