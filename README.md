@@ -60,7 +60,7 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
     ![](./docs/homepage.jpg)
     - If no browser opens, go to http://localhost:3000
 
-## Running a data analysis jupyter notebook
+## Running a data analysis jupyter notebook (Optional)
 1. Make sure python 3 is installed on your system
 1. from the project root directory, change to the data analysis directory
     - `cd ./data_analysis`
