@@ -46,7 +46,7 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
     ```
 1. Create a file called `.env` the following contents:
     ```bash
-    export REACT_APP_BACKEND_HOST="http://localhost:8000
+    export REACT_APP_BACKEND_HOST="http://localhost:8000"
     ```
 1. Install dependencies
     ```
