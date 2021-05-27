@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, request
 from flask_cors import CORS
+from flask_login import LoginManager
 from sqlalchemy import text
 
 from .db import db
@@ -9,8 +10,14 @@ from .db import db
 
 app = Flask(__name__)
 
+app.secret_key = os.environ['SECRET_KEY']
 
-if os.environ.get('ALLOW_CORS', 'false').lower() == 'true':
+# flask login
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+if os.environ.get('ALLOW_CORS', 'false').lower() == 'true'
     # for localhost development only
     CORS(app)
 

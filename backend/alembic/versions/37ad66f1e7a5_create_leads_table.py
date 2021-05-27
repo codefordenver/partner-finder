@@ -7,7 +7,7 @@ Create Date: 2021-05-04 15:32:34.423571
 """
 from sqlalchemy import text
 
-from api.db import db
+from api.db import db, test_db
 
 
 # revision identifiers, used by Alembic.
@@ -18,12 +18,12 @@ depends_on = None
 
 
 def upgrade():
+    _create_leads_table(db)
+    _create_leads_table(test_db)
+
+
+def _create_leads_table(db):
     with db.get_connection() as conn:
-        # conn.execute(text(
-        #     """
-        #     CREATE SCHEMA IF NOT EXISTS api;
-        #     """
-        # ))
         conn.execute(text(
             """
             CREATE TABLE IF NOT EXISTS leads (
@@ -50,6 +50,11 @@ def upgrade():
 
 
 def downgrade():
+    _drop_leads_table(db)
+    _drop_leads_table(test_db)
+
+
+def _drop_leads_table(db):
     with db.get_connection() as conn:
         conn.execute(
             """

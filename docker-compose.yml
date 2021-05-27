@@ -1,7 +1,7 @@
 version: '3'
 services:
     postgres:
-        image: postgres
+        build: ./backend/database
         environment:
            - POSTGRES_PASSWORD=password
            - POSTGRES_USER=cfd_partner_finder
@@ -19,6 +19,7 @@ services:
             - POSTGRES_HOST=postgres
             - POSTGRES_PORT=5432
             - ALLOW_CORS=true
+            - SECRET_KEY=supersafe
         ports:
             - "8000:8000"
         depends_on:
