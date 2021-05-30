@@ -17,7 +17,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-if os.environ.get('ALLOW_CORS', 'false').lower() == 'true'
+if os.environ.get('ALLOW_CORS', 'false').lower() == 'true':
     # for localhost development only
     CORS(app)
 
