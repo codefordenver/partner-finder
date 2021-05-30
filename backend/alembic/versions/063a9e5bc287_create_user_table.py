@@ -28,7 +28,8 @@ def _create_users_table(db):
         conn.execute("""
             CREATE TABLE users (
                 username VARCHAR(100) PRIMARY KEY,
-                password_hash VARCHAR(100)
+                password_hash VARCHAR(100),
+                salt VARCHAR(100)
             );
         """)
 
