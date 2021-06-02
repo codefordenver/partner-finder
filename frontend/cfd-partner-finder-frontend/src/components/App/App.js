@@ -10,6 +10,7 @@ import CreateLead from '../CreateLead/CreateLead';
 import { Grommet } from 'grommet';
 import Home from '../Home/Home';
 import LeadDetail from '../LeadDetail/LeadDetail';
+import Login from '../Login/Login';
 import React from 'react';
 
 ;
@@ -40,8 +41,11 @@ const App = () => {
           <Route path="/leads">
             <Leads />
           </Route>
-          <Route path="/">
+          <Route path="/home">
             <Home />
+          </Route>
+          <Route path="/">
+            <Login />
           </Route>
         </Switch>
       </Router>
