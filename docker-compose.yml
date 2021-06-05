@@ -11,7 +11,7 @@ services:
     api:
         build: ./backend
         environment:
-            - FLASK_APP=api.app.py
+            - FLASK_APP=api/app:dev_app
             - FLASK_ENV=development
             - POSTGRES_PASSWORD=password
             - POSTGRES_USER=cfd_partner_finder
@@ -27,5 +27,5 @@ services:
         command: >
             /bin/bash -c "alembic upgrade head
             && python database/scrape_socrata.py
-            && gunicorn main:app -w 1 --threads 1 -b 0.0.0.0:8000"
+            && gunicorn run_dev:dev_app -w 1 --threads 1 -b 0.0.0.0:8000"
 
