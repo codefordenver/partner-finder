@@ -2,6 +2,7 @@ import { Box, Button, Form, FormField, TextInput } from 'grommet';
 import React, { useEffect, useState } from 'react';
 
 import { config } from '../../config';
+import { loadToken } from '../../utils/http';
 
 const CreateLead = () => {
   let [formData, setFormData] = useState({});
@@ -12,6 +13,7 @@ const CreateLead = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': loadToken(),
       },
       body: JSON.stringify(formData),
     })

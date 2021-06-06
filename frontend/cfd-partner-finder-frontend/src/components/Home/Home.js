@@ -12,6 +12,7 @@ import { Notification } from 'grommet-icons';
 import QueryEditor from '../QueryEditor/QueryEditor';
 import { config } from '../../config';
 import dotenv from 'dotenv';
+import { loadToken } from '../../utils/http';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
@@ -43,8 +44,13 @@ const Home = () => {
 
   // fetch leads data from api
   useEffect(() => {
+    let headers = {
+      Authorization: loadToken(),
+    }
     return fetch(
-      `${config.backendHost}/leads?page=${query.page}&perpage=${query.perpage}&drop_null=false`
+      `${config.backendHost}/leads?page=${query.page}&perpage=${query.perpage}&drop_null=false`, {
+        headers: headers,
+      }
     )
       .then((res) => res.json())
       .then((data) => setLeads(data.leads));

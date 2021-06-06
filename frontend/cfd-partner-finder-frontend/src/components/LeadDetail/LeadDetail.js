@@ -12,6 +12,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Link } from 'react-router-dom';
 import { config } from '../../config';
+import { loadToken } from '../../utils/http';
 
 const UPDATE_STATUS = {
   NO_UPDATE: 'NO_UPDATE',
@@ -27,7 +28,11 @@ const LeadDetail = ({ id }) => {
 
   useEffect(() => {
     const url = `${config.backendHost}/leads/${id}`;
-    return fetch(url)
+    return fetch(url, {
+      headers: {
+        Authorization: loadToken(),
+      }
+    })
       .then((res) => res.json())
       .then((data) => {
         setLead(data);
@@ -43,6 +48,7 @@ const LeadDetail = ({ id }) => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': loadToken(),
         },
         body: JSON.stringify(lead),
       }).then((res) => {
@@ -220,7 +226,7 @@ const LeadEditor = ({ initFields, onSave }) => {
                 setEditMode(true);
               }}
             />
-            <Link to="/">
+            <Link to="/home">
               <Button primary label="Home" icon={<Home />} />
             </Link>
           </React.Fragment>

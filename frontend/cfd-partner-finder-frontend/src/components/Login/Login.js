@@ -28,7 +28,8 @@ const Login = () => {
         })
         .then(data => {
             let token = data.token
-            localStorage.setItem('token', token);
+            // TODO: check for alternative method to local storage for saving token
+            window.localStorage.setItem('token', token);
             history.push('/home')
         })
         .catch(error => {
