@@ -1,4 +1,3 @@
-import os
 from typing import Optional
 from dataclasses import dataclass
 from datetime import datetime
@@ -7,6 +6,7 @@ import requests
 from sqlalchemy import text
 
 from api.db import db
+from api.auth import hash_password
 
 
 @dataclass
@@ -117,3 +117,14 @@ def _map_socrata_entity_to_lead(entity: SocrataBusinessEntity) -> Lead:
         formation_date=datetime.strptime(
             entity.entityformdate.split('T')[0], DATE_FORMAT),
     )
+
+
+def create_dev_users():
+    q = text("""
+        INSERT INTO users (username, password_hash, admin)
+        VALUES
+            ('user', :password, false),
+            ('admin', :password, true)
+    """)
+    with db.get_connection() as conn:
+        conn.execute(q, {'password': hash_password('password')})

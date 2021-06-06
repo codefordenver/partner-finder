@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from sqlalchemy import text
 
-from ..auth import hash_password
+from ..auth import hash_password, auth
 from ..db import db
 from ..pagination import parse_pagination_params
 
@@ -9,6 +9,7 @@ users_bp = Blueprint('users', __name__)
 
 
 @users_bp.route('/users', methods=['GET', 'POST'])
+@auth('admin')
 def user_collection_view():
     if request.method == 'GET':
         return _get_all_users(request)
@@ -49,17 +50,16 @@ def _create_user(request):
             return {
                 'message': f'missing required field {name!r}'
             }, 400
-    password_hash, salt = hash_password(password)
+    password_hash = hash_password(password)
     query = text("""
-        INSERT INTO users (username, password_hash, salt, logged_in)
-        VALUES (:username, :password_hash, :salt, :logged_in)
-        RETURNING username, password_hash, salt
+        INSERT INTO users (username, password_hash, admin)
+        VALUES (:username, :password_hash, :admin)
+        RETURNING username, admin
     """)
     query_params = {
         'username': username,
         'password_hash': password_hash,
-        'salt': salt,
-        'logged_in': False,
+        'admin': False,
     }
     with db.get_connection() as conn:
         res = conn.execute(query, query_params)
@@ -67,6 +67,7 @@ def _create_user(request):
 
 
 @users_bp.route('/users/<username>', methods=['GET', 'PUT', 'DELETE'])
+@auth('admin')
 def single_user_view(username):
     if request.method == 'GET':
         return _get_user_by_username(username)
@@ -95,10 +96,9 @@ def _update_user(username, request):
         return {
             'message': 'missing required field "password"'
         }, 400
-    password_hash, salt = hash_password(password)
+    password_hash = hash_password(password)
     updates = {
         'password_hash': password_hash,
-        'salt': salt,
     }
     query = text("""
         UPDATE users

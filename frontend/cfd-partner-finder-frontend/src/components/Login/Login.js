@@ -3,6 +3,22 @@ import { Box, Button, Form, FormField, TextInput } from 'grommet'
 import { config } from '../../config';
 
 const Login = () => {
+    const loginUser = (username, password) => {
+        return fetch(`${config.backendHost}/login`, {
+            method: 'POST',
+            body: JSON.stringify({
+                username,
+                password,
+            }),
+            headers: {
+                // 'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(res => res.json())
+        .then(res => console.log(res))
+    }
+
     return (
         <Box
             direction="row"
@@ -15,18 +31,7 @@ const Login = () => {
                 border-radius="10px"
                 pad="large"
             >
-                <Form onSubmit={({ value }) => {
-                    return fetch(`${config.backendHost}/login`, {
-                        method: 'POST',
-                        body: value,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                        }
-                    })
-                    .then(res => res.json())
-                    .then(data => console.log('data: ', data))
-                }}>
+                <Form onSubmit={({ value }) => loginUser(value.username, value.password)}>
                     <FormField name="username" htmlFor="login-username" label="Username">
                         <TextInput id="login-username" name="username" />
                     </FormField>

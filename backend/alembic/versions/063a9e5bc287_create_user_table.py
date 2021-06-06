@@ -29,9 +29,7 @@ def _create_users_table(db):
             CREATE TABLE users (
                 username VARCHAR(100) PRIMARY KEY,
                 password_hash VARCHAR(100),
-                salt VARCHAR(100),
-                logged_in BOOLEAN,
-                last_login TIMESTAMP
+                admin BOOLEAN DEFAULT false
             );
         """)
 

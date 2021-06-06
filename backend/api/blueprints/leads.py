@@ -2,6 +2,7 @@ from flask import Blueprint, request
 
 from sqlalchemy import text
 
+from ..auth import auth
 from ..db import db
 from ..pagination import parse_pagination_params
 
@@ -10,6 +11,7 @@ leads_bp = Blueprint('leads', __name__)
 
 
 @leads_bp.route('/leads', methods=['GET', 'POST'])
+@auth('user')
 def leads_collection_view():
     if request.method == 'GET':
         return _get_all_leads(request)
@@ -146,6 +148,7 @@ def _create_new_lead(request):
 
 
 @leads_bp.route('/leads/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+@auth('user')
 def lead_view(id):
     if request.method == 'GET':
         return _get_lead_by_id(id)
