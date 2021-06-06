@@ -20,6 +20,7 @@ services:
             - POSTGRES_PORT=5432
             - ALLOW_CORS=true
             - SECRET_KEY=supersafe
+        volumes: ["./backend:/app"]
         ports:
             - "8000:8000"
         depends_on:
@@ -28,5 +29,5 @@ services:
             /bin/bash -c "alembic upgrade head
             && python database/create_dev_users.py
             && python database/scrape_socrata.py
-            && gunicorn run_dev:dev_app -w 1 --threads 1 -b 0.0.0.0:8000"
+            && gunicorn run_dev:dev_app -w 1 --threads 1 -b 0.0.0.0:8000 --reload"
 

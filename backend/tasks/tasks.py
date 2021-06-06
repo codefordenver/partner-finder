@@ -128,3 +128,12 @@ def create_dev_users():
     """)
     with db.get_connection() as conn:
         conn.execute(q, {'password': hash_password('password')})
+
+
+def drop_dev_users():
+    q = text("""
+        DELETE FROM users
+        WHERE username IN ('user', 'admin')
+    """)
+    with db.get_connection() as conn:
+        conn.execute(q)

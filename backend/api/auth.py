@@ -8,7 +8,7 @@ from flask import request, jsonify, current_app
 from sqlalchemy import text
 
 from .db import db
-from .util.datetime import from_iso_8601
+from .util.datetime import from_iso_8601, to_utc
 
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -85,12 +85,15 @@ def _credentials_valid(credentials, role) -> bool:
     if expires is None:
         return False
     try:
-        expires_dt = from_iso_8601()
+        expires_dt = from_iso_8601(expires)
     # TODO: replace with more specific exceptions
     except Exception as e:
         current_app.logger.error(repr(e))
         return False
-    if expires_dt < datetime.utcnow():
+    current_app.logger.info(f'token expiration: {expires_dt!r}')
+    current_dt = to_utc(datetime.now())
+    current_app.logger.info(f'current datetime: {current_dt}')
+    if expires_dt < current_dt:
         return False
     admin = credentials.get('admin')
     if not isinstance(admin, bool):

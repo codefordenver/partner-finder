@@ -3384,6 +3384,11 @@
   "resolved" "https://registry.npmjs.org/char-regex/-/char-regex-1.0.2.tgz"
   "version" "1.0.2"
 
+"chartjs@^0.3.24":
+  "integrity" "sha1-Ot3rWuNgaz6J40bCfVLKFYQW6T0="
+  "resolved" "https://registry.npmjs.org/chartjs/-/chartjs-0.3.24.tgz"
+  "version" "0.3.24"
+
 "check-types@^11.1.1":
   "integrity" "sha512-tzWzvgePgLORb9/3a0YenggReLKAIb2owL03H2Xdoe5pKcUyWRSEQ8xfCar8t2SIAuEDwtmx2da1YB52YuHQMQ=="
   "resolved" "https://registry.npmjs.org/check-types/-/check-types-11.1.2.tgz"
@@ -5607,7 +5612,16 @@
   "resolved" "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.6.tgz"
   "version" "4.2.6"
 
-"grommet-icons@^4.5.0":
+"grommet-controls@^3.0.1":
+  "integrity" "sha512-APpB85GxBwhUSJchVFuncxZ5rmkKPsgxBc/2YU8RqrWuH9DAjJICF6oRJcV5moCMDzG6RoK6igokMnOUhDNXXQ=="
+  "resolved" "https://registry.npmjs.org/grommet-controls/-/grommet-controls-3.0.1.tgz"
+  "version" "3.0.1"
+  dependencies:
+    "chartjs" "^0.3.24"
+    "text-mask-addons" "^3.7.2"
+    "text-mask-core" "^5.0.1"
+
+"grommet-icons@^4.5.0", "grommet-icons@>= 4.1.0":
   "integrity" "sha512-q7TNXV996fDh2e++7WapiNFUk0UEll17iEZ2d75W4yz+8Bb3+vdQ1MeT/d1RRlM0pV2KnTpSeR00GeN4KA9upg=="
   "resolved" "https://registry.npmjs.org/grommet-icons/-/grommet-icons-4.5.0.tgz"
   "version" "4.5.0"
@@ -5619,7 +5633,7 @@
   "resolved" "https://registry.npmjs.org/grommet-styles/-/grommet-styles-0.2.0.tgz"
   "version" "0.2.0"
 
-"grommet@^2.17.2":
+"grommet@^2.17.2", "grommet@>= 2.7.10":
   "integrity" "sha512-0p5H+kiDfysUQ+tsuya1rn4Eys3eSdmlqEQWgROFXzPUaJODFG9uaggmTsJqPMK0MqgIlmDV/5FxdUYMXjJMtw=="
   "resolved" "https://registry.npmjs.org/grommet/-/grommet-2.17.2.tgz"
   "version" "2.17.2"
@@ -9430,7 +9444,7 @@
     "strip-ansi" "6.0.0"
     "text-table" "0.2.0"
 
-"react-dom@^17.0.2":
+"react-dom@^17.0.2", "react-dom@>= 16.8.0":
   "integrity" "sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-17.0.2.tgz"
   "version" "17.0.2"
@@ -9554,7 +9568,7 @@
   optionalDependencies:
     "fsevents" "^2.1.3"
 
-"react@^17.0.2":
+"react@^17.0.2", "react@>= 16.8.0":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"
@@ -10916,7 +10930,7 @@
     "loader-utils" "^2.0.0"
     "schema-utils" "^2.7.0"
 
-"styled-components@^5.3.0":
+"styled-components@^5.3.0", "styled-components@>= 4.1.3":
   "integrity" "sha512-bPJKwZCHjJPf/hwTJl6TbkSZg/3evha+XPEizrZUGb535jLImwDUdjTNxXqjjaASt2M4qO4AVfoHJNe3XB/tpQ=="
   "resolved" "https://registry.npmjs.org/styled-components/-/styled-components-5.3.0.tgz"
   "version" "5.3.0"
@@ -11113,6 +11127,16 @@
     "@istanbuljs/schema" "^0.1.2"
     "glob" "^7.1.4"
     "minimatch" "^3.0.4"
+
+"text-mask-addons@^3.7.2":
+  "integrity" "sha1-F7Ye9mWk82gR8uofAaIjtL5hqyY="
+  "resolved" "https://registry.npmjs.org/text-mask-addons/-/text-mask-addons-3.8.0.tgz"
+  "version" "3.8.0"
+
+"text-mask-core@^5.0.1":
+  "integrity" "sha1-gN1evgSCV1fkZhnmkUB6n4s8G28="
+  "resolved" "https://registry.npmjs.org/text-mask-core/-/text-mask-core-5.1.2.tgz"
+  "version" "5.1.2"
 
 "text-table@^0.2.0", "text-table@0.2.0":
   "integrity" "sha1-f17oI66AUgfACvLfSoTsP8+lcLQ="
