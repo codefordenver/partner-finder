@@ -1,11 +1,12 @@
 import { Box, Button, Form, FormField, TextInput } from 'grommet';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import { config } from '../../config';
-import { loadToken } from '../../utils/http';
+import { authContext } from '../../auth';
 
 const CreateLead = () => {
   let [formData, setFormData] = useState({});
+  const { authHeader } = useContext(authContext);
 
   const postLead = () => {
     const url = `${config.backendHost}/leads`;
@@ -13,7 +14,7 @@ const CreateLead = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': loadToken(),
+        'Authorization': authHeader,
       },
       body: JSON.stringify(formData),
     })

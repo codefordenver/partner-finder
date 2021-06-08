@@ -4,15 +4,14 @@ import {
   Heading,
   ResponsiveContext,
 } from 'grommet';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 import LeadCard from '../LeadCard/LeadCard';
-import { Link } from 'react-router-dom';
 import { Notification } from 'grommet-icons';
 import QueryEditor from '../QueryEditor/QueryEditor';
 import { config } from '../../config';
 import dotenv from 'dotenv';
-import { loadToken } from '../../utils/http';
+import { authContext } from '../../auth';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
@@ -41,11 +40,12 @@ const Home = () => {
     perpage: 4,
   });
   const [leads, setLeads] = useState([]);
+  const { authHeader } = useContext(authContext);
 
   // fetch leads data from api
   useEffect(() => {
     let headers = {
-      Authorization: loadToken(),
+      Authorization: authHeader,
     }
     return fetch(
       `${config.backendHost}/leads?page=${query.page}&perpage=${query.perpage}&drop_null=false`, {

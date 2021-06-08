@@ -1,12 +1,15 @@
 import { Box, Button, Form, FormField, TextInput } from 'grommet'
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import { Notification } from 'grommet-controls'
 import { config } from '../../config';
-import { useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
+import { authContext } from '../../auth';
+
 
 const Login = () => {
     const [loginFailed, setLoginFailed] = useState(false);
+    const { setToken } = useContext(authContext);
     const history = useHistory();
 
     const loginUser = (username, password) => {
@@ -29,7 +32,7 @@ const Login = () => {
         .then(data => {
             let token = data.token
             // TODO: check for alternative method to local storage for saving token
-            window.localStorage.setItem('token', token);
+            setToken(token);
             history.push('/home')
         })
         .catch(error => {
