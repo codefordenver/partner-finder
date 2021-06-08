@@ -8,11 +8,11 @@ import {
   TextInput,
 } from 'grommet';
 import { Close, Edit, Home, Notification, Save } from 'grommet-icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 import { Link } from 'react-router-dom';
 import { config } from '../../config';
-import { loadToken } from '../../utils/http';
+import { authContext } from '../../auth';
 
 const UPDATE_STATUS = {
   NO_UPDATE: 'NO_UPDATE',
@@ -25,12 +25,13 @@ const LeadDetail = ({ id }) => {
   const [updateStatus, setUpdateStatus] = useState(UPDATE_STATUS.NO_UPDATE);
   const [loading, setLoading] = useState(true);
   const [update, setUpdate] = useState(false);
+  const { authHeader } = useContext(authContext);
 
   useEffect(() => {
     const url = `${config.backendHost}/leads/${id}`;
     return fetch(url, {
       headers: {
-        Authorization: loadToken(),
+        Authorization: authHeader,
       }
     })
       .then((res) => res.json())
@@ -48,7 +49,7 @@ const LeadDetail = ({ id }) => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': loadToken(),
+          'Authorization': authHeader,
         },
         body: JSON.stringify(lead),
       }).then((res) => {
