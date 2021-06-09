@@ -24,6 +24,7 @@ def leads_collection_view():
 
 
 # TODO: get these from a model
+# TODO: allow filtering on fields
 DEFAULT_LEAD_FIELDS = (
     'id',
     'company_name',
@@ -44,8 +45,6 @@ DEFAULT_LEAD_FIELDS = (
 )
 
 
-
-
 def _get_all_leads(request):
     # TODO: refactor by splitting into helper functions
     # parse query params
@@ -53,6 +52,7 @@ def _get_all_leads(request):
     # TODO: add filters
     try:
         page, perpage = parse_pagination_params(request)
+        search = _parse_search_param(request)
 
         # removes fields with null values from the response
         drop_null = request.args.get('drop_null', 'false').lower() == 'true'
@@ -77,22 +77,44 @@ def _get_all_leads(request):
     limit = perpage
     offset = (page - 1) * limit
 
+    if search is None:
+        query = text("""
+            SELECT
+                {columns}
+            FROM LEADS
+            ORDER BY id
+            LIMIT :limit
+            OFFSET :offset;
+        """.format(
+            columns=','.join(DEFAULT_LEAD_FIELDS)
+        ))
+        query_args = {
+            'limit': limit,
+            'offset': offset,
+        }
+    else:
+        query = text("""
+            SELECT
+                {columns}
+            FROM leads
+            WHERE to_tsvector(company_name) @@ to_tsquery('{search}')
+            ORDER BY ts_rank(to_tsvector(company_name), '{search}')
+            LIMIT :limit
+        """.format(
+            columns=','.join(DEFAULT_LEAD_FIELDS),
+            search=search,
+        ))
+        query_args = {
+            'limit': limit,
+            'offset': offset,
+        }
+
     # TODO: handle database error
     # just grab all fields for now to avoid exposing query to sql injection
     with db.get_connection() as connection:
         res = connection.execute(
-            text("""
-                SELECT
-                    {columns}
-                FROM LEADS
-                ORDER BY id
-                LIMIT :limit
-                OFFSET :offset;
-            """.format(
-                columns=','.join(DEFAULT_LEAD_FIELDS)
-            )),
-            limit=limit,
-            offset=offset,
+            query,
+            **query_args
         )
         response_body = []
         count = 0
@@ -118,6 +140,11 @@ def _get_all_leads(request):
             },
             'leads': response_body
         }, 200
+
+
+def _parse_search_param(request):
+    return request.args.get('search')
+
 
 
 def _create_new_lead(request):
