@@ -10,13 +10,12 @@ const QueryEditor = ({query, onSubmit}) => {
   return (
     <Box
       flex
-      wrap
       height={{ min: '10%', max: '20%' }}
       border={{
         bottom: "2px solid black"
       }}
       // elevation="medium"
-      direction="row"
+      direction="column"
       alignContent="start"
       pad="large"
       gap="large"
