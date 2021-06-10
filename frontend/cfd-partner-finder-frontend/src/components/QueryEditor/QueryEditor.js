@@ -10,22 +10,15 @@ const QueryEditor = ({query, onSubmit}) => {
   return (
     <Box
       flex
-      wrap
-      height={{ min: '10%', max: '20%' }}
       border={{
         bottom: "2px solid black"
       }}
-      // elevation="medium"
-      direction="row"
+      direction="column"
       alignContent="start"
       pad="large"
       gap="large"
     >
-      <Box
-        margin={{
-            vertical: "medium"
-        }}
-      >
+      <Box>
         Page:
         <TextInput
           value={tempQuery.page}
@@ -36,11 +29,7 @@ const QueryEditor = ({query, onSubmit}) => {
           }}
         />
       </Box>
-      <Box
-        margin={{
-            vertical: "medium"
-        }}
-      >
+      <Box>
         Perpage:
         <TextInput
           value={tempQuery.perpage}
@@ -51,15 +40,22 @@ const QueryEditor = ({query, onSubmit}) => {
           }}
         />
       </Box>
+      <Box>
+        Search:
+        <TextInput
+          value={tempQuery.search}
+          onChange={(event) => {
+              let newQuery = { ...tempQuery };
+              newQuery.search = event.target.value;
+              setTempQuery(newQuery);
+          }}
+        />
+      </Box>
+
       <Button
         primary
-        size="large"
         label="Go"
         onClick={() => onSubmit(tempQuery)}
-        alignSelf="end"
-        margin={{
-            vertical: "medium"
-        }}
       />
       <Link to="/leads/create">
         <Button

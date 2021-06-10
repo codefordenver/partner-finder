@@ -7,4 +7,5 @@ export const authContext = createContext({
         this.token = t
     },
     authHeader: 'Bearer ',
+    currentUser: 'useruser@gmail.com',
 });

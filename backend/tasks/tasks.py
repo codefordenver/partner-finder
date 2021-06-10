@@ -123,8 +123,8 @@ def create_dev_users():
     q = text("""
         INSERT INTO users (username, password_hash, admin)
         VALUES
-            ('user', :password, false),
-            ('admin', :password, true)
+            ('user@gmail.com', :password, false),
+            ('admin@gmail.com', :password, true)
     """)
     with db.get_connection() as conn:
         conn.execute(q, {'password': hash_password('password')})
@@ -133,7 +133,7 @@ def create_dev_users():
 def drop_dev_users():
     q = text("""
         DELETE FROM users
-        WHERE username IN ('user', 'admin')
+        WHERE username IN ('user@gmail.com', 'admin@gmail.com')
     """)
     with db.get_connection() as conn:
         conn.execute(q)

@@ -30,11 +30,14 @@ const theme = {
 
 const App = () => {
   const [token, setToken] = useState('');
+  const [currentUser, setCurrentUser] = useState('');
 
   const authHeader = `Bearer ${token}`;
 
   return (
-    <authContext.Provider value={{token, setToken, authHeader}}>
+    <authContext.Provider
+      value={{token, setToken, authHeader, currentUser, setCurrentUser}}
+    >
       <Grommet theme={theme} full>
         <Router>
           <Switch>
