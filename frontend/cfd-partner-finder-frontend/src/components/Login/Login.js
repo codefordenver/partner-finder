@@ -9,7 +9,7 @@ import { authContext } from '../../auth';
 
 const Login = () => {
     const [loginFailed, setLoginFailed] = useState(false);
-    const { setToken } = useContext(authContext);
+    const { setToken, setCurrentUser } = useContext(authContext);
     const history = useHistory();
 
     const loginUser = (username, password) => {
@@ -33,6 +33,7 @@ const Login = () => {
             let token = data.token
             // TODO: check for alternative method to local storage for saving token
             setToken(token);
+            setCurrentUser(username);
             history.push('/home')
         })
         .catch(error => {

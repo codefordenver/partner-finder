@@ -100,6 +100,7 @@ def _get_all_leads(request):
             WHERE to_tsvector(company_name) @@ to_tsquery('{search}')
             ORDER BY ts_rank(to_tsvector(company_name), '{search}')
             LIMIT :limit
+            OFFSET :offset
         """.format(
             columns=','.join(DEFAULT_LEAD_FIELDS),
             search=search,
