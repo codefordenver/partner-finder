@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Add } from 'grommet-icons';
 import { Link } from 'react-router-dom';
 
-const QueryEditor = ({query, onSubmit}) => {
+const QueryEditor = ({query, onSubmit, hide}) => {
   const [tempQuery, setTempQuery] = useState(query);
 
   return (
@@ -18,6 +18,12 @@ const QueryEditor = ({query, onSubmit}) => {
       pad="large"
       gap="large"
     >
+      <Button
+        primary
+        label="Hide"
+        onClick={hide}
+      />
+
       <Box
         margin={{
           top: "20px"

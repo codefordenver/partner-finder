@@ -93,14 +93,11 @@ const Home = () => {
       >
         {
           showQueryEditor && (
-            <Fragment>
-                <FloatingButton
-                  primary
-                  label="Hide"
-                  onClick={e => setShowQueryEditor(false)}
-                />
-                <QueryEditor query={query} onSubmit={setQuery} />
-           </Fragment>
+             <QueryEditor
+              query={query}
+              onSubmit={setQuery}
+              hide={() => setShowQueryEditor(false)}
+            />
           )
         }
       </Box>
