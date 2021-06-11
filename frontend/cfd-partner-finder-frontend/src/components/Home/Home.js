@@ -6,7 +6,8 @@ import {
   Button,
 } from 'grommet';
 import React, { useEffect, useState, useContext, Fragment } from 'react';
-import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { Add } from 'grommet-icons';
 
 import LeadCard from '../LeadCard/LeadCard';
 import QueryEditor from '../QueryEditor/QueryEditor';
@@ -17,15 +18,6 @@ import { authContext } from '../../auth';
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
 }
-
-
-const FloatingButton = styled(Button)`
-  position: absolute;
-  top: 80px;
-  left: 20px;
-  z-index: 1;
-`;
-
 
 const Home = () => {
   const [query, setQuery] = useState({
@@ -104,16 +96,33 @@ const Home = () => {
 
       <Box
         gridArea="main"
-        overflow="scroll"
       >
 
-        { !showQueryEditor && (
-          <FloatingButton
-            primary
-            label="Query Editor"
-            onClick={e => setShowQueryEditor(true)}
-          />
-        )}
+        <Box
+          flex
+          direction="row-reverse"
+          pad="medium"
+          gap="small"
+          justify="between"
+        >
+
+          <Link to="/leads/create">
+            <Button
+              icon={< Add />}
+              label={ "New" }
+            />
+          </Link>
+
+          { !showQueryEditor && (
+            <Button
+              primary
+              label="Query Editor"
+              onClick={e => setShowQueryEditor(true)}
+            />
+          )}
+
+        </Box>
+
 
         {leads &&
           leads.map((lead) => (
