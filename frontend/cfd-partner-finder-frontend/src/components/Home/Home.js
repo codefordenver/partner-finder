@@ -4,12 +4,13 @@ import {
   Grid,
   Text,
   Button,
+  Accordion,
+  AccordionPanel,
 } from 'grommet';
-import React, { useEffect, useState, useContext, Fragment } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Add } from 'grommet-icons';
+import { Add, Inspect } from 'grommet-icons';
 
-import LeadCard from '../LeadCard/LeadCard';
 import QueryEditor from '../QueryEditor/QueryEditor';
 import { config } from '../../config';
 import dotenv from 'dotenv';
@@ -123,16 +124,42 @@ const Home = () => {
 
         </Box>
 
+         <Accordion>
+           {leads.map((lead) => (
+             <AccordionPanel
+                label={(
+                  <Box
+                    flex
+                    direction="row"
+                    pad="small"
+                    justify="between"
+                    align="center"
+                  >
+                    <Heading level={2} size="small">{lead.company_name}</Heading>
+                    <Link to={`/leads/${lead.id}`}>
+                        <Button secondary label="View" icon={<Inspect />} />
+                    </Link>
+                  </Box>
+                )}
+             >
+                <Box
+                  flex
+                  direction="row"
+                  wrap
+                  pad="small"
+                >
+                  <Text>
+                    <b>Address: </b> {lead.company_address}
+                  </Text>
+                  <Text>
+                    <b>Date Registered: </b>
+                    {lead.formation_date}
+                  </Text>
 
-        {leads &&
-          leads.map((lead) => (
-            <LeadCard
-              id={lead.id}
-              companyName={lead.company_name}
-              formationDate={lead.formation_date}
-              companyAddress={lead.company_address}
-            />
-          ))}
+                </Box>
+             </AccordionPanel>
+           ))}
+         </Accordion>
 
       </Box>
     </Grid>
