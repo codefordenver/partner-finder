@@ -3,8 +3,10 @@ import {
   Heading,
   Grid,
   Text,
+  Button,
 } from 'grommet';
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, Fragment } from 'react';
+import styled from 'styled-components';
 
 import LeadCard from '../LeadCard/LeadCard';
 import QueryEditor from '../QueryEditor/QueryEditor';
@@ -17,6 +19,14 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 
+const FloatingButton = styled(Button)`
+  position: absolute;
+  top: 80px;
+  left: 20px;
+  z-index: 1;
+`;
+
+
 const Home = () => {
   const [query, setQuery] = useState({
     page: 1,
@@ -24,6 +34,8 @@ const Home = () => {
     search: "",
   });
   const [leads, setLeads] = useState([]);
+  const [showQueryEditor, setShowQueryEditor] = useState(true);
+
   const { authHeader, currentUser } = useContext(authContext);
 
   // set query parameters for call to the backend service
@@ -79,12 +91,33 @@ const Home = () => {
       <Box
         gridArea="sidebar"
       >
-        <QueryEditor query={query} onSubmit={setQuery} />
+        {
+          showQueryEditor && (
+            <Fragment>
+                <FloatingButton
+                  primary
+                  label="Hide"
+                  onClick={e => setShowQueryEditor(false)}
+                />
+                <QueryEditor query={query} onSubmit={setQuery} />
+           </Fragment>
+          )
+        }
       </Box>
 
       <Box
         gridArea="main"
+        overflow="scroll"
       >
+
+        { !showQueryEditor && (
+          <FloatingButton
+            primary
+            label="Query Editor"
+            onClick={e => setShowQueryEditor(true)}
+          />
+        )}
+
         {leads &&
           leads.map((lead) => (
             <LeadCard

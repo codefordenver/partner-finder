@@ -18,7 +18,11 @@ const QueryEditor = ({query, onSubmit}) => {
       pad="large"
       gap="large"
     >
-      <Box>
+      <Box
+        margin={{
+          top: "20px"
+        }}
+      >
         Page:
         <TextInput
           value={tempQuery.page}
