@@ -3,10 +3,14 @@ import {
   Heading,
   Grid,
   Text,
+  Button,
+  Accordion,
+  AccordionPanel,
 } from 'grommet';
 import React, { useEffect, useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { Add, Inspect } from 'grommet-icons';
 
-import LeadCard from '../LeadCard/LeadCard';
 import QueryEditor from '../QueryEditor/QueryEditor';
 import { config } from '../../config';
 import dotenv from 'dotenv';
@@ -16,7 +20,6 @@ if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
 }
 
-
 const Home = () => {
   const [query, setQuery] = useState({
     page: 1,
@@ -24,6 +27,8 @@ const Home = () => {
     search: "",
   });
   const [leads, setLeads] = useState([]);
+  const [showQueryEditor, setShowQueryEditor] = useState(true);
+
   const { authHeader, currentUser } = useContext(authContext);
 
   // set query parameters for call to the backend service
@@ -79,21 +84,82 @@ const Home = () => {
       <Box
         gridArea="sidebar"
       >
-        <QueryEditor query={query} onSubmit={setQuery} />
+        {
+          showQueryEditor && (
+             <QueryEditor
+              query={query}
+              onSubmit={setQuery}
+              hide={() => setShowQueryEditor(false)}
+            />
+          )
+        }
       </Box>
 
       <Box
         gridArea="main"
       >
-        {leads &&
-          leads.map((lead) => (
-            <LeadCard
-              id={lead.id}
-              companyName={lead.company_name}
-              formationDate={lead.formation_date}
-              companyAddress={lead.company_address}
+
+        <Box
+          flex
+          direction="row-reverse"
+          pad="medium"
+          gap="small"
+          justify="between"
+        >
+
+          <Link to="/leads/create">
+            <Button
+              icon={< Add />}
+              label={ "New" }
             />
-          ))}
+          </Link>
+
+          { !showQueryEditor && (
+            <Button
+              primary
+              label="Query Editor"
+              onClick={e => setShowQueryEditor(true)}
+            />
+          )}
+
+        </Box>
+
+         <Accordion>
+           {leads.map((lead) => (
+             <AccordionPanel
+                label={(
+                  <Box
+                    flex
+                    direction="row"
+                    pad="small"
+                    justify="between"
+                    align="center"
+                  >
+                    <Heading level={2} size="small">{lead.company_name}</Heading>
+                    <Link to={`/leads/${lead.id}`}>
+                        <Button secondary label="View" icon={<Inspect />} />
+                    </Link>
+                  </Box>
+                )}
+             >
+                <Box
+                  flex
+                  direction="row"
+                  wrap
+                  pad="small"
+                >
+                  <Text>
+                    <b>Address: </b> {lead.company_address}
+                  </Text>
+                  <Text>
+                    <b>Date Registered: </b>
+                    {lead.formation_date}
+                  </Text>
+
+                </Box>
+             </AccordionPanel>
+           ))}
+         </Accordion>
 
       </Box>
     </Grid>

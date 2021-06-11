@@ -1,10 +1,8 @@
 import { Box, Button, TextInput } from 'grommet';
 import React, { useState } from 'react';
 
-import { Add } from 'grommet-icons';
-import { Link } from 'react-router-dom';
 
-const QueryEditor = ({query, onSubmit}) => {
+const QueryEditor = ({query, onSubmit, hide}) => {
   const [tempQuery, setTempQuery] = useState(query);
 
   return (
@@ -18,7 +16,17 @@ const QueryEditor = ({query, onSubmit}) => {
       pad="large"
       gap="large"
     >
-      <Box>
+      <Button
+        primary
+        label="Hide"
+        onClick={hide}
+      />
+
+      <Box
+        margin={{
+          top: "20px"
+        }}
+      >
         Page:
         <TextInput
           value={tempQuery.page}
@@ -54,15 +62,9 @@ const QueryEditor = ({query, onSubmit}) => {
 
       <Button
         primary
-        label="Go"
+        label="Find"
         onClick={() => onSubmit(tempQuery)}
       />
-      <Link to="/leads/create">
-        <Button
-          icon={< Add />}
-          label={ "New" }
-        />
-      </Link>
 
     </Box>
   );
