@@ -29,7 +29,8 @@ def _add_colorado_nonprofits_fields(connection):
             CHECK (
                 data_source IN (
                     'socrata',
-                    'colorado_nonprofit_association'
+                    'colorado_nonprofit_association',
+                    'user_entry',
                 )
             );
     """)

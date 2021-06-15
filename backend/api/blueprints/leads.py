@@ -42,6 +42,13 @@ DEFAULT_LEAD_FIELDS = (
     'last_twitter_search',
     'last_facebook_search',
     'last_linkedin_search',
+    'instagram',
+    'mission_statement',
+    'programs',
+    'populations_served',
+    'county',
+    'colorado_region',
+    'data_source',
 )
 
 
@@ -147,14 +154,30 @@ def _parse_search_param(request):
     return request.args.get('search')
 
 
+VALID_DATA_SOURCES = (
+    'socrata',
+    'colorado_nonprofit_association',
+    'user_entry',
+)
 
-def _create_new_lead(request):
+
+def _create_new_lead(request, valid_data_sources=VALID_DATA_SOURCES):
     # parse body params
     body = {
         field: value
         for (field, value) in request.get_json().items()
         if field != 'id' and field in DEFAULT_LEAD_FIELDS and value is not None
     }
+
+    # validate data source field
+    data_source = body.get('data_source')
+    if data_source:
+        data_source = str(data_source).lower()
+        if data_source not in valid_data_sources:
+            return {
+                'message': f'Invalid value for the "data_source" parameter: {data_source!r}'
+            }, 422
+
     # insert into leads table
     # TODO: handle database error
     with db.get_engine().begin() as connection:
