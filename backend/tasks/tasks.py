@@ -77,11 +77,17 @@ def find_socrata_api_leads(perpage=500, page=1) -> int:
         for lead in leads:
             connection.execute(text(
                 """
-                    INSERT INTO leads (company_name, company_address, formation_date)
+                    INSERT INTO leads (
+                        company_name,
+                        company_address,
+                        formation_date,
+                        data_source
+                    )
                     SELECT
                         :company_name,
                         :company_address,
-                        :formation_date
+                        :formation_date,
+                        'socrata'
                     WHERE NOT EXISTS (
                         SELECT 1 FROM leads
                         WHERE company_name = :company_name
