@@ -41,7 +41,7 @@ const App = () => {
       <Grommet theme={theme} full>
         <Router>
           <Switch>
-            <Route path="/create-lead">
+            <Route path="/leads/create">
               <TokenRequired>
                 <CreateLead />
               </TokenRequired>
