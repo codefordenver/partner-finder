@@ -23,6 +23,9 @@ class DatabaseClient:
     def get_connection(self):
         return self.get_engine().connect()
 
+    def transaction(self):
+        return self.get_engine().begin()
+
 
 environments = frozenset(['dev', 'test', 'prod'])
 
