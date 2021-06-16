@@ -36,7 +36,7 @@ const App = () => {
 
   return (
     <authContext.Provider
-      value={{token, setToken, authHeader, currentUser, setCurrentUser}}
+      value={{ token, setToken, authHeader, currentUser, setCurrentUser }}
     >
       <Grommet theme={theme} full>
         <Router>
@@ -59,15 +59,7 @@ const App = () => {
             <Route path="/login">
               <Login />
             </Route>
-            <Route path="/">
-              {
-                token ? (
-                  <Home />
-                ) : (
-                  <Login />
-                )
-              }
-            </Route>
+            <Route path="/">{token ? <Home /> : <Login />}</Route>
           </Switch>
         </Router>
       </Grommet>
@@ -94,18 +86,9 @@ const Lead = () => {
   return <LeadDetail key={`lead-detail-${id}`} id={id} />;
 };
 
-
 const TokenRequired = (props) => {
   const { token } = useContext(authContext);
-  return <Fragment>
-    {
-      token ? (
-        props.children
-      ) : (
-        <Login />
-      )
-    }
-  </Fragment>
-}
+  return <Fragment>{token ? props.children : <Login />}</Fragment>;
+};
 
 export default App;

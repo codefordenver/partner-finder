@@ -1,9 +1,10 @@
-import { Box, Button, Form, FormField, TextInput } from 'grommet';
+import { Box, Button, Form, FormField, TextInput, Grid } from 'grommet';
 import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { config } from '../../config';
 import { authContext } from '../../auth';
+import Header from '../Header/Header';
 
 const CreateLead = () => {
   let [formData, setFormData] = useState({});
@@ -16,33 +17,15 @@ const CreateLead = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': authHeader,
+        Authorization: authHeader,
       },
       body: JSON.stringify(formData),
     })
       .then((res) => res.json())
-      .then(
-        () => history.push('/home')
-      )
-      .catch(
-        () => setFormData({})
-      )
+      .then(() => history.push('/home'))
+      .catch(() => setFormData({}));
   };
 
-  const renderFormField = ({name, label}) => {
-    return (
-      <FormField
-        name={name}
-        htmlFor={name}
-        label={label}
-      >
-        <TextInput
-          id={name}
-          name={name}
-        />
-      </FormField>
-    )
-  }
 
   const fields = [
     {
@@ -51,7 +34,7 @@ const CreateLead = () => {
     },
     {
       name: 'company_address',
-      label: 'Address'
+      label: 'Address',
     },
     {
       name: 'contact_name',
@@ -107,25 +90,66 @@ const CreateLead = () => {
     },
     {
       name: 'colorado_region',
-      label: 'CO Region'
+      label: 'CO Region',
     },
-  ]
+  ];
 
   return (
-    <Form
-      value={formData}
-      onChange={(x) => setFormData(x)}
-      onReset={() => setFormData({})}
-      onSubmit={() => postLead()}
+    <Grid
+      rows={['auto', 'flex']}
+      columns={['auto', 'flex']}
+      gap="medium"
+      areas={[
+        {
+          name: 'header',
+          start: [0, 0],
+          end: [1, 0],
+        },
+        {
+          name: 'main',
+          start: [0, 1],
+          end: [1, 1],
+        },
+      ]}
     >
+      <Box gridArea="header">
+        <Header />
+      </Box>
 
-        { fields.map(renderFormField) }
+      <Box
+        gridArea="main"
+        flex="column"
+        justify="center"
+        align="center"
+      >
+        <Box
+          border
+          pad="medium"
+          flex="row"
+          wrap="wrap"
+        >
+          <Form
+            value={formData}
+            onChange={(x) => setFormData(x)}
+            onReset={() => setFormData({})}
+            onSubmit={() => postLead()}
+          >
+            {fields.map(({name, label}) => {
+              return (
+                <FormField name={name} htmlFor={name}>
+                  <TextInput id={name} name={name} placeholder={label}/>
+                </FormField>
+              );
+            })}
 
-        <Box direction="row" gap="medium">
-            <Button type="submit" primary label="Submit"></Button>
-            <Button type="reset" label="Reset"></Button>
+            <Box direction="row" gap="medium">
+              <Button type="submit" primary label="Submit"></Button>
+              <Button type="reset" label="Reset"></Button>
+            </Box>
+          </Form>
         </Box>
-    </Form>
+      </Box>
+    </Grid>
   );
 };
 
