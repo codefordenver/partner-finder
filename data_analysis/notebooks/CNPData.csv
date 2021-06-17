@@ -1,10 +1,10 @@
-name,address,year_founded,website,phone,email,twitter,facebook,linkedin,instagram,mission_statement,programs,popu_served,county
-AdvocacyDenver,"950 S Cherry St Suite 1100, Denver, CO, 80246",1954,http://www.advocacydenver.org,303-831-7733,[email protected],,https://www.facebook.com/advocacydenverco/,,,"AdvocacyDenver promotes and protects the human rights of people with disabilities and actively supports their full inclusion and participation in the community throughout their lifetimes.
-","AdvocacyDenver is a civil rights advocacy organization serving children and youth with disabilities and adults with intellectual and developmental disabilities and their families. AdvocacyDenver provides individual, legal, and policy advocacy in Denver county.
-",People Living With Disabilities,Denver
-AdvocacyDenver,"16965 Pine Lane #120, Parker, CO, 80134",1985,http://www.adv4children.org,303.328.2353,[email protected],,,,,"Speaking up for abused and neglected children through Court Appointed Special Advocates, CASA volunteers.
-","Dependency & Neglect CASAs, Truancy CASAs, Tutoring, Legacy Project Mentoring, Juvenile Delinquency CASAs
-",Children and Youth,Douglas
-AdvocacyDenver,"1550 Larimer St, Suite 477, Denver, CO, 80202",2008,https://afterhoursdenver.org,(720) 414-0424,[email protected],,https://www.instagram.com/afterhoursdenver,,,"We provide essential resources to those experiencing homelessness and poverty, while also offering community to the spiritually independent.
-","We make and serve sack lunches everyday to those experiencing homelessness and poverty. We also run two annual free markets in Civic Center Park and Liberty Park where homeless and impoverished individuals can gather essential supplies. These two events are called Thankful for Long Johns and Christmas in the Park. They take place on Thanksgiving Day and Christmas Day. In addition, we create spaces in public places where the spiritually independent can build community.
-","All Populations, People Experiencing Homelessness, Low Income, Urban",Denver
+name,website,email,phone,address,mission_statement,year_founded,popu_served,twitter,facebook,linkedin,instagram,programs,county
+AdvocacyDenver,http://www.advocacydenver.org,[email protected],303-831-7733,"950 S Cherry St Suite 1100, Denver, CO, 80246","AdvocacyDenver promotes and protects the human rights of people with disabilities and actively supports their full inclusion and participation in the community throughout their lifetimes.
+",1954,People Living With Disabilities,,https://www.facebook.com/advocacydenverco/,,,"AdvocacyDenver is a civil rights advocacy organization serving children and youth with disabilities and adults with intellectual and developmental disabilities and their families. AdvocacyDenver provides individual, legal, and policy advocacy in Denver county.
+",Denver
+Advocates for Children CASA,http://www.adv4children.org,[email protected],303.328.2353,"16965 Pine Lane #120, Parker, CO, 80134","Speaking up for abused and neglected children through Court Appointed Special Advocates, CASA volunteers.
+",1985,Children and Youth,,,,,"Dependency & Neglect CASAs, Truancy CASAs, Tutoring, Legacy Project Mentoring, Juvenile Delinquency CASAs
+",Douglas
+AfterHours Denver,https://afterhoursdenver.org,[email protected],(720) 414-0424,"1550 Larimer St, Suite 477, Denver, CO, 80202","We provide essential resources to those experiencing homelessness and poverty, while also offering community to the spiritually independent.
+",2008,"All Populations, People Experiencing Homelessness, Low Income, Urban",,https://www.facebook.com/AfterHoursDenver,,https://www.instagram.com/afterhoursdenver,"We make and serve sack lunches everyday to those experiencing homelessness and poverty. We also run two annual free markets in Civic Center Park and Liberty Park where homeless and impoverished individuals can gather essential supplies. These two events are called Thankful for Long Johns and Christmas in the Park. They take place on Thanksgiving Day and Christmas Day. In addition, we create spaces in public places where the spiritually independent can build community.
+",Denver
