@@ -3,6 +3,8 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
 # Data Sources For Leads
 - [Socrata API](https://data.colorado.gov/Business/Business-Entities-in-Colorado/4ykn-tg5h)
     - Dataset with registered business entities in Colorado. It can be filtered to return only nonprofits.
+- [Colorado Nonprofit Association](https://coloradononprofits.org/membership/nonprofit-member-directory)
+    - Website with nonprofit members registered with Colorado Nonprofit Association.
 - Twitter?
 - LinkedIn?
 
