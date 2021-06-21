@@ -5,6 +5,14 @@ import React, { useState } from 'react';
 const QueryEditor = ({query, onSubmit, hide}) => {
   const [tempQuery, setTempQuery] = useState(query);
 
+  const handleKeyPress = event => (event.key === 'Enter') && onSubmit(tempQuery);
+
+  const updateQueryOnChange = field => event => {
+    let newQuery = { ...tempQuery };
+    newQuery[field] = event.target.value;
+    setTempQuery(newQuery);
+  }
+
   return (
     <Box
       flex
@@ -30,33 +38,24 @@ const QueryEditor = ({query, onSubmit, hide}) => {
         Page:
         <TextInput
           value={tempQuery.page}
-          onChange={(event) => {
-              let newQuery = { ...tempQuery };
-              newQuery.page = event.target.value;
-              setTempQuery(newQuery);
-          }}
+          onChange={updateQueryOnChange('page')}
+          onKeyPress={handleKeyPress}
         />
       </Box>
       <Box>
         Perpage:
         <TextInput
           value={tempQuery.perpage}
-          onChange={(event) => {
-              let newQuery = { ...tempQuery };
-              newQuery.perpage = event.target.value;
-              setTempQuery(newQuery);
-          }}
+          onChange={updateQueryOnChange('perpage')}
+          onKeyPress={handleKeyPress}
         />
       </Box>
       <Box>
         Search:
         <TextInput
           value={tempQuery.search}
-          onChange={(event) => {
-              let newQuery = { ...tempQuery };
-              newQuery.search = event.target.value;
-              setTempQuery(newQuery);
-          }}
+          onChange={updateQueryOnChange('search')}
+          onKeyPress={handleKeyPress}
         />
       </Box>
 
