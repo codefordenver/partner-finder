@@ -24,7 +24,7 @@ if (process.env.NODE_ENV !== 'production') {
 const Home = () => {
   const [query, setQuery] = useState({
     page: 1,
-    perpage: 4,
+    perpage: 10,
     search: '',
   });
   const [leads, setLeads] = useState([]);
@@ -108,7 +108,9 @@ const Home = () => {
             )}
           </Box>
 
-          {leads.map((lead) => (
+          {leads.map((lead) => {
+            console.log('lead: ', lead)
+            return (
             <AccordionPanel
               label={
                 <Box
@@ -121,23 +123,44 @@ const Home = () => {
                   <Heading level={2} size="small">
                     {lead.company_name}
                   </Heading>
-                  <Link to={`/leads/${lead.id}`}>
-                    <Button secondary label="View" icon={<Inspect />} />
-                  </Link>
                 </Box>
               }
             >
-              <Box flex direction="row" wrap pad="small">
+              <Box
+                flex
+                direction="column"
+                pad="medium"
+                height="large"
+              >
                 <Text>
                   <b>Address: </b> {lead.company_address}
                 </Text>
                 <Text>
-                  <b>Date Registered: </b>
-                  {lead.formation_date}
+                  <b>Contact: </b> {lead.contact_name}
                 </Text>
+                <Text>
+                  <b>Email: </b> {lead.email}
+                </Text>
+                <Text>
+                  <b>Facebook: </b> {lead.facebook}
+                </Text>
+                <Text>
+                  <b>Phone: </b> {lead.phone}
+                </Text>
+                <Text>
+                  <b>Twitter: </b> {lead.twitter}
+                </Text>
+                <Text>
+                  <b>Website: </b> {lead.website}
+                </Text>
+                <Text>
+                  <b>LinkedIn: </b> {lead.linkedin}
+                </Text>
+
               </Box>
+
             </AccordionPanel>
-          ))}
+          )})}
         </Accordion>
       </Box>
     </Grid>
