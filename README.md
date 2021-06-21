@@ -33,7 +33,7 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
         ![](./docs/docker-ps-output.png)
 1. Check that the api works
     - http://localhost:8000/leads
-    - or do it the hard way:
+    - or do:
         ```bash
         curl http://localhost:8000/leads
         ```
@@ -46,7 +46,7 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
     ```bash
     cd ./frontend/cfd-partner-finder
     ```
-1. Create a file called `.env` the following contents:
+1. Create a file called `.env` containing the following contents:
     ```bash
     export REACT_APP_BACKEND_HOST="http://localhost:8000"
     ```
@@ -58,9 +58,9 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
     ```
     npm start
     ```
-1. A browser should open with the app running. It looks like this (for now)
-    ![](./docs/homepage.jpg)
-    - If no browser opens, go to http://localhost:3000
+1. A browser should open with the app running. You should see a login page. Use these credentials to continue to the home page:
+- user: `user@gmail.com`
+- password: `password`
 
 ## Running a data analysis jupyter notebook (Optional)
 1. Make sure python 3 is installed on your system
