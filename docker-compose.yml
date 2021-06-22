@@ -30,4 +30,12 @@ services:
             && python database/create_dev_users.py
             && python database/scrape_socrata.py
             && gunicorn run_dev:dev_app -w 1 --threads 1 -b 0.0.0.0:8000 --reload"
+    frontend:
+        build: ./frontend/cfd-partner-finder-frontend
+        volumes: ["./frontend/cfd-partner-finder-frontend:/app"]
+        ports:
+            - "3000:3000"
+        depends_on:
+            - api
+        command: npm start
 

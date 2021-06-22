@@ -19,9 +19,9 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
     ```bash
     git clone <git-repo-name>
     ```
-## Running the Backend locally
+## Running the app locally
 1. Install Docker and Docker-compose
-1. Run the backend
+1. Run the frontend, rest api, and database in docker containers:
     ```bash
     docker-compose up --build -d
     ```
@@ -53,29 +53,11 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
         curl --location --request GET 'http://localhost:8000/leads' \
         --header 'Authorization: Bearer <insert your token here>'
         ```
-
-## Running the Frontend locally
-1. Start a new terminal
-1. Move to the project root directory
-1. Change to the frontend folder
-    ```bash
-    cd ./frontend/cfd-partner-finder
-    ```
-1. Create a file called `.env` containing the following contents:
-    ```bash
-    export REACT_APP_BACKEND_HOST="http://localhost:8000"
-    ```
-1. Install dependencies
-    ```
-    npm install
-    ```
-1. Run the app on localhost
-    ```
-    npm start
-    ```
-1. A browser should open with the app running. You should see a login page. Use these credentials to continue to the home page:
-- user: `user@gmail.com`
-- password: `password`
+1. Check that the frontend is working:
+    - In a browser, go to http://localhost:3000
+    - You should see a login page. Use these credentials to continue to the homepage:
+        - username: `user@gmail.com`
+        - password: `password`
 
 ## Running a data analysis jupyter notebook (Optional)
 1. Make sure python 3 is installed on your system
