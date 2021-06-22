@@ -31,14 +31,29 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
     ```
     - you should see something like
         ![](./docs/docker-ps-output.png)
-1. Check that the api works
-    - http://localhost:8000/leads
-    - or do:
+1. Try connecting to the database with psql:
+    ```bash
+    docker exec -it partner-finder_postgres_1 psql -U cfd_partner_finder
+    select * from leads limit 5;
+    ```
+    to exit psql, type `\q`
+1. Check that the api works with curl:
+    - try the healthcheck endpoint: `curl http://localhost:8000/healthcheck`
+    - get an access token to use other api endpoints:
         ```bash
-        curl http://localhost:8000/leads
+        curl --location --request POST 'http://localhost:8000/login' \
+        --header 'Content-Type: application/json' \
+        --data-raw '{
+            "username": "admin",
+            "password": "password"
+        }'
         ```
-    - either way, you should see a bunch of json displayed
-        ![](./docs/get-leads-json.png)
+    - get a list of leads:
+        ```bash
+        curl --location --request GET 'http://localhost:8000/leads' \
+        --header 'Authorization: Bearer <insert your token here>'
+        ```
+
 ## Running the Frontend locally
 1. Start a new terminal
 1. Move to the project root directory
