@@ -7,9 +7,9 @@ import {
   Accordion,
   AccordionPanel,
 } from 'grommet';
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { Add, Inspect } from 'grommet-icons';
+import { Add, Edit, Save, ClearOption, Rewind } from 'grommet-icons';
 
 import QueryEditor from '../QueryEditor/QueryEditor';
 import { config } from '../../config';
@@ -29,6 +29,7 @@ const Home = () => {
   });
   const [leads, setLeads] = useState([]);
   const [showQueryEditor, setShowQueryEditor] = useState(true);
+  const [editMode, setEditMode] = useState(-1);
 
   const { authHeader } = useContext(authContext);
 
@@ -108,7 +109,7 @@ const Home = () => {
             )}
           </Box>
 
-          {leads.map((lead) => {
+          {leads.map((lead, i) => {
             console.log('lead: ', lead)
             return (
             <AccordionPanel
@@ -156,9 +157,19 @@ const Home = () => {
                 <Text>
                   <b>LinkedIn: </b> {lead.linkedin}
                 </Text>
-
               </Box>
-
+              {
+                // TODO: change onClick handler to actually save, edit, reset, back
+                (editMode > -1) && (editMode === i) ? (
+                  <Fragment>
+                    <Button secondary label="Save" icon={<Save />} onClick={() => setEditMode(-1)}/>
+                    <Button secondary label="Clear" icon={<ClearOption />} onClick={() => setEditMode(-1)}/>
+                    <Button secondary label="Back" icon={<Rewind />} onClick={() => setEditMode(-1)}/>
+                  </Fragment>
+                ) : (
+                  <Button secondary label="Edit" icon={<Edit />} onClick={() => setEditMode(i)}/>
+                )
+              }
             </AccordionPanel>
           )})}
         </Accordion>
