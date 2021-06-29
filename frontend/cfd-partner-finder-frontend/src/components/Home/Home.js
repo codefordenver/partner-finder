@@ -3,6 +3,7 @@ import {
   Heading,
   Grid,
   Text,
+  TextInput,
   Button,
   Accordion,
   AccordionPanel,
@@ -63,10 +64,9 @@ const Home = () => {
         { name: 'main', start: [1, 1], end: [1, 1] },
       ]}
     >
-
-     <Box gridArea="header">
-      <Header />
-     </Box>
+      <Box gridArea="header">
+        <Header />
+      </Box>
 
       <Box gridArea="sidebar">
         {showQueryEditor && (
@@ -110,68 +110,107 @@ const Home = () => {
           </Box>
 
           {leads.map((lead, i) => {
-            console.log('lead: ', lead)
+            const leadInEditMode = (editMode > -1) && (editMode === i);
+            const updateLead = field => e => {
+              let newLead = JSON.parse(JSON.stringify(lead));
+              newLead[field] = e.target.value;
+              let newLeads = JSON.parse(JSON.stringify(leads));
+              newLeads[i] = newLead;
+              setLeads(newLeads);
+            }
             return (
-            <AccordionPanel
-              label={
-                <Box
-                  flex
-                  direction="row"
-                  pad="small"
-                  justify="between"
-                  align="center"
-                >
-                  <Heading level={2} size="small">
-                    {lead.company_name}
-                  </Heading>
-                </Box>
-              }
-            >
-              <Box
-                flex
-                direction="column"
-                pad="medium"
-                height="large"
+              <AccordionPanel
+                label={
+                  <Box
+                    flex
+                    direction="row"
+                    pad="small"
+                    justify="between"
+                    align="center"
+                  >
+                    <Heading level={2} size="small">
+                      {lead.company_name}
+                    </Heading>
+                  </Box>
+                }
               >
-                <Text>
-                  <b>Address: </b> {lead.company_address}
-                </Text>
-                <Text>
-                  <b>Contact: </b> {lead.contact_name}
-                </Text>
-                <Text>
-                  <b>Email: </b> {lead.email}
-                </Text>
-                <Text>
-                  <b>Facebook: </b> {lead.facebook}
-                </Text>
-                <Text>
-                  <b>Phone: </b> {lead.phone}
-                </Text>
-                <Text>
-                  <b>Twitter: </b> {lead.twitter}
-                </Text>
-                <Text>
-                  <b>Website: </b> {lead.website}
-                </Text>
-                <Text>
-                  <b>LinkedIn: </b> {lead.linkedin}
-                </Text>
-              </Box>
-              {
-                // TODO: change onClick handler to actually save, edit, reset, back
-                (editMode > -1) && (editMode === i) ? (
-                  <Fragment>
-                    <Button secondary label="Save" icon={<Save />} onClick={() => setEditMode(-1)}/>
-                    <Button secondary label="Clear" icon={<ClearOption />} onClick={() => setEditMode(-1)}/>
-                    <Button secondary label="Back" icon={<Rewind />} onClick={() => setEditMode(-1)}/>
-                  </Fragment>
-                ) : (
-                  <Button secondary label="Edit" icon={<Edit />} onClick={() => setEditMode(i)}/>
-                )
-              }
-            </AccordionPanel>
-          )})}
+                <Box flex direction="column" pad="medium" height="large">
+                  {
+                    leadInEditMode ? (
+                      <TextInput
+                        value={lead.company_address}
+                        onChange={updateLead('company_address')}
+                      />
+                    ) : (
+                      <Text>
+                        <b>Address: </b> {lead.company_address}
+                      </Text>
+                    )
+                  }
+                  { leadInEditMode ? (
+                      <TextInput
+                        value={lead.contact_name}
+                        onChange={updateLead('contact_name')}
+                      />
+                  ) : (
+                    <Text>
+                      <b>Contact: </b> {lead.contact_name}
+                    </Text>
+                  )}
+                  <Text>
+                    <b>Email: </b> {lead.email}
+                  </Text>
+                  <Text>
+                    <b>Facebook: </b> {lead.facebook}
+                  </Text>
+                  <Text>
+                    <b>Phone: </b> {lead.phone}
+                  </Text>
+                  <Text>
+                    <b>Twitter: </b> {lead.twitter}
+                  </Text>
+                  <Text>
+                    <b>Website: </b> {lead.website}
+                  </Text>
+                  <Text>
+                    <b>LinkedIn: </b> {lead.linkedin}
+                  </Text>
+                </Box>
+                {
+                  // TODO: change onClick handler to actually save, edit, reset, back
+                  editMode > -1 && editMode === i ? (
+                    <Fragment>
+                      <Button
+                        secondary
+                        label="Save"
+                        icon={<Save />}
+                        onClick={() => setEditMode(-1)}
+                      />
+                      <Button
+                        secondary
+                        label="Clear"
+                        icon={<ClearOption />}
+                        onClick={() => setEditMode(-1)}
+                      />
+                      <Button
+                        secondary
+                        label="Back"
+                        icon={<Rewind />}
+                        onClick={() => setEditMode(-1)}
+                      />
+                    </Fragment>
+                  ) : (
+                    <Button
+                      secondary
+                      label="Edit"
+                      icon={<Edit />}
+                      onClick={() => setEditMode(i)}
+                    />
+                  )
+                }
+              </AccordionPanel>
+            );
+          })}
         </Accordion>
       </Box>
     </Grid>
