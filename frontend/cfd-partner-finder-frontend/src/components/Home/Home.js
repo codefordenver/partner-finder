@@ -17,6 +17,7 @@ import { config } from '../../config';
 import dotenv from 'dotenv';
 import { authContext } from '../../auth';
 import Header from '../Header/Header';
+import EditableInput from '../EditableInput/EditableInput';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
@@ -135,28 +136,20 @@ const Home = () => {
                 }
               >
                 <Box flex direction="column" pad="medium" height="large">
-                  {
-                    leadInEditMode ? (
-                      <TextInput
-                        value={lead.company_address}
-                        onChange={updateLead('company_address')}
-                      />
-                    ) : (
-                      <Text>
-                        <b>Address: </b> {lead.company_address}
-                      </Text>
-                    )
-                  }
-                  { leadInEditMode ? (
-                      <TextInput
-                        value={lead.contact_name}
-                        onChange={updateLead('contact_name')}
-                      />
-                  ) : (
-                    <Text>
-                      <b>Contact: </b> {lead.contact_name}
-                    </Text>
-                  )}
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={lead}
+                    field={"company_address"}
+                    alias={"Address"}
+                    onChange={updateLead('company_address')}
+                  />
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={lead}
+                    field={"contact_name"}
+                    alias={"Contact"}
+                    onChange={updateLead('contact_name')}
+                  />
                   <Text>
                     <b>Email: </b> {lead.email}
                   </Text>
