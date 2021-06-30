@@ -1,21 +1,14 @@
-import {
-  Box,
-  Heading,
-  Grid,
-  Text,
-  Button,
-  Accordion,
-  AccordionPanel,
-} from 'grommet';
-import React, { useEffect, useState, useContext } from 'react';
+import { Box, Heading, Grid, Button, Accordion, AccordionPanel } from 'grommet';
+import React, { useEffect, useState, useContext, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { Add, Inspect } from 'grommet-icons';
+import { Add, Edit, Save, Undo, Rewind } from 'grommet-icons';
 
 import QueryEditor from '../QueryEditor/QueryEditor';
 import { config } from '../../config';
 import dotenv from 'dotenv';
 import { authContext } from '../../auth';
 import Header from '../Header/Header';
+import EditableInput from '../EditableInput/EditableInput';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
@@ -28,7 +21,9 @@ const Home = () => {
     search: '',
   });
   const [leads, setLeads] = useState([]);
+  const [edits, setEdits] = useState([]);
   const [showQueryEditor, setShowQueryEditor] = useState(true);
+  const [editMode, setEditMode] = useState(-1);
 
   const { authHeader } = useContext(authContext);
 
@@ -48,7 +43,10 @@ const Home = () => {
       headers: headers,
     })
       .then((res) => res.json())
-      .then((data) => setLeads(data.leads));
+      .then((data) => {
+        setLeads(data.leads);
+        setEdits(data.leads);
+      });
   }, [query]);
 
   return (
@@ -62,10 +60,9 @@ const Home = () => {
         { name: 'main', start: [1, 1], end: [1, 1] },
       ]}
     >
-
-     <Box gridArea="header">
-      <Header />
-     </Box>
+      <Box gridArea="header">
+        <Header />
+      </Box>
 
       <Box gridArea="sidebar">
         {showQueryEditor && (
@@ -108,59 +105,158 @@ const Home = () => {
             )}
           </Box>
 
-          {leads.map((lead) => {
-            console.log('lead: ', lead)
-            return (
-            <AccordionPanel
-              label={
-                <Box
-                  flex
-                  direction="row"
-                  pad="small"
-                  justify="between"
-                  align="center"
-                >
-                  <Heading level={2} size="small">
-                    {lead.company_name}
-                  </Heading>
-                </Box>
+          {edits.map((edit, i) => {
+            const leadInEditMode = editMode > -1 && editMode === i;
+
+            const editField = (field) => (e) => {
+              let edited = JSON.parse(JSON.stringify(edit));
+              edited[field] = e.target.value;
+              let editsCopy = JSON.parse(JSON.stringify(edits));
+              editsCopy[i] = edited;
+              setEdits(editsCopy);
+            };
+
+            const fieldEdited = (field) => {
+              // leads are set before edits, so this if block helps the app survive rerenders
+              if (i >= edits.length || i >= leads.length) {
+                return false;
               }
-            >
-              <Box
-                flex
-                direction="column"
-                pad="medium"
-                height="large"
+              return edits[i][field] !== leads[i][field];
+            };
+
+            return (
+              <AccordionPanel
+                label={
+                  <Box
+                    flex
+                    direction="row"
+                    pad="small"
+                    justify="between"
+                    align="center"
+                  >
+                    <Heading level={2} size="small">
+                      {edit.company_name}
+                    </Heading>
+                  </Box>
+                }
               >
-                <Text>
-                  <b>Address: </b> {lead.company_address}
-                </Text>
-                <Text>
-                  <b>Contact: </b> {lead.contact_name}
-                </Text>
-                <Text>
-                  <b>Email: </b> {lead.email}
-                </Text>
-                <Text>
-                  <b>Facebook: </b> {lead.facebook}
-                </Text>
-                <Text>
-                  <b>Phone: </b> {lead.phone}
-                </Text>
-                <Text>
-                  <b>Twitter: </b> {lead.twitter}
-                </Text>
-                <Text>
-                  <b>Website: </b> {lead.website}
-                </Text>
-                <Text>
-                  <b>LinkedIn: </b> {lead.linkedin}
-                </Text>
-
-              </Box>
-
-            </AccordionPanel>
-          )})}
+                <Box flex direction="column" pad="medium" height="large">
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={edit}
+                    field={'company_address'}
+                    alias={'Address'}
+                    onChange={editField('company_address')}
+                    edits={fieldEdited('company_address')}
+                  />
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={edit}
+                    field={'contact_name'}
+                    alias={'Contact'}
+                    onChange={editField('contact_name')}
+                    edits={fieldEdited('contact_name')}
+                  />
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={edit}
+                    field={'email'}
+                    alias={'Email'}
+                    onChange={editField('email')}
+                    edits={fieldEdited('email')}
+                  />
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={edit}
+                    field={'facebook'}
+                    alias={'Facebook'}
+                    onChange={editField('facebook')}
+                    edits={fieldEdited('facebook')}
+                  />
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={edit}
+                    field={'phone'}
+                    alias={'Phone'}
+                    onChange={editField('phone')}
+                    edits={fieldEdited('phone')}
+                  />
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={edit}
+                    field={'twitter'}
+                    alias={'Twitter'}
+                    onChange={editField('twitter')}
+                    edits={fieldEdited('twitter')}
+                  />
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={edit}
+                    field={'website'}
+                    alias={'Website'}
+                    onChange={editField('website')}
+                    edits={fieldEdited('website')}
+                  />
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={edit}
+                    field={'linkedin'}
+                    alias={'LinkedIn'}
+                    onChange={editField('linkedin')}
+                    edits={fieldEdited('linkedin')}
+                  />
+                </Box>
+                {
+                  // TODO: change onClick handler to actually save, edit, reset, back
+                  editMode > -1 && editMode === i ? (
+                    <Fragment>
+                      <Button
+                        secondary
+                        label="Save"
+                        icon={<Save />}
+                        onClick={() => {
+                          fetch(`${config.backendHost}/leads/${edit.id}`, {
+                            method: 'PUT',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              Authorization: authHeader,
+                            },
+                            body: JSON.stringify(edit),
+                          }).then(() => {
+                            setLeads(edits);
+                          });
+                        }}
+                      />
+                      <Button
+                        secondary
+                        label="Reset"
+                        icon={<Undo />}
+                        onClick={() => {
+                          let leadCopy = JSON.parse(JSON.stringify(leads[i]));
+                          let editsCopy = JSON.parse(JSON.stringify(edits));
+                          editsCopy[i] = leadCopy;
+                          setEdits(editsCopy);
+                        }}
+                      />
+                      <Button
+                        secondary
+                        label="Back"
+                        icon={<Rewind />}
+                        onClick={() => setEditMode(-1)}
+                      />
+                    </Fragment>
+                  ) : (
+                    <Button
+                      secondary
+                      label="Edit"
+                      icon={<Edit />}
+                      onClick={() => setEditMode(i)}
+                    />
+                  )
+                }
+              </AccordionPanel>
+            );
+          })}
         </Accordion>
       </Box>
     </Grid>
