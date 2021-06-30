@@ -201,7 +201,21 @@ const Home = () => {
                         secondary
                         label="Save"
                         icon={<Save />}
-                        onClick={() => setEditMode(-1)}
+                        onClick={() => {
+                            console.log('lead: ', lead)
+                            const url = `${config.backendHost}/leads/${lead.id}`;
+                            fetch(
+                                url,
+                                {
+                                    method: "PUT",
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        Authorization: authHeader,
+                                    },
+                                    body: JSON.stringify(lead),
+                                })
+                            .then(() => setEditMode(-1))
+                        }}
                       />
                       <Button
                         secondary
