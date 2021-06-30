@@ -2,15 +2,13 @@ import {
   Box,
   Heading,
   Grid,
-  Text,
-  TextInput,
   Button,
   Accordion,
   AccordionPanel,
 } from 'grommet';
 import React, { useEffect, useState, useContext, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { Add, Edit, Save, ClearOption, Rewind } from 'grommet-icons';
+import { Add, Edit, Save, Undo, Rewind } from 'grommet-icons';
 
 import QueryEditor from '../QueryEditor/QueryEditor';
 import { config } from '../../config';
@@ -125,6 +123,10 @@ const Home = () => {
             };
 
             const fieldEdited = field => {
+                // leads are set before edits, so this if block helps the app survive rerenders
+                if (i >= edits.length || i >= leads.length) {
+                    return false;
+                }
                 return edits[i][field] !== leads[i][field];
             }
 
@@ -234,8 +236,8 @@ const Home = () => {
                       />
                       <Button
                         secondary
-                        label="Clear"
-                        icon={<ClearOption />}
+                        label="Reset"
+                        icon={< Undo />}
                         onClick={() => {
                             let leadCopy = JSON.parse(JSON.stringify(leads[i]));
                             let editsCopy = JSON.parse(JSON.stringify(edits));
