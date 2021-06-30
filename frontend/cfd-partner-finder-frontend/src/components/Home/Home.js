@@ -150,24 +150,48 @@ const Home = () => {
                     alias={"Contact"}
                     onChange={updateLead('contact_name')}
                   />
-                  <Text>
-                    <b>Email: </b> {lead.email}
-                  </Text>
-                  <Text>
-                    <b>Facebook: </b> {lead.facebook}
-                  </Text>
-                  <Text>
-                    <b>Phone: </b> {lead.phone}
-                  </Text>
-                  <Text>
-                    <b>Twitter: </b> {lead.twitter}
-                  </Text>
-                  <Text>
-                    <b>Website: </b> {lead.website}
-                  </Text>
-                  <Text>
-                    <b>LinkedIn: </b> {lead.linkedin}
-                  </Text>
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={lead}
+                    field={"email"}
+                    alias={"Email"}
+                    onChange={updateLead('email')}
+                  />
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={lead}
+                    field={"facebook"}
+                    alias={"Facebook"}
+                    onChange={updateLead('facebook')}
+                  />
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={lead}
+                    field={"phone"}
+                    alias={"Phone"}
+                    onChange={updateLead('phone')}
+                  />
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={lead}
+                    field={"twitter"}
+                    alias={"Twitter"}
+                    onChange={updateLead('twitter')}
+                  />
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={lead}
+                    field={"website"}
+                    alias={"Website"}
+                    onChange={updateLead('website')}
+                  />
+                  <EditableInput
+                    editMode={leadInEditMode}
+                    lead={lead}
+                    field={"linkedin"}
+                    alias={"LinkedIn"}
+                    onChange={updateLead('linkedin')}
+                  />
                 </Box>
                 {
                   // TODO: change onClick handler to actually save, edit, reset, back
