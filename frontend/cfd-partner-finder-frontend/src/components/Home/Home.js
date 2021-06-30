@@ -30,6 +30,7 @@ const Home = () => {
     search: '',
   });
   const [leads, setLeads] = useState([]);
+  const [edits, setEdits] = useState([]);
   const [showQueryEditor, setShowQueryEditor] = useState(true);
   const [editMode, setEditMode] = useState(-1);
 
@@ -51,8 +52,10 @@ const Home = () => {
       headers: headers,
     })
       .then((res) => res.json())
-      .then((data) => setLeads(data.leads));
-  }, [query]);
+      .then((data) => {
+          setLeads(data.leads);
+          setEdits(data.leads);
+        })}, [query]);
 
   return (
     <Grid
@@ -110,15 +113,21 @@ const Home = () => {
             )}
           </Box>
 
-          {leads.map((lead, i) => {
-            const leadInEditMode = (editMode > -1) && (editMode === i);
-            const updateLead = field => e => {
-              let newLead = JSON.parse(JSON.stringify(lead));
-              newLead[field] = e.target.value;
-              let newLeads = JSON.parse(JSON.stringify(leads));
-              newLeads[i] = newLead;
-              setLeads(newLeads);
+          {edits.map((edit, i) => {
+            const leadInEditMode = editMode > -1 && editMode === i;
+
+            const editField = (field) => (e) => {
+              let edited = JSON.parse(JSON.stringify(edit));
+              edited[field] = e.target.value;
+              let editsCopy = JSON.parse(JSON.stringify(edits));
+              editsCopy[i] = edited;
+              setEdits(editsCopy);
+            };
+
+            const fieldEdited = field => {
+                return edits[i][field] !== leads[i][field];
             }
+
             return (
               <AccordionPanel
                 label={
@@ -130,7 +139,7 @@ const Home = () => {
                     align="center"
                   >
                     <Heading level={2} size="small">
-                      {lead.company_name}
+                      {edit.company_name}
                     </Heading>
                   </Box>
                 }
@@ -138,59 +147,67 @@ const Home = () => {
                 <Box flex direction="column" pad="medium" height="large">
                   <EditableInput
                     editMode={leadInEditMode}
-                    lead={lead}
-                    field={"company_address"}
-                    alias={"Address"}
-                    onChange={updateLead('company_address')}
+                    lead={edit}
+                    field={'company_address'}
+                    alias={'Address'}
+                    onChange={editField('company_address')}
+                    edits={fieldEdited('company_address')}
                   />
                   <EditableInput
                     editMode={leadInEditMode}
-                    lead={lead}
-                    field={"contact_name"}
-                    alias={"Contact"}
-                    onChange={updateLead('contact_name')}
+                    lead={edit}
+                    field={'contact_name'}
+                    alias={'Contact'}
+                    onChange={editField('contact_name')}
+                    edits={fieldEdited('contact_name')}
                   />
                   <EditableInput
                     editMode={leadInEditMode}
-                    lead={lead}
-                    field={"email"}
-                    alias={"Email"}
-                    onChange={updateLead('email')}
+                    lead={edit}
+                    field={'email'}
+                    alias={'Email'}
+                    onChange={editField('email')}
+                    edits={fieldEdited('email')}
                   />
                   <EditableInput
                     editMode={leadInEditMode}
-                    lead={lead}
-                    field={"facebook"}
-                    alias={"Facebook"}
-                    onChange={updateLead('facebook')}
+                    lead={edit}
+                    field={'facebook'}
+                    alias={'Facebook'}
+                    onChange={editField('facebook')}
+                    edits={fieldEdited('facebook')}
                   />
                   <EditableInput
                     editMode={leadInEditMode}
-                    lead={lead}
-                    field={"phone"}
-                    alias={"Phone"}
-                    onChange={updateLead('phone')}
+                    lead={edit}
+                    field={'phone'}
+                    alias={'Phone'}
+                    onChange={editField('phone')}
+                    edits={fieldEdited('phone')}
                   />
                   <EditableInput
                     editMode={leadInEditMode}
-                    lead={lead}
-                    field={"twitter"}
-                    alias={"Twitter"}
-                    onChange={updateLead('twitter')}
+                    lead={edit}
+                    field={'twitter'}
+                    alias={'Twitter'}
+                    onChange={editField('twitter')}
+                    edits={fieldEdited('twitter')}
                   />
                   <EditableInput
                     editMode={leadInEditMode}
-                    lead={lead}
-                    field={"website"}
-                    alias={"Website"}
-                    onChange={updateLead('website')}
+                    lead={edit}
+                    field={'website'}
+                    alias={'Website'}
+                    onChange={editField('website')}
+                    edits={fieldEdited('website')}
                   />
                   <EditableInput
                     editMode={leadInEditMode}
-                    lead={lead}
-                    field={"linkedin"}
-                    alias={"LinkedIn"}
-                    onChange={updateLead('linkedin')}
+                    lead={edit}
+                    field={'linkedin'}
+                    alias={'LinkedIn'}
+                    onChange={editField('linkedin')}
+                    edits={fieldEdited('linkedin')}
                   />
                 </Box>
                 {
@@ -202,26 +219,29 @@ const Home = () => {
                         label="Save"
                         icon={<Save />}
                         onClick={() => {
-                            console.log('lead: ', lead)
-                            const url = `${config.backendHost}/leads/${lead.id}`;
-                            fetch(
-                                url,
-                                {
-                                    method: "PUT",
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        Authorization: authHeader,
-                                    },
-                                    body: JSON.stringify(lead),
-                                })
-                            .then(() => setEditMode(-1))
+                          fetch(`${config.backendHost}/leads/${edit.id}`, {
+                            method: 'PUT',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              Authorization: authHeader,
+                            },
+                            body: JSON.stringify(edit),
+                          })
+                          .then(() => {
+                            setLeads(edits);
+                          });
                         }}
                       />
                       <Button
                         secondary
                         label="Clear"
                         icon={<ClearOption />}
-                        onClick={() => setEditMode(-1)}
+                        onClick={() => {
+                            let leadCopy = JSON.parse(JSON.stringify(leads[i]));
+                            let editsCopy = JSON.parse(JSON.stringify(edits));
+                            editsCopy[i] = leadCopy;
+                            setEdits(editsCopy);
+                        }}
                       />
                       <Button
                         secondary
