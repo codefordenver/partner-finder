@@ -1,11 +1,4 @@
-import {
-  Box,
-  Heading,
-  Grid,
-  Button,
-  Accordion,
-  AccordionPanel,
-} from 'grommet';
+import { Box, Heading, Grid, Button, Accordion, AccordionPanel } from 'grommet';
 import React, { useEffect, useState, useContext, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Add, Edit, Save, Undo, Rewind } from 'grommet-icons';
@@ -51,9 +44,10 @@ const Home = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-          setLeads(data.leads);
-          setEdits(data.leads);
-        })}, [query]);
+        setLeads(data.leads);
+        setEdits(data.leads);
+      });
+  }, [query]);
 
   return (
     <Grid
@@ -122,13 +116,13 @@ const Home = () => {
               setEdits(editsCopy);
             };
 
-            const fieldEdited = field => {
-                // leads are set before edits, so this if block helps the app survive rerenders
-                if (i >= edits.length || i >= leads.length) {
-                    return false;
-                }
-                return edits[i][field] !== leads[i][field];
-            }
+            const fieldEdited = (field) => {
+              // leads are set before edits, so this if block helps the app survive rerenders
+              if (i >= edits.length || i >= leads.length) {
+                return false;
+              }
+              return edits[i][field] !== leads[i][field];
+            };
 
             return (
               <AccordionPanel
@@ -228,8 +222,7 @@ const Home = () => {
                               Authorization: authHeader,
                             },
                             body: JSON.stringify(edit),
-                          })
-                          .then(() => {
+                          }).then(() => {
                             setLeads(edits);
                           });
                         }}
@@ -237,12 +230,12 @@ const Home = () => {
                       <Button
                         secondary
                         label="Reset"
-                        icon={< Undo />}
+                        icon={<Undo />}
                         onClick={() => {
-                            let leadCopy = JSON.parse(JSON.stringify(leads[i]));
-                            let editsCopy = JSON.parse(JSON.stringify(edits));
-                            editsCopy[i] = leadCopy;
-                            setEdits(editsCopy);
+                          let leadCopy = JSON.parse(JSON.stringify(leads[i]));
+                          let editsCopy = JSON.parse(JSON.stringify(edits));
+                          editsCopy[i] = leadCopy;
+                          setEdits(editsCopy);
                         }}
                       />
                       <Button
