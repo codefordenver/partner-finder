@@ -32,6 +32,8 @@ services:
             && gunicorn run_dev:dev_app -w 1 --threads 1 -b 0.0.0.0:8000 --reload"
     frontend:
         build: ./frontend/cfd-partner-finder-frontend
+        environment:
+            - REACT_APP_BACKEND_HOST=http://localhost:8000
         volumes: ["./frontend/cfd-partner-finder-frontend:/app"]
         ports:
             - "3000:3000"

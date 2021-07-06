@@ -21,6 +21,11 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
     ```
 ## Running the app locally
 1. Install Docker and Docker-compose
+1. Install node
+1. Install node dependencies:
+    - `cd` to `frontend/cfd-partner-finder-frontend`
+    - `npm i --save`
+    - `cd ../..`
 1. Run the frontend, rest api, and database in docker containers:
     ```bash
     docker-compose up --build -d
