@@ -20,4 +20,4 @@ jobs:
         with:
           path: "backend"
           max-line-length: "120"
-          exclude: ".git,__pycache__,venv"
+          exclude: ".git,__pycache__,venv,__init__.py"
