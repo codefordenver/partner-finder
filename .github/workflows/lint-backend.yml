@@ -18,6 +18,6 @@ jobs:
         with:
           ignore: "F401"
           max-line-length: "120"
-          path: "backend"
-          exclude: ".git, __pycache__, venv,"
+          path: "./backend"
+          exclude: ".git, __pycache__, venv"
           update-pip: "true"
