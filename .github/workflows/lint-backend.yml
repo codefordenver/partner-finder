@@ -41,4 +41,4 @@ jobs:
         uses: py-actions/flake8@v1
         with:
           max-line-length: "120"
-          exclude: ".git, __pycache__, venv"
+          exclude: ".git,__pycache__,venv"
