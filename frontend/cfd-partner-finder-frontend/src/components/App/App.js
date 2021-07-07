@@ -10,9 +10,9 @@ import CreateLead from '../CreateLead/CreateLead';
 import { Grommet } from 'grommet';
 import Home from '../Home/Home';
 import LeadDetail from '../LeadDetail/LeadDetail';
-import React from 'react';
-
-;
+import Login from '../Login/Login';
+import React, { useState, useContext, Fragment } from 'react';
+import { authContext } from '../../auth';
 
 const theme = {
   global: {
@@ -29,30 +29,48 @@ const theme = {
 };
 
 const App = () => {
-  return (
-    <Grommet theme={theme} full>
-      <Router>
+  const [token, setToken] = useState('');
+  const [currentUser, setCurrentUser] = useState('');
 
-        <Switch>
-          <Route path="/create-lead">
-            <CreateLead />
-          </Route>
-          <Route path="/leads">
-            <Leads />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
-      </Router>
-    </Grommet>
+  const authHeader = `Bearer ${token}`;
+
+  return (
+    <authContext.Provider
+      value={{ token, setToken, authHeader, currentUser, setCurrentUser }}
+    >
+      <Grommet theme={theme} full>
+        <Router>
+          <Switch>
+            <Route path="/leads/create">
+              <TokenRequired>
+                <CreateLead />
+              </TokenRequired>
+            </Route>
+            <Route path="/leads">
+              <TokenRequired>
+                <Leads />
+              </TokenRequired>
+            </Route>
+            <Route path="/home">
+              <TokenRequired>
+                <Home />
+              </TokenRequired>
+            </Route>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/">{token ? <Home /> : <Login />}</Route>
+          </Switch>
+        </Router>
+      </Grommet>
+    </authContext.Provider>
   );
 };
 
 const Leads = () => {
   let match = useRouteMatch();
 
-  console.log('match.path: ', match.path)
+  console.log('match.path: ', match.path);
 
   return (
     <Switch>
@@ -66,6 +84,11 @@ const Leads = () => {
 const Lead = () => {
   let { id } = useParams();
   return <LeadDetail key={`lead-detail-${id}`} id={id} />;
+};
+
+const TokenRequired = (props) => {
+  const { token } = useContext(authContext);
+  return <Fragment>{token ? props.children : <Login />}</Fragment>;
 };
 
 export default App;

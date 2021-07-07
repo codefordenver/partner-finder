@@ -1,4 +1,3 @@
-import os
 from typing import Optional
 from dataclasses import dataclass
 from datetime import datetime
@@ -7,6 +6,7 @@ import requests
 from sqlalchemy import text
 
 from api.db import db
+from api.auth import hash_password
 
 
 @dataclass
@@ -77,11 +77,17 @@ def find_socrata_api_leads(perpage=500, page=1) -> int:
         for lead in leads:
             connection.execute(text(
                 """
-                    INSERT INTO leads (company_name, company_address, formation_date)
+                    INSERT INTO leads (
+                        company_name,
+                        company_address,
+                        formation_date,
+                        data_source
+                    )
                     SELECT
                         :company_name,
                         :company_address,
-                        :formation_date
+                        :formation_date,
+                        'socrata'
                     WHERE NOT EXISTS (
                         SELECT 1 FROM leads
                         WHERE company_name = :company_name
@@ -117,3 +123,23 @@ def _map_socrata_entity_to_lead(entity: SocrataBusinessEntity) -> Lead:
         formation_date=datetime.strptime(
             entity.entityformdate.split('T')[0], DATE_FORMAT),
     )
+
+
+def create_dev_users():
+    q = text("""
+        INSERT INTO users (username, password_hash, admin)
+        VALUES
+            ('user@gmail.com', :password, false),
+            ('admin@gmail.com', :password, true)
+    """)
+    with db.get_connection() as conn:
+        conn.execute(q, {'password': hash_password('password')})
+
+
+def drop_dev_users():
+    q = text("""
+        DELETE FROM users
+        WHERE username IN ('user@gmail.com', 'admin@gmail.com')
+    """)
+    with db.get_connection() as conn:
+        conn.execute(q)

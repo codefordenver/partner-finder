@@ -23,11 +23,19 @@ class DatabaseClient:
     def get_connection(self):
         return self.get_engine().connect()
 
+    def transaction(self):
+        return self.get_engine().begin()
 
-def create_database_client():
+
+environments = frozenset(['dev', 'test', 'prod'])
+
+
+def create_database_client(env='prod'):
+    if env not in environments:
+        raise ValueError('Invalid environment {env!r}.')
     try:
         return DatabaseClient(
-            os.environ['POSTGRES_DB'],
+            os.environ['POSTGRES_DB'] + ('' if env == 'prod' else f"_{env}"),
             os.environ['POSTGRES_USER'],
             os.environ['POSTGRES_PASSWORD'],
             os.environ['POSTGRES_HOST'],
@@ -38,3 +46,5 @@ def create_database_client():
 
 
 db = create_database_client()
+
+test_db = create_database_client('test')

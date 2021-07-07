@@ -3,6 +3,8 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
 # Data Sources For Leads
 - [Socrata API](https://data.colorado.gov/Business/Business-Entities-in-Colorado/4ykn-tg5h)
     - Dataset with registered business entities in Colorado. It can be filtered to return only nonprofits.
+- [Colorado Nonprofit Association](https://coloradononprofits.org/membership/nonprofit-member-directory)
+    - Website with nonprofit members registered with Colorado Nonprofit Association.
 - Twitter?
 - LinkedIn?
 
@@ -17,9 +19,14 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
     ```bash
     git clone <git-repo-name>
     ```
-## Running the Backend locally
+## Running the app locally
 1. Install Docker and Docker-compose
-1. Run the backend
+1. Install node
+1. Install node dependencies:
+    - `cd` to `frontend/cfd-partner-finder-frontend`
+    - `npm i --save`
+    - `cd ../..`
+1. Run the frontend, rest api, and database in docker containers:
     ```bash
     docker-compose up --build -d
     ```
@@ -29,36 +36,33 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
     ```
     - you should see something like
         ![](./docs/docker-ps-output.png)
-1. Check that the api works
-    - http://localhost:8000/leads
-    - or do it the hard way:
+1. Try connecting to the database with psql:
+    ```bash
+    docker exec -it partner-finder_postgres_1 psql -U cfd_partner_finder
+    select * from leads limit 5;
+    ```
+    to exit psql, type `\q`
+1. Check that the api works with curl:
+    - try the healthcheck endpoint: `curl http://localhost:8000/healthcheck`
+    - get an access token to use other api endpoints:
         ```bash
-        curl http://localhost:8000/leads
+        curl --location --request POST 'http://localhost:8000/login' \
+        --header 'Content-Type: application/json' \
+        --data-raw '{
+            "username": "admin",
+            "password": "password"
+        }'
         ```
-    - either way, you should see a bunch of json displayed
-        ![](./docs/get-leads-json.png)
-## Running the Frontend locally
-1. Start a new terminal
-1. Move to the project root directory
-1. Change to the frontend folder
-    ```bash
-    cd ./frontend/cfd-partner-finder
-    ```
-1. Create a file called `.env` the following contents:
-    ```bash
-    export REACT_APP_BACKEND_HOST="http://localhost:8000
-    ```
-1. Install dependencies
-    ```
-    npm install
-    ```
-1. Run the app on localhost
-    ```
-    npm start
-    ```
-1. A browser should open with the app running. It looks like this (for now)
-    ![](./docs/homepage.jpg)
-    - If no browser opens, go to http://localhost:3000
+    - get a list of leads:
+        ```bash
+        curl --location --request GET 'http://localhost:8000/leads' \
+        --header 'Authorization: Bearer <insert your token here>'
+        ```
+1. Check that the frontend is working:
+    - In a browser, go to http://localhost:3000
+    - You should see a login page. Use these credentials to continue to the homepage:
+        - username: `user@gmail.com`
+        - password: `password`
 
 ## Running a data analysis jupyter notebook (Optional)
 1. Make sure python 3 is installed on your system
