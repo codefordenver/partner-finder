@@ -295,4 +295,3 @@ def _delete_lead_with_id(id: int):
         field: getattr(row, field)
         for field in DEFAULT_LEAD_FIELDS
     }
-
