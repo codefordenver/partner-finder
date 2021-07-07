@@ -10,14 +10,15 @@ from api.db import db as dev_db, test_db
 
 
 # revision identifiers, used by Alembic.
-revision = '502386f9eee5'
-down_revision = 'ae2744f1a60c'
+revision = "502386f9eee5"
+down_revision = "ae2744f1a60c"
 branch_labels = None
 depends_on = None
 
 
 def _add_colorado_nonprofits_fields(connection):
-    connection.execute("""
+    connection.execute(
+        """
         ALTER TABLE leads
         ADD COLUMN instagram VARCHAR(100),
         ADD COLUMN mission_statement TEXT,
@@ -33,11 +34,13 @@ def _add_colorado_nonprofits_fields(connection):
                     'user_entry'
                 )
             );
-    """)
+    """
+    )
 
 
 def _drop_colorado_nonprofits_fields(connection):
-    connection.execute("""
+    connection.execute(
+        """
         ALTER TABLE leads
         DROP COLUMN instagram,
         DROP COLUMN mission_statement,
@@ -46,7 +49,8 @@ def _drop_colorado_nonprofits_fields(connection):
         DROP COLUMN county,
         DROP COLUMN colorado_region,
         DROP COLUMN data_source;
-    """)
+    """
+    )
 
 
 def upgrade():

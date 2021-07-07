@@ -11,7 +11,7 @@ from api.db import db, test_db
 
 
 # revision identifiers, used by Alembic.
-revision = '37ad66f1e7a5'
+revision = "37ad66f1e7a5"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,8 +24,9 @@ def upgrade():
 
 def _create_leads_table(db):
     with db.get_connection() as conn:
-        conn.execute(text(
-            """
+        conn.execute(
+            text(
+                """
             CREATE TABLE IF NOT EXISTS leads (
                 id SERIAL PRIMARY KEY NOT NULL,
                 company_name VARCHAR(500) NOT NULL,
@@ -45,8 +46,7 @@ def _create_leads_table(db):
                 last_facebook_search TIMESTAMP,
                 last_linkedin_search TIMESTAMP
             );
-            """
-        ))
+            """))
 
 
 def downgrade():
@@ -59,5 +59,4 @@ def _drop_leads_table(db):
         conn.execute(
             """
                 DROP TABLE leads;
-            """
-        )
+            """)
