@@ -19,8 +19,8 @@ def client(app):
 
 @pytest.fixture(scope="session")
 def check_get_request(client):
-
     def _check_get_request(url, expected_status=200):
         res = client.get(url)
         assert res.status_code == expected_status
+
     return _check_get_request

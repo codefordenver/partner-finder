@@ -12,8 +12,8 @@ from api.db import db, test_db
 
 
 # revision identifiers, used by Alembic.
-revision = '063a9e5bc287'
-down_revision = '37ad66f1e7a5'
+revision = "063a9e5bc287"
+down_revision = "37ad66f1e7a5"
 branch_labels = None
 depends_on = None
 
@@ -25,13 +25,15 @@ def upgrade():
 
 def _create_users_table(db):
     with db.get_connection() as conn:
-        conn.execute("""
+        conn.execute(
+            """
             CREATE TABLE users (
                 username VARCHAR(100) PRIMARY KEY,
                 password_hash VARCHAR(100),
                 admin BOOLEAN DEFAULT false
             );
-        """)
+        """
+        )
 
 
 def downgrade():
@@ -41,6 +43,8 @@ def downgrade():
 
 def _drop_users_table(db):
     with db.get_connection() as conn:
-        conn.execute("""
+        conn.execute(
+            """
             DROP TABLE users;
-        """)
+        """
+        )
