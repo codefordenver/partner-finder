@@ -5,9 +5,7 @@ from datetime import datetime
 from passlib.hash import pbkdf2_sha256
 from jose import jwt
 from flask import request, jsonify, current_app
-from sqlalchemy import text
 
-from .db import db
 from .util.datetime import from_iso_8601, to_utc
 
 

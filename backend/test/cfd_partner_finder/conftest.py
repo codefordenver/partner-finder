@@ -1,12 +1,12 @@
 import pytest
 
-from api.app import app
+from api.app import app as flask_app
 
 
 @pytest.fixture(scope="session")
 def app():
     # setup
-    return app
+    return flask_app
     # teardown
 
 

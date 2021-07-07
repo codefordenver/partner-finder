@@ -1,0 +1,1 @@
+flake8 --exclude .git,__pycache__,venv,__init__.py --max-line-length 120 .
