@@ -32,7 +32,7 @@ const LeadDetail = ({ id }) => {
     return fetch(url, {
       headers: {
         Authorization: authHeader,
-      }
+      },
     })
       .then((res) => res.json())
       .then((data) => {
@@ -49,7 +49,7 @@ const LeadDetail = ({ id }) => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': authHeader,
+          Authorization: authHeader,
         },
         body: JSON.stringify(lead),
       }).then((res) => {
@@ -155,7 +155,7 @@ const LeadDetail = ({ id }) => {
           },
         ]}
         onSave={(fields) => {
-          let updates = { company_name: lead.company_name };
+          const updates = { 'company_name': lead.company_name };
           for (let i = 0; i < fields.length; i++) {
             updates[fields[i].field] = fields[i].value;
           }
