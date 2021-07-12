@@ -12,16 +12,13 @@ jobs:
   flake8-lint:
     runs-on: ubuntu-latest
     name: flake8
-    strategy:
-      matrix:
-        python-version: [3.7, 3.8, 3.9]
     steps:
       - name: Check out source repository
         uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }} environment
+      - name: Set up Python environment
         uses: actions/setup-python@v1
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.7
       - name: flake8 Lint
         uses: py-actions/flake8@v1
         with:
@@ -29,19 +26,15 @@ jobs:
           max-line-length: "120"
           exclude: ".git,__pycache__,venv,__init__.py"
 
-  Lint Frontend:
+  lint-frontend:
     runs-on: ubuntu-latest
-    name: eslint
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 16.x]
     steps:
       - name: Check out source repository
         uses: actions/checkout@v2
-      - name: Install Node.js ${{ matrix.node-version }}
+      - name: Install Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16.x
       - run: cd frontend/cfd-partner-finder-frontend
       - name: Install node dependencies
         run: npm install -y
