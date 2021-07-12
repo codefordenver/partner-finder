@@ -9,8 +9,8 @@ from api.db import db, test_db
 
 
 # revision identifiers, used by Alembic.
-revision = "063a9e5bc287"
-down_revision = "37ad66f1e7a5"
+revision = "2021_05_26"
+down_revision = "2021_05_04"
 branch_labels = None
 depends_on = None
 

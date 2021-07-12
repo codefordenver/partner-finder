@@ -11,7 +11,7 @@ from api.db import db, test_db
 
 
 # revision identifiers, used by Alembic.
-revision = "37ad66f1e7a5"
+revision = "2021_05_04"
 down_revision = None
 branch_labels = None
 depends_on = None
