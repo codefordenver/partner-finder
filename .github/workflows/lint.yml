@@ -1,12 +1,6 @@
-# name: flake8 Lint
+name: Lint
 
-name: flake8 Lint
-
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
   flake8-lint:
@@ -25,7 +19,6 @@ jobs:
           path: "backend"
           max-line-length: "120"
           exclude: ".git,__pycache__,venv,__init__.py"
-
   lint-frontend:
     runs-on: ubuntu-latest
     steps:
@@ -36,9 +29,6 @@ jobs:
         with:
           node-version: 16.x
       - run: cd frontend/cfd-partner-finder-frontend
-      - name: Install node dependencies
-        run: npm install -y
-      - name: Check that the formatter was run
-        run : npm run format.check
-      - name: Check for linting errors
-        run: npm run lint
+      - run: npm install -y
+      - run : npm run format.check
+      - run: npm run lint
