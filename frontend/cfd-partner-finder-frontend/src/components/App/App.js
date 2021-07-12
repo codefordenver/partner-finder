@@ -68,9 +68,7 @@ const App = () => {
 };
 
 const Leads = () => {
-  let match = useRouteMatch();
-
-  console.log('match.path: ', match.path);
+  const match = useRouteMatch();
 
   return (
     <Switch>
@@ -82,7 +80,7 @@ const Leads = () => {
 };
 
 const Lead = () => {
-  let { id } = useParams();
+  const { id } = useParams();
   return <LeadDetail key={`lead-detail-${id}`} id={id} />;
 };
 

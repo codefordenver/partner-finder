@@ -1,0 +1,42 @@
+name: Lint
+
+on: [pull_request]
+
+jobs:
+  flake8-lint:
+    runs-on: ubuntu-latest
+    name: flake8
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v2
+      - name: Set up Python environment
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+      - name: flake8 Lint
+        uses: py-actions/flake8@v1
+        with:
+          path: "backend"
+          max-line-length: "120"
+          exclude: ".git,__pycache__,venv,__init__.py"
+  lint-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - name: Install dependencies
+        run: |
+          cd frontend/cfd-partner-finder-frontend
+          npm install
+      - name: Check formatter was run
+        run: |
+          cd frontend/cfd-partner-finder-frontend
+          npm run format.check
+      - name: Run linter
+        run: |
+          cd frontend/cfd-partner-finder-frontend
+          npm run lint
