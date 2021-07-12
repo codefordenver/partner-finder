@@ -1,0 +1,51 @@
+# name: flake8 Lint
+
+name: flake8 Lint
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  flake8-lint:
+    runs-on: ubuntu-latest
+    name: flake8
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8, 3.9]
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }} environment
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: flake8 Lint
+        uses: py-actions/flake8@v1
+        with:
+          path: "backend"
+          max-line-length: "120"
+          exclude: ".git,__pycache__,venv,__init__.py"
+
+  Lint Frontend:
+    runs-on: ubuntu-latest
+    name: eslint
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v2
+      - name: Install Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: cd frontend/cfd-partner-finder-frontend
+      - name: Install node dependencies
+        run: npm install -y
+      - name: Check that the formatter was run
+        run : npm run format.check
+      - name: Check for linting errors
+        run: npm run lint

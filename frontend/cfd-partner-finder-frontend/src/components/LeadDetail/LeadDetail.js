@@ -155,7 +155,7 @@ const LeadDetail = ({ id }) => {
           },
         ]}
         onSave={(fields) => {
-          const updates = { 'company_name': lead.company_name };
+          const updates = { company_name: lead.company_name };
           for (let i = 0; i < fields.length; i++) {
             updates[fields[i].field] = fields[i].value;
           }
