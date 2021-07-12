@@ -29,9 +29,11 @@ jobs:
         with:
           node-version: 16.x
       - run: |
-        cd frontend/cfd-partner-finder-frontend \
-        npm install \
+        cd frontend/cfd-partner-finder-frontend
+        pwd
+        npm install
         npm run format.check
       - run: |
-        cd frontend/cfd-partner-finder-frontend \
+        cd frontend/cfd-partner-finder-frontend
+        pwd
         npm run lint
