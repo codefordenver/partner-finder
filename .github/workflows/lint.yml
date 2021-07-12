@@ -28,7 +28,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16.x
-      - run: cd frontend/cfd-partner-finder-frontend
-      - run: npm install -y
-      - run : npm run format.check
-      - run: npm run lint
+      - run: >
+        cd frontend/cfd-partner-finder-frontend
+        npm install -y
+        npm run format.check
+      - run: >
+        cd frontend/cfd-partner-finder-frontend
+        npm run lint
