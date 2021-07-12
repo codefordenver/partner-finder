@@ -28,12 +28,15 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16.x
-      - run: |
+      - name: Install dependencies
+        run: |
           cd frontend/cfd-partner-finder-frontend
-          pwd
           npm install
-          npm run format.check
-      - run: |
+      - name: Check formatter was run
+        run: |
           cd frontend/cfd-partner-finder-frontend
-          pwd
+          npm run format.check
+      - name: Run linter
+        run: |
+          cd frontend/cfd-partner-finder-frontend
           npm run lint
