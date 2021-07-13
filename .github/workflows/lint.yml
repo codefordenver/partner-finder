@@ -18,6 +18,10 @@ jobs:
           cd backend
           pip install --upgrade pip
           pip install -r requirements.txt
+      - name: Check for formatted code
+        run: |
+          cd backend
+          black --check --target-version py39 --line-length 120 --exclude __pycache__ --exclude venv ./
       - name: flake8 Lint
         run: |
           cd backend
