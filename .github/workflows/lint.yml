@@ -3,7 +3,7 @@ name: Lint
 on: [pull_request]
 
 jobs:
-  flake8-lint:
+  lint-backend:
     runs-on: ubuntu-latest
     name: flake8
     steps:
@@ -27,12 +27,6 @@ jobs:
           cd backend
           flake8 --exclude .git,__pycache__,venv,__init__.py --max-line-length 120 .
 
-      # - name: flake8 Lint
-      #   uses: py-actions/flake8@v1
-      #   with:
-      #     path: "backend"
-      #     max-line-length: "120"
-      #     exclude: ".git,__pycache__,venv,__init__.py"
   lint-frontend:
     runs-on: ubuntu-latest
     steps:
