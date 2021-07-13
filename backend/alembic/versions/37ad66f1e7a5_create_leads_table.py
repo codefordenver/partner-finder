@@ -46,7 +46,9 @@ def _create_leads_table(db):
                 last_facebook_search TIMESTAMP,
                 last_linkedin_search TIMESTAMP
             );
-            """))
+            """
+            )
+        )
 
 
 def downgrade():
@@ -59,4 +61,5 @@ def _drop_leads_table(db):
         conn.execute(
             """
                 DROP TABLE leads;
-            """)
+            """
+        )
