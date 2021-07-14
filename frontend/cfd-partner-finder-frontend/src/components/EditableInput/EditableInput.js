@@ -3,7 +3,7 @@ import { Text, TextInput } from 'grommet';
 
 const EditableInput = ({ editMode, lead, field, alias, onChange, edits }) => {
   const [focus, setFocus] = useState(false);
-  const value = lead[field] || "";
+  const value = lead[field] || '';
   const editing = focus || edits;
   return (
     <Fragment>
@@ -15,7 +15,7 @@ const EditableInput = ({ editMode, lead, field, alias, onChange, edits }) => {
             onChange={onChange}
             onFocus={() => setFocus(true)}
             onBlur={() => setFocus(false)}
-            style={{color: editing ? "black": "grey"}}
+            style={{ color: editing ? 'black' : 'grey' }}
           />
         </Text>
       ) : (

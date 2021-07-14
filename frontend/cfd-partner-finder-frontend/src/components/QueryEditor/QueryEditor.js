@@ -1,38 +1,34 @@
 import { Box, Button, TextInput } from 'grommet';
 import React, { useState } from 'react';
 
-
-const QueryEditor = ({query, onSubmit, hide}) => {
+const QueryEditor = ({ query, onSubmit, hide }) => {
   const [tempQuery, setTempQuery] = useState(query);
 
-  const handleKeyPress = event => (event.key === 'Enter') && onSubmit(tempQuery);
+  const handleKeyPress = (event) =>
+    event.key === 'Enter' && onSubmit(tempQuery);
 
-  const updateQueryOnChange = field => event => {
-    let newQuery = { ...tempQuery };
+  const updateQueryOnChange = (field) => (event) => {
+    const newQuery = { ...tempQuery };
     newQuery[field] = event.target.value;
     setTempQuery(newQuery);
-  }
+  };
 
   return (
     <Box
       flex
       border={{
-        bottom: "2px solid black"
+        bottom: '2px solid black',
       }}
       direction="column"
       alignContent="start"
       pad="large"
       gap="large"
     >
-      <Button
-        primary
-        label="Hide"
-        onClick={hide}
-      />
+      <Button primary label="Hide" onClick={hide} />
 
       <Box
         margin={{
-          top: "20px"
+          top: '20px',
         }}
       >
         Page:
@@ -59,12 +55,7 @@ const QueryEditor = ({query, onSubmit, hide}) => {
         />
       </Box>
 
-      <Button
-        primary
-        label="Find"
-        onClick={() => onSubmit(tempQuery)}
-      />
-
+      <Button primary label="Find" onClick={() => onSubmit(tempQuery)} />
     </Box>
   );
 };
