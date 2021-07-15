@@ -10,8 +10,8 @@ from api.db import db as dev_db, test_db
 
 
 # revision identifiers, used by Alembic.
-revision = "502386f9eee5"
-down_revision = "ae2744f1a60c"
+revision = "2021_06_14"
+down_revision = "2021_06_08"
 branch_labels = None
 depends_on = None
 
