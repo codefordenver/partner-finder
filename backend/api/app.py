@@ -9,6 +9,7 @@ from .blueprints import (
     leads_bp,
     login_bp,
     users_bp,
+    tags_bp,
 )
 
 
@@ -35,7 +36,7 @@ def app_factory(
 
 
 dev_app = app_factory(
-    (healthcheck_bp, leads_bp, login_bp, users_bp),
+    (healthcheck_bp, leads_bp, login_bp, users_bp, tags_bp),
     logging.DEBUG,
     os.environ["SECRET_KEY"],
     True,
