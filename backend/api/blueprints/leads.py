@@ -1,3 +1,4 @@
+import pdb
 from flask import Blueprint, request
 
 from sqlalchemy import text
@@ -275,3 +276,95 @@ def _delete_lead_with_id(id: int):
         }, 404
 
     return {field: getattr(row, field) for field in DEFAULT_LEAD_FIELDS}
+
+
+@leads_bp.route("/leads/<int:id>/tags", methods=["GET", "POST"])
+@auth("user")
+def lead_tags_view(id):
+    if request.method == "GET":
+        return _get_all_tags_for_lead(id)
+    elif request.method == "POST":
+        return _add_tag_to_lead(id, request)
+
+
+def _get_all_tags_for_lead(lead_id):
+    with db.get_engine().connect() as conn:
+        res = conn.execute(
+            text("""
+                SELECT t.* FROM
+                lead_tag lt
+                JOIN tags t
+                ON lt.tag_id = t.id
+                WHERE lt.lead_id = :lead_id
+            """),
+            lead_id=lead_id
+        )
+        tags = [
+            dict(row)
+            for row in res
+        ]
+    return {
+        "lead_id": lead_id,
+        "tags": tags,
+    }, 200
+
+
+def _add_tag_to_lead(lead_id, request):
+    tag_id = request.get_json().get('tag_id')
+    if tag_id is None:
+        return {
+            "message": "Missing body parameter 'tag'"
+        }, 400
+    with db.get_engine().begin() as conn:
+        # check if a tag with that name exists
+        tag_id_row = conn.execute(
+            text("""
+                SELECT id FROM tags
+                WHERE id = :tag_id
+            """),
+            tag_id=tag_id,
+        ).first()
+        if tag_id_row is None:
+            return {
+                "message": f"Could not find a tag with id {tag_id!r}"
+            }, 400
+        tag_id = tuple(tag_id_row)[0]
+        # insert record into association table for leads and tags
+        row = conn.execute(
+            text("""
+                INSERT INTO lead_tag
+                (lead_id, tag_id)
+                VALUES
+                (:lead_id, :tag_id)
+                RETURNING *;
+            """),
+            lead_id=lead_id,
+            tag_id=tag_id
+        ).first()
+        return dict(row), 200
+
+
+@leads_bp.route("/leads/<int:lead_id>/tags/<int:tag_id>", methods=["DELETE"])
+@auth("user")
+def lead_tag_with_id_view(lead_id, tag_id):
+    if request.method == "DELETE":
+        return _remove_tag_from_lead(lead_id, tag_id)
+    return {"message": "Unknown http method"}, 404
+
+
+def _remove_tag_from_lead(lead_id, tag_id):
+    with db.get_engine().begin() as conn:
+        row = conn.execute(
+            text("""
+                DELETE FROM lead_tag
+                WHERE
+                    lead_id = :lead_id
+                    AND tag_id = :tag_id
+                RETURNING *;
+            """),
+            lead_id=lead_id,
+            tag_id=tag_id,
+        ).first()
+        if row is None:
+            return {"message": f"Could not find tag with id {tag_id} for lead with id {lead_id}"}, 400
+        return dict(row), 200
