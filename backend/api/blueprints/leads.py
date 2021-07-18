@@ -1,6 +1,6 @@
-import pdb
 from flask import Blueprint, request
 
+import sqlalchemy.exc as sa_exc
 from sqlalchemy import text
 
 from ..auth import auth
@@ -330,17 +330,23 @@ def _add_tag_to_lead(lead_id, request):
             }, 400
         tag_id = tuple(tag_id_row)[0]
         # insert record into association table for leads and tags
-        row = conn.execute(
-            text("""
-                INSERT INTO lead_tag
-                (lead_id, tag_id)
-                VALUES
-                (:lead_id, :tag_id)
-                RETURNING *;
-            """),
-            lead_id=lead_id,
-            tag_id=tag_id
-        ).first()
+        try:
+            row = conn.execute(
+                text("""
+                    INSERT INTO lead_tag
+                    (lead_id, tag_id)
+                    VALUES
+                    (:lead_id, :tag_id)
+                    RETURNING *;
+                """),
+                lead_id=lead_id,
+                tag_id=tag_id
+            ).first()
+        except sa_exc.IntegrityError as e:
+            if str(e).startswith("(psycopg2.errors.UniqueViolation)"):
+                return {
+                    "message": f"lead with id {lead_id} already has a tag with id {tag_id}",
+                }
         return dict(row), 200
 
 
