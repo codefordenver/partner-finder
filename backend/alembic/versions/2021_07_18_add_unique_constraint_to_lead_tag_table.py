@@ -11,8 +11,8 @@ from api.db import db, test_db
 
 
 # revision identifiers, used by Alembic.
-revision = '3d9074e4b65e'
-down_revision = 'a6d98771c267'
+revision = "3d9074e4b65e"
+down_revision = "a6d98771c267"
 branch_labels = None
 depends_on = None
 
@@ -20,40 +20,48 @@ depends_on = None
 def _create_unique_index(db):
     with db.get_connection() as conn:
         conn.execute(
-            text("""
+            text(
+                """
                 CREATE UNIQUE INDEX idx_unique_lead_id_tag_id
                 ON lead_tag (lead_id, tag_id);
-            """)
+            """
+            )
         )
 
 
 def _create_unique_constraint(db):
     with db.get_connection() as conn:
         conn.execute(
-            text("""
+            text(
+                """
                 ALTER TABLE lead_tag
                 ADD CONSTRAINT unique_lead_id_tag_id
                 UNIQUE USING INDEX idx_unique_lead_id_tag_id;
-            """)
+            """
+            )
         )
 
 
 def _drop_unique_index(db):
     with db.get_connection() as conn:
         conn.execute(
-            text("""
+            text(
+                """
                 DROP INDEX idx_unique_lead_id_tag_id;
-            """)
+            """
+            )
         )
 
 
 def _drop_unique_constraint(db):
     with db.get_connection() as conn:
         conn.execute(
-            text("""
+            text(
+                """
                 ALTER TABLE lead_tag
                 DROP CONSTRAINT unique_lead_id_tag_id;
-            """)
+            """
+            )
         )
 
 

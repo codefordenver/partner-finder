@@ -290,19 +290,18 @@ def lead_tags_view(id):
 def _get_all_tags_for_lead(lead_id):
     with db.get_engine().connect() as conn:
         res = conn.execute(
-            text("""
+            text(
+                """
                 SELECT t.* FROM
                 lead_tag lt
                 JOIN tags t
                 ON lt.tag_id = t.id
                 WHERE lt.lead_id = :lead_id
-            """),
-            lead_id=lead_id
+            """
+            ),
+            lead_id=lead_id,
         )
-        tags = [
-            dict(row)
-            for row in res
-        ]
+        tags = [dict(row) for row in res]
     return {
         "lead_id": lead_id,
         "tags": tags,
@@ -310,37 +309,37 @@ def _get_all_tags_for_lead(lead_id):
 
 
 def _add_tag_to_lead(lead_id, request):
-    tag_id = request.get_json().get('tag_id')
+    tag_id = request.get_json().get("tag_id")
     if tag_id is None:
-        return {
-            "message": "Missing body parameter 'tag'"
-        }, 400
+        return {"message": "Missing body parameter 'tag'"}, 400
     with db.get_engine().begin() as conn:
         # check if a tag with that name exists
         tag_id_row = conn.execute(
-            text("""
+            text(
+                """
                 SELECT id FROM tags
                 WHERE id = :tag_id
-            """),
+            """
+            ),
             tag_id=tag_id,
         ).first()
         if tag_id_row is None:
-            return {
-                "message": f"Could not find a tag with id {tag_id!r}"
-            }, 400
+            return {"message": f"Could not find a tag with id {tag_id!r}"}, 400
         tag_id = tuple(tag_id_row)[0]
         # insert record into association table for leads and tags
         try:
             row = conn.execute(
-                text("""
+                text(
+                    """
                     INSERT INTO lead_tag
                     (lead_id, tag_id)
                     VALUES
                     (:lead_id, :tag_id)
                     RETURNING *;
-                """),
+                """
+                ),
                 lead_id=lead_id,
-                tag_id=tag_id
+                tag_id=tag_id,
             ).first()
         except sa_exc.IntegrityError as e:
             if str(e).startswith("(psycopg2.errors.UniqueViolation)"):
@@ -361,13 +360,15 @@ def lead_tag_with_id_view(lead_id, tag_id):
 def _remove_tag_from_lead(lead_id, tag_id):
     with db.get_engine().begin() as conn:
         row = conn.execute(
-            text("""
+            text(
+                """
                 DELETE FROM lead_tag
                 WHERE
                     lead_id = :lead_id
                     AND tag_id = :tag_id
                 RETURNING *;
-            """),
+            """
+            ),
             lead_id=lead_id,
             tag_id=tag_id,
         ).first()
