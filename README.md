@@ -64,6 +64,35 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
         - username: `user@gmail.com`
         - password: `password`
 
+
+## Creating Database Migration Files
+You'll need a python virtual environment in the `backend` directory. Make sure you have python 3.7 or up installed. Ideally 3.9 since that is what is used in the rest api. You can check the version with `python --version`
+
+Change into the backend directory then do `python -m venv venv`. This should create a `venv` directory.
+
+Next you'll want to activate the virtual environment with `source venv/bin/activate`.
+
+Then install requirements with `pip install -r requirements.txt`
+
+You should also need to set some environment variables so alembic can send queries to the locally running database. Create a `.env` file with `touch .env`, then add these lines to it:
+
+```
+export FLASK_APP=api/app:dev_app
+export FLASK_ENV=development
+export POSTGRES_PASSWORD=password
+export POSTGRES_USER=cfd_partner_finder
+export POSTGRES_DB=cfd_partner_finder
+export POSTGRES_HOST=localhost
+export POSTGRES_PORT=5432
+export ALLOW_CORS=true
+export SECRET_KEY=supersafe
+export PYTHONPATH="${pwd}"
+```
+
+Now source the environment variables: `source .env`
+
+Finally, you can create a new migration by doing `alembic revision -m "<description of migration>"`. This should create a new file under the `versions` directory.
+
 ## Running a data analysis jupyter notebook (Optional)
 1. Make sure python 3 is installed on your system
 1. from the project root directory, change to the data analysis directory
