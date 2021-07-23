@@ -147,8 +147,29 @@ def _get_all_leads(request):
             "limit": limit,
             "offset": offset,
         }
-    # else:
-    #     pass
+    else:
+        query = text(
+            """
+            SELECT
+                {columns}
+            FROM lead_tag lt
+            JOIN leads l on l.id = lt.lead_id
+            JOIN tags t on t.id = lt.tag_id
+            WHERE to_tsvector(l.company_name) @@ to_tsquery('{search}')
+                AND lt.tag_id = :tag_id
+            ORDER BY ts_rank(to_tsvector(company_name), '{search}')
+            LIMIT :limit
+            OFFSET :offset
+        """.format(
+                columns=",".join('l.' + f for f in DEFAULT_LEAD_FIELDS),
+                search=search,
+            )
+        )
+        query_args = {
+            "limit": limit,
+            "offset": offset,
+            "tag_id": tag_id,
+        }
 
     # TODO: handle database error
     # just grab all fields for now to avoid exposing query to sql injection
