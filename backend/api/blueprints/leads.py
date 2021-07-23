@@ -57,11 +57,11 @@ DEFAULT_LEAD_FIELDS = (
 def _get_all_leads(request):
     # TODO: refactor by splitting into helper functions
     # parse query params
-    # TODO: add search parameter
     # TODO: add filters
     try:
         page, perpage = parse_pagination_params(request)
         search = _parse_search_param(request)
+        tag = _parse_tag_param(request)
 
         # removes fields with null values from the response
         drop_null = request.args.get("drop_null", "false").lower() == "true"
@@ -82,12 +82,24 @@ def _get_all_leads(request):
     limit = perpage
     offset = (page - 1) * limit
 
-    if search is None:
+    # get an id for the given tag
+    select_id_for_tag = text(
+        """
+        SELECT
+            id
+        FROM tags
+        WHERE tag = :tag
+        """
+    )
+    with db.get_connection() as conn:
+        row = conn.execute(select_id_for_tag, tag=tag).first()
+        tag_id = row[0] if row else None
+
+    if search is None and tag_id is None:
         query = text(
             """
             SELECT
                 {columns}
-            FROM LEADS
             ORDER BY id
             LIMIT :limit
             OFFSET :offset;
@@ -99,7 +111,23 @@ def _get_all_leads(request):
             "limit": limit,
             "offset": offset,
         }
-    else:
+    elif search is None:
+        query = text(
+            """
+            SELECT
+                {columns}
+            FROM lead_tag lt
+            JOIN leads l on l.id = lt.lead_id
+            JOIN tags t on t.id = lt.tag_id
+            WHERE lt.tag_id = :tag_id
+            """.format(
+                columns=",".join("l." + f for f in DEFAULT_LEAD_FIELDS)
+            ),
+        )
+        query_args = {
+            "tag_id": tag_id,
+        }
+    elif tag_id is None:
         query = text(
             """
             SELECT
@@ -117,6 +145,29 @@ def _get_all_leads(request):
         query_args = {
             "limit": limit,
             "offset": offset,
+        }
+    else:
+        query = text(
+            """
+            SELECT
+                {columns}
+            FROM lead_tag lt
+            JOIN leads l on l.id = lt.lead_id
+            JOIN tags t on t.id = lt.tag_id
+            WHERE to_tsvector(l.company_name) @@ to_tsquery('{search}')
+                AND lt.tag_id = :tag_id
+            ORDER BY ts_rank(to_tsvector(company_name), '{search}')
+            LIMIT :limit
+            OFFSET :offset
+        """.format(
+                columns=",".join("l." + f for f in DEFAULT_LEAD_FIELDS),
+                search=search,
+            )
+        )
+        query_args = {
+            "limit": limit,
+            "offset": offset,
+            "tag_id": tag_id,
         }
 
     # TODO: handle database error
@@ -143,7 +194,16 @@ def _get_all_leads(request):
 
 
 def _parse_search_param(request):
+
     return request.args.get("search")
+
+
+def _parse_tag_param(request):
+
+    tag = request.args.get("tag")
+    if tag is None:
+        return tag
+    return tag.lower()
 
 
 VALID_DATA_SOURCES = (
