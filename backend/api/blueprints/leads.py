@@ -50,6 +50,7 @@ DEFAULT_LEAD_FIELDS = (
     "county",
     "colorado_region",
     "data_source",
+    "assigned",
 )
 
 
