@@ -95,7 +95,6 @@ def _get_all_leads(request):
         row = conn.execute(select_id_for_tag, tag=tag).first()
         tag_id = row[0] if row else None
 
-
     if search is None and tag_id is None:
         query = text(
             """
@@ -122,7 +121,7 @@ def _get_all_leads(request):
             JOIN tags t on t.id = lt.tag_id
             WHERE lt.tag_id = :tag_id
             """.format(
-                columns=",".join('l.' + f for f in DEFAULT_LEAD_FIELDS)
+                columns=",".join("l." + f for f in DEFAULT_LEAD_FIELDS)
             ),
         )
         query_args = {
@@ -161,7 +160,7 @@ def _get_all_leads(request):
             LIMIT :limit
             OFFSET :offset
         """.format(
-                columns=",".join('l.' + f for f in DEFAULT_LEAD_FIELDS),
+                columns=",".join("l." + f for f in DEFAULT_LEAD_FIELDS),
                 search=search,
             )
         )
