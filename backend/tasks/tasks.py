@@ -8,6 +8,7 @@ from sqlalchemy import text
 from api.db import db
 from api.auth import hash_password
 
+import csv
 
 @dataclass
 class SocrataBusinessEntity:
@@ -19,6 +20,17 @@ class SocrataBusinessEntity:
     principalcountry: str
     entityformdate: str
 
+@dataclass
+class CNPBusinessEntity:
+    entityname: str
+    principaladdress1: str
+    entitywebsite: str
+    entityemail: str
+    entityPhone: str
+    entityformdate: str
+    entitytwitter: str
+    entityfacebook: str
+    entitylinkedin: str
 
 DATE_FORMAT = '%Y-%m-%d'
 # TODO: create a task that normalizes dates in database
@@ -45,7 +57,108 @@ class Lead:
     @property
     def formation_date_str(self):
         return self.formation_date.strftime(DATE_FORMAT)
+    
+def find_CNP_leads() -> int:
+    inserted = 0
+    entities = csv_to_entities('CNPData.csv')
+    
+    
+    leads = (
+        _map_CNP_entity_to_lead(entity)
+        for entity in entities
+    )
+    
+    with db.get_engine().begin() as connection:
+        for lead in leads:
+            connection.execute(text(
+                """
+                    INSERT INTO leads (
+                        company_name,
+                        company_address,
+                        formation_date,
+                        website,
+                        phone,
+                        email,
+                        facebook,
+                        data_source
+                    )
+                    SELECT
+                        :company_name,
+                        :company_address,
+                        :formation_date,
+                        :website,
+                        :phone,
+                        :email,
+                        :facebook,
+                        'ColoradoNonprofitAssociation'
+                    WHERE NOT EXISTS (
+                        SELECT 1 FROM leads
+                        WHERE company_name = :company_name
+                    )
+                """),
+                company_name=lead.company_name,
+                company_address=lead.company_address,
+                formation_date=lead.formation_date_str,
+                website=lead.website,
+                phone=lead.phone,
+                email=lead.email,
+                facebook=lead.facebook,
+            )
+            inserted += 1
+    return inserted
 
+def _map_CNP_entity_to_lead(entity: CNPBusinessEntity) -> Lead:
+    return Lead(
+        company_name=entity.entityname,
+        company_address=entity.principaladdress1,
+        website=entity.website,
+        phone=entity.phone,
+        email=entity.email,
+        facebook=entity.facebook,
+        formation_date=datetime.strptime(
+            entity.entityformdate.split('T')[0], DATE_FORMAT),
+    )
+
+def csv_to_entities(file_name):
+    
+    with open(file_name) as csv_file:
+        
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        business_entities = []
+        for row in csv_reader:
+            entity = CNP_row_to_dict(row)
+            
+            if line_count == 0: # skip csv column names
+                line_count += 1
+            else:
+                temp_entity = CNPBusinessEntity()
+                temp_entity.entityname=entity['entityname']
+                temp_entity.principaladdress1=entity['principaladdress1']
+                temp_entity.entitywebsite=entity['entitywebsite']
+                temp_entity.entityemail=entity['entityemail']
+                temp_entity.entityPhone=entity['entityPhone']
+                temp_entity.entityformdate=entity['entityformdate']
+                temp_entity.entitytwitter=entity['entitytwitter']
+                temp_entity.entityfacebook=entity['entityfacebook']
+                temp_entity.entitylinkedin=entity['entitylinkedin']
+                business_entities.append(temp_entity)
+                
+        return business_entities
+
+def CNP_row_to_dict(row):
+    dict_row = {}
+    dict_row['entityname'] = row[0]
+    dict_row['entitywebsite'] = row[1]
+    dict_row['entityemail'] = row[2]
+    dict_row['entityPhone'] = row[3]
+    dict_row['principaladdress1'] = row[4]
+    dict_row['entityformdate'] = row[6]    
+    dict_row['entitytwitter'] = row[8]
+    dict_row['entityfacebook'] = row[9]
+    dict_row['entitylinkedin'] = row[10]
+    
+    return dict_row
 
 def find_socrata_api_leads(perpage=500, page=1) -> int:
     inserted = 0
