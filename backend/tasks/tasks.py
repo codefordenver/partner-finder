@@ -172,10 +172,9 @@ def csv_to_entities(file_name: str):
 
 def find_socrata_api_leads(perpage=500, page=1) -> int:
     inserted = 0
-    res = requests.get(
-        _socrata_url(perpage, (page - 1) * perpage))
+    res = requests.get(_socrata_url(perpage, (page - 1) * perpage))
     if res.status_code != 200:
-        print(f'Received response status code of {res.status_code}.')
+        print(f"Received response status code of {res.status_code}.")
         print(res.headers)
         print(res.json())
         return 0
@@ -196,10 +195,12 @@ def find_socrata_api_leads(perpage=500, page=1) -> int:
         _map_socrata_entity_to_lead(entity)
         for entity in business_entities
         )
+
     with db.get_engine().begin() as connection:
         for lead in leads:
-            connection.execute(text(
-                """
+            connection.execute(
+                text(
+                    """
                     INSERT INTO leads (
                         company_name,
                         company_address,
@@ -215,7 +216,8 @@ def find_socrata_api_leads(perpage=500, page=1) -> int:
                         SELECT 1 FROM leads
                         WHERE company_name = :company_name
                     )
-                """),
+                """
+                ),
                 company_name=lead.company_name,
                 company_address=lead.company_address,
                 formation_date=lead.formation_date_str,
@@ -234,12 +236,21 @@ def _socrata_url(limit: int, offset: int):
         '$offset': offset,
         }
     query_str = '&'.join(f"{k}={v}" for (k, v) in query_params.items())
+
     return f"https://data.colorado.gov/resource/4ykn-tg5h.json?{query_str}"
 
 
 def _map_socrata_entity_to_lead(entity: SocrataBusinessEntity) -> Lead:
     # combine address fields into a single address
-    address = entity.principaladdress1 + ', ' + entity.principalcity + " " + entity.principalstate + " " + entity.principalzipcode
+    address = (
+        entity.principaladdress1
+        + ", "
+        + entity.principalcity
+        + " "
+        + entity.principalstate
+        + " "
+        + entity.principalzipcode
+    )
     return Lead(
         company_name=entity.entityname,
         company_address=address,
@@ -249,20 +260,24 @@ def _map_socrata_entity_to_lead(entity: SocrataBusinessEntity) -> Lead:
 
 
 def create_dev_users():
-    q = text("""
+    q = text(
+        """
         INSERT INTO users (username, password_hash, admin)
         VALUES
             ('user@gmail.com', :password, false),
             ('admin@gmail.com', :password, true)
-    """)
+    """
+    )
     with db.get_connection() as conn:
-        conn.execute(q, {'password': hash_password('password')})
+        conn.execute(q, {"password": hash_password("password")})
 
 
 def drop_dev_users():
-    q = text("""
+    q = text(
+        """
         DELETE FROM users
         WHERE username IN ('user@gmail.com', 'admin@gmail.com')
-    """)
+    """
+    )
     with db.get_connection() as conn:
         conn.execute(q)
