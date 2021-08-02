@@ -164,7 +164,7 @@ def csv_to_entities(file_name: str):
                 entitytwitter=row['twitter'],
                 entityfacebook=row['facebook'],
                 entitylinkedin=row['linkedin'],
-            )
+                )
             business_entities.append(temp_entity)
 
         return business_entities
@@ -239,7 +239,10 @@ def _socrata_url(limit: int, offset: int):
 
 def _map_socrata_entity_to_lead(entity: SocrataBusinessEntity) -> Lead:
     # combine address fields into a single address
-    address = entity.principaladdress1 + ', ' + entity.principalcity + " " + entity.principalstate + " " + entity.principalzipcode
+    address = (entity.principaladdress1 + ', '
+               + entity.principalcity + " "
+               + entity.principalstate + " "
+               + entity.principalzipcode)
     return Lead(
         company_name=entity.entityname,
         company_address=address,
