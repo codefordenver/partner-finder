@@ -4,7 +4,6 @@ from sqlalchemy import create_engine
 
 
 class DatabaseClient:
-
     def __init__(self, db, user, password, host, port, dialect="postgresql"):
         self.db = db
         self.user = user
@@ -27,19 +26,19 @@ class DatabaseClient:
         return self.get_engine().begin()
 
 
-environments = frozenset(['dev', 'test', 'prod'])
+environments = frozenset(["dev", "test", "prod"])
 
 
-def create_database_client(env='prod'):
+def create_database_client(env="prod"):
     if env not in environments:
-        raise ValueError('Invalid environment {env!r}.')
+        raise ValueError("Invalid environment {env!r}.")
     try:
         return DatabaseClient(
-            os.environ['POSTGRES_DB'] + ('' if env == 'prod' else f"_{env}"),
-            os.environ['POSTGRES_USER'],
-            os.environ['POSTGRES_PASSWORD'],
-            os.environ['POSTGRES_HOST'],
-            os.environ['POSTGRES_PORT'],
+            os.environ["POSTGRES_DB"] + ("" if env == "prod" else f"_{env}"),
+            os.environ["POSTGRES_USER"],
+            os.environ["POSTGRES_PASSWORD"],
+            os.environ["POSTGRES_HOST"],
+            os.environ["POSTGRES_PORT"],
         )
     except KeyError as e:
         raise EnvironmentError(f"Unset environment variable for postgres client.\n\tError: {e}")
@@ -47,4 +46,4 @@ def create_database_client(env='prod'):
 
 db = create_database_client()
 
-test_db = create_database_client('test')
+test_db = create_database_client("test")

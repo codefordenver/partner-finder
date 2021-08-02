@@ -36,7 +36,7 @@ const Home = () => {
 
   // fetch leads data from api
   useEffect(() => {
-    let headers = {
+    const headers = {
       Authorization: authHeader,
     };
     return fetch(url, {
@@ -109,9 +109,9 @@ const Home = () => {
             const leadInEditMode = editMode > -1 && editMode === i;
 
             const editField = (field) => (e) => {
-              let edited = JSON.parse(JSON.stringify(edit));
+              const edited = JSON.parse(JSON.stringify(edit));
               edited[field] = e.target.value;
-              let editsCopy = JSON.parse(JSON.stringify(edits));
+              const editsCopy = JSON.parse(JSON.stringify(edits));
               editsCopy[i] = edited;
               setEdits(editsCopy);
             };
@@ -232,8 +232,8 @@ const Home = () => {
                         label="Reset"
                         icon={<Undo />}
                         onClick={() => {
-                          let leadCopy = JSON.parse(JSON.stringify(leads[i]));
-                          let editsCopy = JSON.parse(JSON.stringify(edits));
+                          const leadCopy = JSON.parse(JSON.stringify(leads[i]));
+                          const editsCopy = JSON.parse(JSON.stringify(edits));
                           editsCopy[i] = leadCopy;
                           setEdits(editsCopy);
                         }}

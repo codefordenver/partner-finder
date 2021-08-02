@@ -7,7 +7,7 @@ import { authContext } from '../../auth';
 import Header from '../Header/Header';
 
 const CreateLead = () => {
-  let [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({});
   const { authHeader } = useContext(authContext);
   const history = useHistory();
 
@@ -25,7 +25,6 @@ const CreateLead = () => {
       .then(() => history.push('/home'))
       .catch(() => setFormData({}));
   };
-
 
   const fields = [
     {
@@ -116,28 +115,18 @@ const CreateLead = () => {
         <Header />
       </Box>
 
-      <Box
-        gridArea="main"
-        flex="column"
-        justify="center"
-        align="center"
-      >
-        <Box
-          border
-          pad="medium"
-          flex="row"
-          wrap="wrap"
-        >
+      <Box gridArea="main" flex="column" justify="center" align="center">
+        <Box border pad="medium" flex="row" wrap="wrap">
           <Form
             value={formData}
             onChange={(x) => setFormData(x)}
             onReset={() => setFormData({})}
             onSubmit={() => postLead()}
           >
-            {fields.map(({name, label}) => {
+            {fields.map(({ name, label }) => {
               return (
                 <FormField name={name} htmlFor={name}>
-                  <TextInput id={name} name={name} placeholder={label}/>
+                  <TextInput id={name} name={name} placeholder={label} />
                 </FormField>
               );
             })}
