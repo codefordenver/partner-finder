@@ -107,7 +107,11 @@ chmod +x scripts/*.sh
 
 After running `lint.sh`, you should see an output of `0` if everything is okay. Otherwise flake8 will output lines that need to be changed.
 
+
 Once you've made formatting and linting changes, make a commit with a message like `lint and format` and add it to your PR. It is helpful to PR reviewers if you keep your formatting changes in their own commit because they can potentially make it harder to read your other code changes.
+
+#### Postman Collection
+Postman is a web client for testing out REST apis. See here to view and export [postman requests]() for this project. You will also need to install postman, import the collection, and then run the api on localhost to use postman in development.
 
 ## Running a data analysis jupyter notebook (Optional)
 1. Make sure python 3 is installed on your system
