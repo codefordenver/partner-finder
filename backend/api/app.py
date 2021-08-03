@@ -1,6 +1,7 @@
 import logging
 import os
 
+from flasgger import Swagger
 from flask import Flask
 from flask_cors import CORS
 
@@ -27,6 +28,8 @@ def app_factory(
         # for localhost development only
         CORS(app)
 
+    Swagger(app)
+
     # TODO: return request metadata as part of responses
 
     for blueprint in blueprints:
@@ -41,3 +44,6 @@ dev_app = app_factory(
     os.environ["SECRET_KEY"],
     True,
 )
+
+
+# TODO: create an app for production

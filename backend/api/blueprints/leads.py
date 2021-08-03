@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 
 import sqlalchemy.exc as sa_exc
+from flasgger import swag_from
 from sqlalchemy import text
 
 from ..auth import auth
@@ -12,6 +13,7 @@ leads_bp = Blueprint("leads", __name__)
 
 
 @leads_bp.route("/leads", methods=["GET", "POST"])
+@swag_from("response_schemas/leads/get_leads_list.yml", methods=["GET"])
 @auth("user")
 def leads_collection_view():
     if request.method == "GET":
