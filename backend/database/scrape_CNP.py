@@ -8,5 +8,5 @@ def scrape_CNP():
     find_CNP_leads()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     scrape_CNP()

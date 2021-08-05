@@ -36,7 +36,7 @@ class CNPBusinessEntity:
     entitylinkedin: str
 
 
-DATE_FORMAT = '%Y-%m-%d'
+DATE_FORMAT = "%Y-%m-%d"
 # TODO: create a task that normalizes dates in database
 
 
@@ -65,24 +65,24 @@ class Lead:
 
 def find_CNP_leads() -> int:
     inserted = 0
-    path_to_csv = os.path.abspath(os.path.join(
-        os.path.dirname(__file__),
-        os.pardir,
-        'database',
-        'CNPData_New.csv',
-        ))
+    path_to_csv = os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            os.pardir,
+            "database",
+            "CNPData_New.csv",
+        )
+    )
 
     entities = csv_to_entities(path_to_csv)
 
-    leads = (
-        _map_CNP_entity_to_lead(entity)
-        for entity in entities
-        )
+    leads = (_map_CNP_entity_to_lead(entity) for entity in entities)
 
     with db.get_engine().begin() as connection:
         for lead in leads:
-            connection.execute(text(
-                """
+            connection.execute(
+                text(
+                    """
                     INSERT INTO leads (
                         company_name,
                         company_address,
@@ -106,7 +106,8 @@ def find_CNP_leads() -> int:
                         SELECT 1 FROM leads
                         WHERE company_name = :company_name
                     )
-                """),
+                """
+                ),
                 company_name=lead.company_name,
                 company_address=lead.company_address,
                 formation_date=lead.formation_date_str,
@@ -114,19 +115,17 @@ def find_CNP_leads() -> int:
                 phone=lead.phone,
                 email=lead.email,
                 facebook=lead.facebook,
-                )
+            )
             inserted += 1
     return inserted
 
 
 def _map_CNP_entity_to_lead(entity: CNPBusinessEntity) -> Lead:
     correct_date = None
-    if (check_founded_year(entity.entityformdate)):
-        correct_date = datetime.strptime(
-            entity.entityformdate, '%Y')
+    if check_founded_year(entity.entityformdate):
+        correct_date = datetime.strptime(entity.entityformdate, "%Y")
     else:
-        correct_date = correct_date = datetime.strptime(
-            '1000', '%Y')
+        correct_date = correct_date = datetime.strptime("1000", "%Y")
 
     return Lead(
         company_name=entity.entityname,
@@ -135,12 +134,12 @@ def _map_CNP_entity_to_lead(entity: CNPBusinessEntity) -> Lead:
         phone=entity.entityphone,
         email=entity.entityemail,
         facebook=entity.entityfacebook,
-        formation_date=correct_date
-        )
+        formation_date=correct_date,
+    )
 
 
 def check_founded_year(year):
-    if year == '':
+    if year == "":
         return None
     else:
         return year
@@ -155,16 +154,16 @@ def csv_to_entities(file_name: str):
 
         for row in csv_reader:
             temp_entity = CNPBusinessEntity(
-                entityname=row['name'],
-                principaladdress1=row['address'],
-                entitywebsite=row['website'],
-                entityemail=row['email'],
-                entityphone=row['phone'],
-                entityformdate=row['year_founded'],
-                entitytwitter=row['twitter'],
-                entityfacebook=row['facebook'],
-                entitylinkedin=row['linkedin'],
-                )
+                entityname=row["name"],
+                principaladdress1=row["address"],
+                entitywebsite=row["website"],
+                entityemail=row["email"],
+                entityphone=row["phone"],
+                entityformdate=row["year_founded"],
+                entitytwitter=row["twitter"],
+                entityfacebook=row["facebook"],
+                entitylinkedin=row["linkedin"],
+            )
             business_entities.append(temp_entity)
 
         return business_entities
@@ -181,20 +180,17 @@ def find_socrata_api_leads(perpage=500, page=1) -> int:
     # TODO: catch request exceptions
     business_entities = (
         SocrataBusinessEntity(
-            entityname=entity['entityname'],
-            principaladdress1=entity['principaladdress1'],
-            principalcity=entity['principalcity'],
-            principalstate=entity['principalstate'],
-            principalzipcode=entity['principalzipcode'],
-            principalcountry=entity['principalcountry'],
-            entityformdate=entity['entityformdate'],
-            )
+            entityname=entity["entityname"],
+            principaladdress1=entity["principaladdress1"],
+            principalcity=entity["principalcity"],
+            principalstate=entity["principalstate"],
+            principalzipcode=entity["principalzipcode"],
+            principalcountry=entity["principalcountry"],
+            entityformdate=entity["entityformdate"],
+        )
         for entity in res.json()
-        )
-    leads = (
-        _map_socrata_entity_to_lead(entity)
-        for entity in business_entities
-        )
+    )
+    leads = (_map_socrata_entity_to_lead(entity) for entity in business_entities)
 
     with db.get_engine().begin() as connection:
         for lead in leads:
@@ -221,21 +217,21 @@ def find_socrata_api_leads(perpage=500, page=1) -> int:
                 company_name=lead.company_name,
                 company_address=lead.company_address,
                 formation_date=lead.formation_date_str,
-                )
+            )
             inserted += 1
     return inserted
 
 
 def _socrata_url(limit: int, offset: int):
     query_params = {
-        'entitytype': 'Nonprofit Corporation',
-        'principalcity': 'Denver',
-        '$where': 'date_extract_y(entityformdate) > 2010',
-        'entitystatus': 'Good Standing',
-        '$limit': limit,
-        '$offset': offset,
-        }
-    query_str = '&'.join(f"{k}={v}" for (k, v) in query_params.items())
+        "entitytype": "Nonprofit Corporation",
+        "principalcity": "Denver",
+        "$where": "date_extract_y(entityformdate) > 2010",
+        "entitystatus": "Good Standing",
+        "$limit": limit,
+        "$offset": offset,
+    }
+    query_str = "&".join(f"{k}={v}" for (k, v) in query_params.items())
 
     return f"https://data.colorado.gov/resource/4ykn-tg5h.json?{query_str}"
 
@@ -254,9 +250,8 @@ def _map_socrata_entity_to_lead(entity: SocrataBusinessEntity) -> Lead:
     return Lead(
         company_name=entity.entityname,
         company_address=address,
-        formation_date=datetime.strptime(
-            entity.entityformdate.split('T')[0], DATE_FORMAT),
-        )
+        formation_date=datetime.strptime(entity.entityformdate.split("T")[0], DATE_FORMAT),
+    )
 
 
 def create_dev_users():
