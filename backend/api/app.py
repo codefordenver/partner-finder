@@ -1,5 +1,6 @@
 import logging
 import os
+import yaml
 
 from flasgger import Swagger
 from flask import Flask
@@ -19,6 +20,7 @@ def app_factory(
     log_level,
     secret_key,
     allow_cors,
+    swagger_template=None,
 ):
     app = Flask(__name__)
     app.logger.setLevel(log_level)
@@ -28,7 +30,8 @@ def app_factory(
         # for localhost development only
         CORS(app)
 
-    Swagger(app)
+    if swagger_template:
+        Swagger(app, template=swagger_template)
 
     # TODO: return request metadata as part of responses
 
@@ -38,11 +41,25 @@ def app_factory(
     return app
 
 
+dev_swagger_template_path = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__),
+        "swagger",
+        "dev.yml",
+    )
+)
+
+
+with open(dev_swagger_template_path, "r", encoding="utf-8") as f:
+    dev_swagger_template = yaml.load(f, Loader=yaml.FullLoader)
+
+
 dev_app = app_factory(
     (healthcheck_bp, leads_bp, login_bp, users_bp, tags_bp),
     logging.DEBUG,
     os.environ["SECRET_KEY"],
     True,
+    swagger_template=dev_swagger_template,
 )
 
 
