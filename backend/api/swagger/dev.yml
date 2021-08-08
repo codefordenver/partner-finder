@@ -11,6 +11,8 @@ securityDefinitions:
       type: apiKey
       in: header       # can be "header", "query" or "cookie"
       name: Authorization  # name of the header, query parameter or cookie
+security:
+  - bearerAuth: []
 paths:
   /login:
     post:
@@ -33,8 +35,6 @@ paths:
           description: "Login successful. Returns a JWT token."
   /leads:
     get:
-      security:
-        - bearerAuth: []
       parameters:
         - name: page
           in: query

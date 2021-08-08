@@ -23,6 +23,8 @@ def app_factory(
     swagger_template=None,
 ):
     app = Flask(__name__)
+    gunicorn_logger = logging.getLogger("gunicorn.error")
+    app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(log_level)
     app.secret_key = secret_key
 
@@ -61,6 +63,24 @@ dev_app = app_factory(
     True,
     swagger_template=dev_swagger_template,
 )
+
+
+# authenticate user for dev app and get a bearer token
+
+
+with dev_app.test_client() as client:
+    res = client.post(
+        "/login",
+        headers={"Content-Type": "application/json"},
+        json={
+            "username": "user@gmail.com",
+            "password": "password",
+        },
+    )
+    token = res.json["token"]
+    dev_app.logger.info(
+        f"To authorize the development app, include this header with the request:\n\tAuthorization: Bearer {token}"
+    )
 
 
 # TODO: create an app for production
