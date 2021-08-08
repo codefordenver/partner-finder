@@ -1,6 +1,7 @@
 import logging
 import os
 import yaml
+import json
 
 from flasgger import Swagger
 from flask import Flask
@@ -77,10 +78,17 @@ with dev_app.test_client() as client:
             "password": "password",
         },
     )
-    token = res.json["token"]
-    dev_app.logger.info(
-        f"To authorize the development app, include this header with the request:\n\tAuthorization: Bearer {token}"
-    )
+    res_json = res.json
+    try:
+        token = res_json["token"]
+        dev_app.logger.info(
+            f"To authorize the development app, include this header with the request:\n\tAuthorization: Bearer {token}"
+        )
+    except KeyError as e:
+        dev_app.logger.error(e)
+        dev_app.logger.error(
+            f"Could not log in development user. Response: {json.dumps(res_json, indent=2, default=str)}"
+        )
 
 
 # TODO: create an app for production
