@@ -33,6 +33,7 @@ paths:
       responses:
         "200":
           description: "Login successful. Returns a JWT token."
+      deprecated: false
   /leads:
     get:
       parameters:
@@ -71,6 +72,7 @@ paths:
       responses:
         "200":
           description: "success"
+      deprecated: false
     post:
       parameters:
         - in: "body"
@@ -128,6 +130,7 @@ paths:
       responses:
         "200":
           description: "successfully created a new lead."
+      deprecated: false
   /leads/{id}:
     get:
       parameters:
@@ -139,6 +142,7 @@ paths:
       responses:
         "200":
           description: "successfully retrieved lead by id."
+      deprecated: false
     put:
       parameters:
         - in: path
@@ -199,6 +203,7 @@ paths:
       responses:
         "200":
           description: "successfully retrieved lead by id."
+      deprecated: false
     delete:
       parameters:
         - in: path
@@ -209,6 +214,7 @@ paths:
       responses:
         "200":
           description: "successfully deleted lead by id."
+      deprecated: false
   /leads/{id}/tags:
     get:
       parameters:
@@ -220,6 +226,7 @@ paths:
       responses:
         "200":
           description: "successfully retrieved all tags for a lead with the given id"
+      deprecated: false
     post:
       parameters:
         - in: path
@@ -237,6 +244,7 @@ paths:
       responses:
         "200":
           description: "successfully created a new tag for the lead with the given id"
+      deprecated: false
   /leads/{lead_id}/tags/{tag_id}:
     delete:
       parameters:
@@ -253,7 +261,13 @@ paths:
       responses:
         "200":
           description: "successfully deleted tag from the given lead"
+      deprecated: false
   /tags:
+    get:
+      responses:
+        "200":
+          description: "returns all tags"
+      deprecated: false
     post:
       parameters:
         - in: body
@@ -267,4 +281,111 @@ paths:
       responses:
         "200":
             description: "created a new tag"
-
+      deprecated: false
+  /tags/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Tag id"
+      responses:
+        "200":
+          description: "returns the tag with the given id"
+      deprecated: false
+    put:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Tag id"
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              tag:
+                type: string
+      responses:
+        "200":
+          description: "modifies the tag with the given id"
+      deprecated: false
+    delete:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Tag id"
+      responses:
+        "200":
+          description: "deletes the tag with the given id"
+      deprecated: false
+  /users:
+    get:
+      responses:
+        "200":
+          description: "return all users"
+      deprecated: false
+    post:
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+              admin:
+                type: boolean
+      responses:
+        "200":
+          description: "create a new user"
+      deprecated: false
+  /users/{username}:
+    get:
+      responses:
+        "200":
+          description: "returns the user with the given username"
+      parameters:
+        - in: path
+          name: username
+          required: true
+          type: string
+      deprecated: false
+    put:
+      responses:
+        "200":
+          description: "modifies the user with the given username"
+      parameters:
+        - in: path
+          name: username
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              password:
+                type: string
+              admin:
+                type: boolean
+      deprecated: false
+    delete:
+      responses:
+        "200":
+          description: "delete the user with the given username"
+      parameters:
+        - in: path
+          name: username
+          required: true
+          type: string
+      deprecated: false

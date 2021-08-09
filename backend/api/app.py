@@ -69,26 +69,34 @@ dev_app = app_factory(
 # authenticate user for dev app and get a bearer token
 
 
-with dev_app.test_client() as client:
-    res = client.post(
-        "/login",
-        headers={"Content-Type": "application/json"},
-        json={
-            "username": "user@gmail.com",
-            "password": "password",
-        },
-    )
-    res_json = res.json
-    try:
-        token = res_json["token"]
-        dev_app.logger.info(
-            f"To authorize the development app, include this header with the request:\n\tAuthorization: Bearer {token}"
+def print_auth_headers(username, password):
+    with dev_app.test_client() as client:
+        # get bearer token for a regular user
+        res = client.post(
+            "/login",
+            headers={"Content-Type": "application/json"},
+            json={
+                "username": username,
+                "password": password,
+            },
         )
-    except KeyError as e:
-        dev_app.logger.error(e)
-        dev_app.logger.error(
-            f"Could not log in development user. Response: {json.dumps(res_json, indent=2, default=str)}"
-        )
+        res_json = res.json
+        try:
+            token = res_json["token"]
+            dev_app.logger.info(
+                f"To authenticate as {username}, include this header with the request:\n\tAuthorization: Bearer {token}"
+            )
+        except KeyError as e:
+            dev_app.logger.error(e)
+            dev_app.logger.error(
+                f"Could not log in development user. Response: {json.dumps(res_json, indent=2, default=str)}"
+            )
+
+
+print_auth_headers("user@gmail.com", "password")
+
+
+print_auth_headers("admin@gmail.com", "password")
 
 
 # TODO: create an app for production

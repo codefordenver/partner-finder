@@ -44,6 +44,7 @@ def _get_all_users(request):
 
 def _create_user(request):
     username, password = request.json.get("username"), request.json.get("password")
+    admin = request.json.get("admin", False)
     for field, name in [(username, "username"), (password, "password")]:
         if field is None:
             return {"message": f"missing required field {name!r}"}, 400
@@ -58,7 +59,7 @@ def _create_user(request):
     query_params = {
         "username": username,
         "password_hash": password_hash,
-        "admin": False,
+        "admin": admin,
     }
     with db.get_connection() as conn:
         res = conn.execute(query, query_params)
@@ -93,29 +94,31 @@ def _get_user_by_username(username):
 
 def _update_user(username, request):
     password = request.json.get("password")
-    if password is None:
-        return {"message": 'missing required field "password"'}, 400
-    password_hash = hash_password(password)
-    updates = {
-        "password_hash": password_hash,
-    }
-    query = text(
-        """
-        UPDATE users
-        SET {updates}
-        WHERE username = :username
-        RETURNING *
-    """.format(
-            updates=", ".join(f"{k} = :{k}" for k in updates)
+    admin = request.json.get("admin")
+    updates = {}
+    if password is not None:
+        updates["password_hash"] = hash_password(password)
+    if admin is not None:
+        updates["admin"] = admin
+    if updates:
+        query = text(
+            """
+            UPDATE users
+            SET {updates}
+            WHERE username = :username
+            RETURNING *
+        """.format(
+                updates=", ".join(f"{k} = :{k}" for k in updates)
+            )
         )
-    )
-    query_params = {
-        "username": username,
-        **updates,
-    }
-    with db.get_connection() as conn:
-        res = conn.execute(query, query_params)
-        return dict(zip(res.keys(), res.first()))
+        query_params = {
+            "username": username,
+            **updates,
+        }
+        with db.get_connection() as conn:
+            res = conn.execute(query, query_params)
+            return dict(zip(res.keys(), res.first()))
+    return {"message": "received empty request body"}, 400
 
 
 def _delete_user_by_username(username):
