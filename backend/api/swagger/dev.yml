@@ -80,7 +80,6 @@ paths:
             type: "object"
             required:
               - company_name
-            type: "object"
             properties:
               company_name:
                 type: "string"
@@ -129,6 +128,84 @@ paths:
       responses:
         "200":
           description: "successfully created a new lead."
-
-
-
+  /leads/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Lead id"
+      responses:
+        "200":
+          description: "successfully retrieved lead by id."
+    put:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Lead id"
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: object
+            properties:
+              company_name:
+                type: "string"
+              company_address:
+                type: "string"
+              contact_name:
+                type: "string"
+              formation_date:
+                type: "string"
+              website:
+                type: "string"
+              phone:
+                type: "string"
+              email:
+                type: "string"
+              twitter:
+                type: "string"
+              facebook:
+                type: "string"
+              linkedin:
+                type: "string"
+              last_email:
+                type: "string"
+              last_call:
+                type: "string"
+              last_google_search:
+                type: "string"
+              last_twitter_search:
+                type: "string"
+              instagram:
+                type: "string"
+              mission_statement:
+                type: "string"
+              programs:
+                type: "string"
+              populations_served:
+                type: "string"
+              county:
+                type: "string"
+              colorado_region:
+                type: "string"
+              data_source:
+                type: "string"
+              assigned:
+                type: "string"
+      responses:
+        "200":
+          description: "successfully retrieved lead by id."
+    delete:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Lead id"
+      responses:
+        "200":
+          description: "successfully retrieved lead by id."
