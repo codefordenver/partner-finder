@@ -208,4 +208,63 @@ paths:
           description: "Lead id"
       responses:
         "200":
-          description: "successfully retrieved lead by id."
+          description: "successfully deleted lead by id."
+  /leads/{id}/tags:
+    get:
+      parameters:
+       - in: path
+         name: id
+         type: integer
+         required: true
+         description: "Lead id"
+      responses:
+        "200":
+          description: "successfully retrieved all tags for a lead with the given id"
+    post:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Lead id"
+        - in: body
+          name: body
+          required: true
+          schema:
+            properties:
+              tag_id:
+                type: integer
+      responses:
+        "200":
+          description: "successfully created a new tag for the lead with the given id"
+  /leads/{lead_id}/tags/{tag_id}:
+    delete:
+      parameters:
+        - in: path
+          name: lead_id
+          type: integer
+          required: true
+          description: "Lead id"
+        - in: path
+          name: tag_id
+          type: integer
+          required: true
+          description: "Tag id"
+      responses:
+        "200":
+          description: "successfully deleted tag from the given lead"
+  /tags:
+    post:
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              tag:
+                type: string
+      responses:
+        "200":
+            description: "created a new tag"
+
