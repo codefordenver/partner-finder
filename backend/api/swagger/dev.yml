@@ -33,6 +33,27 @@ paths:
       responses:
         "200":
           description: "Login successful. Returns a JWT token."
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              token:
+                type: string
+        "401":
+          description: "Unsuccessful login"
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              details:
+                type: object
+                properties:
+                  user_found:
+                    type: boolean
+                  password_valid:
+                    type: boolean
       deprecated: false
   /leads:
     get:
@@ -70,8 +91,36 @@ paths:
           type: string
           description: A comma separated list of fieldnames. The fields returned in each lead object will be restricted to match this list of names.
       responses:
-        "200":
+        200:
           description: "success"
+          schema:
+            type: object
+            properties:
+              count:
+                type: integer
+              query:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                  perpage:
+                    type: integer
+              leads:
+                type: array
+                items:
+                  $ref: '#/definitions/schemas/lead_with_id'
+        400:
+          description: "invalid query parameters"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              detail:
+                type: object
+                properties:
+                  error:
+                    type: string
       deprecated: false
     post:
       parameters:
@@ -79,57 +128,12 @@ paths:
           name: "body"
           required: true
           schema:
-            type: "object"
-            required:
-              - company_name
-            properties:
-              company_name:
-                type: "string"
-              company_address:
-                type: "string"
-              contact_name:
-                type: "string"
-              formation_date:
-                type: "string"
-              website:
-                type: "string"
-              phone:
-                type: "string"
-              email:
-                type: "string"
-              twitter:
-                type: "string"
-              facebook:
-                type: "string"
-              linkedin:
-                type: "string"
-              last_email:
-                type: "string"
-              last_call:
-                type: "string"
-              last_google_search:
-                type: "string"
-              last_twitter_search:
-                type: "string"
-              instagram:
-                type: "string"
-              mission_statement:
-                type: "string"
-              programs:
-                type: "string"
-              populations_served:
-                type: "string"
-              county:
-                type: "string"
-              colorado_region:
-                type: "string"
-              data_source:
-                type: "string"
-              assigned:
-                type: "string"
+            $ref: '#/definitions/schemas/lead'
       responses:
         "200":
           description: "successfully created a new lead."
+          schema:
+            $ref: '#/definitions/schemas/lead_with_id'
       deprecated: false
   /leads/{id}:
     get:
@@ -140,8 +144,22 @@ paths:
           required: true
           description: "Lead id"
       responses:
-        "200":
+        200:
           description: "successfully retrieved lead by id."
+          schema:
+            $ref: '#/definitions/schemas/lead_with_id'
+        404:
+          description: "lead id not found"
+          schema:
+            type: object
+            properties:
+              params:
+                type: object
+                properties:
+                  id:
+                    type: integer
+              message:
+                type: string
       deprecated: false
     put:
       parameters:
@@ -154,55 +172,26 @@ paths:
           name: "body"
           required: true
           schema:
+            $ref: '#/definitions/schemas/lead'
+      responses:
+        200:
+          description: "successfully retrieved lead by id."
+          schema:
+            $ref: '#/definitions/schemas/lead_with_id'
+        404:
+          description: "lead id not found"
+          schema:
             type: object
             properties:
-              company_name:
-                type: "string"
-              company_address:
-                type: "string"
-              contact_name:
-                type: "string"
-              formation_date:
-                type: "string"
-              website:
-                type: "string"
-              phone:
-                type: "string"
-              email:
-                type: "string"
-              twitter:
-                type: "string"
-              facebook:
-                type: "string"
-              linkedin:
-                type: "string"
-              last_email:
-                type: "string"
-              last_call:
-                type: "string"
-              last_google_search:
-                type: "string"
-              last_twitter_search:
-                type: "string"
-              instagram:
-                type: "string"
-              mission_statement:
-                type: "string"
-              programs:
-                type: "string"
-              populations_served:
-                type: "string"
-              county:
-                type: "string"
-              colorado_region:
-                type: "string"
-              data_source:
-                type: "string"
-              assigned:
-                type: "string"
-      responses:
-        "200":
-          description: "successfully retrieved lead by id."
+              params:
+                type: object
+                properties:
+                  id:
+                    type: integer
+              body:
+                $ref: '#/definitions/schemas/lead'
+              message:
+                type: string
       deprecated: false
     delete:
       parameters:
@@ -212,8 +201,22 @@ paths:
           required: true
           description: "Lead id"
       responses:
-        "200":
+        200:
           description: "successfully deleted lead by id."
+          schema:
+            $ref: '#/definitions/schemas/lead_with_id'
+        404:
+          description: "lead with id not found"
+          schema:
+            type: object
+            properties:
+              params:
+                type: object
+                properties:
+                  id:
+                    type: integer
+              message:
+                type: string
       deprecated: false
   /leads/{id}/tags:
     get:
@@ -389,3 +392,102 @@ paths:
           required: true
           type: string
       deprecated: false
+
+definitions:
+  schemas:
+    lead:
+      type: object
+      properties:
+        company_name:
+          type: "string"
+        company_address:
+          type: "string"
+        contact_name:
+          type: "string"
+        formation_date:
+          type: "string"
+        website:
+          type: "string"
+        phone:
+          type: "string"
+        email:
+          type: "string"
+        twitter:
+          type: "string"
+        facebook:
+          type: "string"
+        linkedin:
+          type: "string"
+        last_email:
+          type: "string"
+        last_call:
+          type: "string"
+        last_google_search:
+          type: "string"
+        last_twitter_search:
+          type: "string"
+        instagram:
+          type: "string"
+        mission_statement:
+          type: "string"
+        programs:
+          type: "string"
+        populations_served:
+          type: "string"
+        county:
+          type: "string"
+        colorado_region:
+          type: "string"
+        data_source:
+          type: "string"
+        assigned:
+          type: "string"
+    lead_with_id:
+      type: object
+      properties:
+        id:
+          type: integer
+        company_name:
+          type: "string"
+        company_address:
+          type: "string"
+        contact_name:
+          type: "string"
+        formation_date:
+          type: "string"
+        website:
+          type: "string"
+        phone:
+          type: "string"
+        email:
+          type: "string"
+        twitter:
+          type: "string"
+        facebook:
+          type: "string"
+        linkedin:
+          type: "string"
+        last_email:
+          type: "string"
+        last_call:
+          type: "string"
+        last_google_search:
+          type: "string"
+        last_twitter_search:
+          type: "string"
+        instagram:
+          type: "string"
+        mission_statement:
+          type: "string"
+        programs:
+          type: "string"
+        populations_served:
+          type: "string"
+        county:
+          type: "string"
+        colorado_region:
+          type: "string"
+        data_source:
+          type: "string"
+        assigned:
+          type: "string"
