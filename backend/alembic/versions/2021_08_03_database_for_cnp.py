@@ -17,7 +17,7 @@ branch_labels = None
 depends_on = None
 
 
-def _colorado_nonprofits_fields_to_text():
+def _colorado_nonprofits_fields_to_text(db):
     with db.get_connection() as conn:
         conn.execute(
             text(
