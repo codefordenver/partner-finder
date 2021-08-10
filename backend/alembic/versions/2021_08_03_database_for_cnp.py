@@ -32,7 +32,7 @@ def _colorado_nonprofits_fields_to_text(db):
         )
 
 
-def _colorado_nonprofits_fields_to_varchar():
+def _colorado_nonprofits_fields_to_varchar(db):
     with db.get_connection() as conn:
         conn.execute(
             text(
