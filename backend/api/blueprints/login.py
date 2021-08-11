@@ -1,6 +1,8 @@
+import json
 from datetime import datetime, timedelta
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
+from sqlalchemy import text
 
 from ..auth import verify_password, generate_jwt
 from ..db import db
@@ -13,19 +15,23 @@ login_bp = Blueprint("login", __name__)
 @login_bp.route("/login", methods=["POST"])
 def login():
     username, password = request.json.get("username"), request.json.get("password")
-    get_password = """
+    get_password = text(
+        """
         SELECT password_hash, admin
         FROM users
-        WHERE username = %s
+        WHERE username = :username;
     """
+    )
     with db.get_connection() as conn:
         res = conn.execute(
             get_password,
-            [
-                username,
-            ],
+            username=username,
         ).first()
-        if res and verify_password(password, res["password_hash"]):
+        if res:
+            password_valid = verify_password(password, res["password_hash"])
+        else:
+            password_valid = None
+        if res and password_valid:
             return jsonify(
                 {
                     "success": True,
@@ -38,10 +44,22 @@ def login():
                     ),
                 }
             )
+        try:
+            res = dict(res)
+        except TypeError as e:
+            current_app.logger.error(e)
+            res = None
         return (
             jsonify(
                 {
                     "success": False,
+                    "details": json.dumps(
+                        {
+                            "user_found": bool(res),
+                            "password_valid": password_valid,
+                        },
+                        default=str,
+                    ),
                 }
             ),
             401,

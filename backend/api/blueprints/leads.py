@@ -100,6 +100,7 @@ def _get_all_leads(request):
             """
             SELECT
                 {columns}
+            FROM leads
             ORDER BY id
             LIMIT :limit
             OFFSET :offset;

@@ -1,0 +1,563 @@
+swagger: "2.0"
+info:
+  title: "Code For Denver partner finder api"
+  version: "1.0"
+  description: "Aggregates data on Colorado nonprofits that Code For Denver can potentially partner with on projects. Data sources are socrata api and Colorado Nonprofits."
+host: "localhost:8000"
+schemes:
+  - "http"
+securityDefinitions:
+  bearerAuth:
+      type: apiKey
+      in: header       # can be "header", "query" or "cookie"
+      name: Authorization  # name of the header, query parameter or cookie
+security:
+  - bearerAuth: []
+paths:
+  /login:
+    post:
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            required:
+              - username
+              - password
+            properties:
+              username:
+                type: "string"
+              password:
+                type: "string"
+      responses:
+        "200":
+          description: "Login successful. Returns a JWT token."
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              token:
+                type: string
+        "401":
+          description: "Unsuccessful login"
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              details:
+                type: object
+                properties:
+                  user_found:
+                    type: boolean
+                  password_valid:
+                    type: boolean
+      deprecated: false
+  /leads:
+    get:
+      parameters:
+        - name: page
+          in: query
+          type: integer
+          description: Results indexed from (page - 1) * perpage up to (page * perpage) - 1 are returned.
+          required: false
+          default: 1
+          minimum: 1
+        - name: perpage
+          in: query
+          type: integer
+          description: The number of records to return in a single request.
+          required: false
+          default: 100
+          minimum: 1
+          maximum: 1000
+        - name: search
+          in: query
+          type: string
+          description: A string to search for in lead titles and descriptions.
+          required: false
+        - name: tag
+          in: query
+          type: string
+          description: Restrict returned leads to only those that have been assigned a specific tag (or label).
+        - name: drop_null
+          in: query
+          type: boolean
+          description: When true, removes fields with null values from each lead in the response.
+        - name: include
+          in: query
+          type: string
+          description: A comma separated list of fieldnames. The fields returned in each lead object will be restricted to match this list of names.
+      responses:
+        200:
+          description: "success"
+          schema:
+            type: object
+            properties:
+              count:
+                type: integer
+              query:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                  perpage:
+                    type: integer
+              leads:
+                type: array
+                items:
+                  $ref: '#/definitions/schemas/lead_with_id'
+        400:
+          description: "invalid query parameters"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              detail:
+                type: object
+                properties:
+                  error:
+                    type: string
+      deprecated: false
+    post:
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            $ref: '#/definitions/schemas/lead'
+      responses:
+        "200":
+          description: "successfully created a new lead."
+          schema:
+            $ref: '#/definitions/schemas/lead_with_id'
+      deprecated: false
+  /leads/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Lead id"
+      responses:
+        200:
+          description: "successfully retrieved lead by id."
+          schema:
+            $ref: '#/definitions/schemas/lead_with_id'
+        404:
+          description: "lead id not found"
+          schema:
+            type: object
+            properties:
+              params:
+                type: object
+                properties:
+                  id:
+                    type: integer
+              message:
+                type: string
+      deprecated: false
+    put:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Lead id"
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            $ref: '#/definitions/schemas/lead'
+      responses:
+        200:
+          description: "successfully retrieved lead by id."
+          schema:
+            $ref: '#/definitions/schemas/lead_with_id'
+        404:
+          description: "lead id not found"
+          schema:
+            type: object
+            properties:
+              params:
+                type: object
+                properties:
+                  id:
+                    type: integer
+              body:
+                $ref: '#/definitions/schemas/lead'
+              message:
+                type: string
+      deprecated: false
+    delete:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Lead id"
+      responses:
+        200:
+          description: "successfully deleted lead by id."
+          schema:
+            $ref: '#/definitions/schemas/lead_with_id'
+        404:
+          description: "lead with id not found"
+          schema:
+            type: object
+            properties:
+              params:
+                type: object
+                properties:
+                  id:
+                    type: integer
+              message:
+                type: string
+      deprecated: false
+  /leads/{id}/tags:
+    get:
+      parameters:
+       - in: path
+         name: id
+         type: integer
+         required: true
+         description: "Lead id"
+      responses:
+        "200":
+          description: "successfully retrieved all tags for a lead with the given id"
+          schema:
+            type: object
+            properties:
+              lead_id:
+                type: integer
+              tags:
+                type: array
+                items:
+                  $ref: '#/definitions/schemas/tag_with_id'
+      deprecated: false
+    post:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Lead id"
+        - in: body
+          name: body
+          required: true
+          schema:
+            properties:
+              tag_id:
+                type: integer
+      responses:
+        "200":
+          description: "successfully created a new tag for the lead with the given id"
+          schema:
+            $ref: '#/definitions/schemas/lead_tag'
+      deprecated: false
+  /leads/{lead_id}/tags/{tag_id}:
+    delete:
+      parameters:
+        - in: path
+          name: lead_id
+          type: integer
+          required: true
+          description: "Lead id"
+        - in: path
+          name: tag_id
+          type: integer
+          required: true
+          description: "Tag id"
+      responses:
+        "200":
+          description: "successfully deleted tag from the given lead"
+          schema:
+            $ref: '#/definitions/schemas/lead_tag'
+      deprecated: false
+  /tags:
+    get:
+      responses:
+        "200":
+          description: "returns all tags"
+          schema:
+            type: object
+            properties:
+              tags:
+                type: array
+                items:
+                  $ref: '#/definitions/schemas/tag_with_id'
+      deprecated: false
+    post:
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              tag:
+                type: string
+      responses:
+        "200":
+            description: "created a new tag"
+            schema:
+              $ref: '#/definitions/schemas/tag_with_id'
+      deprecated: false
+  /tags/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Tag id"
+      responses:
+        "200":
+          description: "returns the tag with the given id"
+      deprecated: false
+    put:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Tag id"
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/schemas/tag'
+      responses:
+        "200":
+          description: "modifies the tag with the given id"
+          schema:
+            $ref: '#/definitions/schemas/tag_with_id'
+      deprecated: false
+    delete:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Tag id"
+      responses:
+        "200":
+          description: "deletes the tag with the given id"
+          schema:
+            $ref: '#/definitions/schemas/tag_with_id'
+      deprecated: false
+  /users:
+    get:
+      responses:
+        "200":
+          description: "return all users"
+          schema:
+            type: object
+            properties:
+              pagination:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                  perpage:
+                    type: integer
+              users:
+                type: array
+                items:
+                  $ref: '#/definitions/schemas/user_with_id'
+      deprecated: false
+    post:
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/schemas/user_with_id'
+      responses:
+        "200":
+          description: "create a new user"
+          schema:
+            $ref: '#/definitions/schemas/user_with_id'
+      deprecated: false
+  /users/{username}:
+    get:
+      responses:
+        "200":
+          description: "returns the user with the given username"
+          schema:
+            $ref: '#/definitions/schemas/user_with_id'
+      parameters:
+        - in: path
+          name: username
+          required: true
+          type: string
+      deprecated: false
+    put:
+      responses:
+        "200":
+          description: "modifies the user with the given username"
+          schema:
+            $ref: '#/definitions/schemas/user_with_id'
+      parameters:
+        - in: path
+          name: username
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/schemas/user'
+      deprecated: false
+    delete:
+      responses:
+        "200":
+          description: "delete the user with the given username"
+          schema:
+            $ref: '#/definitions/schemas/user_with_id'
+      parameters:
+        - in: path
+          name: username
+          required: true
+          type: string
+      deprecated: false
+
+definitions:
+  schemas:
+    user:
+      type: object
+      properties:
+        password:
+          type: string
+        admin:
+          type: boolean
+    user_with_id:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        admin:
+          type: boolean
+    tag:
+      type: object
+      properties:
+        tag:
+          type: string
+    tag_with_id:
+      type: object
+      properties:
+          tag:
+            type: string
+          id:
+            type: integer
+    lead_tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        lead_id:
+          type: integer
+        tag_id:
+          type: integer
+    lead:
+      type: object
+      properties:
+        company_name:
+          type: "string"
+        company_address:
+          type: "string"
+        contact_name:
+          type: "string"
+        formation_date:
+          type: "string"
+        website:
+          type: "string"
+        phone:
+          type: "string"
+        email:
+          type: "string"
+        twitter:
+          type: "string"
+        facebook:
+          type: "string"
+        linkedin:
+          type: "string"
+        last_email:
+          type: "string"
+        last_call:
+          type: "string"
+        last_google_search:
+          type: "string"
+        last_twitter_search:
+          type: "string"
+        instagram:
+          type: "string"
+        mission_statement:
+          type: "string"
+        programs:
+          type: "string"
+        populations_served:
+          type: "string"
+        county:
+          type: "string"
+        colorado_region:
+          type: "string"
+        data_source:
+          type: "string"
+        assigned:
+          type: "string"
+    lead_with_id:
+      type: object
+      properties:
+        id:
+          type: integer
+        company_name:
+          type: "string"
+        company_address:
+          type: "string"
+        contact_name:
+          type: "string"
+        formation_date:
+          type: "string"
+        website:
+          type: "string"
+        phone:
+          type: "string"
+        email:
+          type: "string"
+        twitter:
+          type: "string"
+        facebook:
+          type: "string"
+        linkedin:
+          type: "string"
+        last_email:
+          type: "string"
+        last_call:
+          type: "string"
+        last_google_search:
+          type: "string"
+        last_twitter_search:
+          type: "string"
+        instagram:
+          type: "string"
+        mission_statement:
+          type: "string"
+        programs:
+          type: "string"
+        populations_served:
+          type: "string"
+        county:
+          type: "string"
+        colorado_region:
+          type: "string"
+        data_source:
+          type: "string"
+        assigned:
+          type: "string"
