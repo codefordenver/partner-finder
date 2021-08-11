@@ -30,6 +30,7 @@ services:
             && python database/create_dev_users.py
             && python database/create_tags.py
             && python database/scrape_socrata.py
+            && python database/scrape_CNP.py
             && gunicorn run_dev:dev_app -w 1 --threads 1 -b 0.0.0.0:8000 --reload"
     frontend:
         build: ./frontend/cfd-partner-finder-frontend
