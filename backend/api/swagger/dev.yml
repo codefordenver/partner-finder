@@ -229,6 +229,15 @@ paths:
       responses:
         "200":
           description: "successfully retrieved all tags for a lead with the given id"
+          schema:
+            type: object
+            properties:
+              lead_id:
+                type: integer
+              tags:
+                type: array
+                items:
+                  $ref: '#/definitions/schemas/tag_with_id'
       deprecated: false
     post:
       parameters:
@@ -247,6 +256,8 @@ paths:
       responses:
         "200":
           description: "successfully created a new tag for the lead with the given id"
+          schema:
+            $ref: '#/definitions/schemas/lead_tag'
       deprecated: false
   /leads/{lead_id}/tags/{tag_id}:
     delete:
@@ -264,12 +275,21 @@ paths:
       responses:
         "200":
           description: "successfully deleted tag from the given lead"
+          schema:
+            $ref: '#/definitions/schemas/lead_tag'
       deprecated: false
   /tags:
     get:
       responses:
         "200":
           description: "returns all tags"
+          schema:
+            type: object
+            properties:
+              tags:
+                type: array
+                items:
+                  $ref: '#/definitions/schemas/tag_with_id'
       deprecated: false
     post:
       parameters:
@@ -284,6 +304,8 @@ paths:
       responses:
         "200":
             description: "created a new tag"
+            schema:
+              $ref: '#/definitions/schemas/tag_with_id'
       deprecated: false
   /tags/{id}:
     get:
@@ -308,13 +330,12 @@ paths:
           name: body
           required: true
           schema:
-            type: object
-            properties:
-              tag:
-                type: string
+            $ref: '#/definitions/schemas/tag'
       responses:
         "200":
           description: "modifies the tag with the given id"
+          schema:
+            $ref: '#/definitions/schemas/tag_with_id'
       deprecated: false
     delete:
       parameters:
@@ -326,12 +347,28 @@ paths:
       responses:
         "200":
           description: "deletes the tag with the given id"
+          schema:
+            $ref: '#/definitions/schemas/tag_with_id'
       deprecated: false
   /users:
     get:
       responses:
         "200":
           description: "return all users"
+          schema:
+            type: object
+            properties:
+              pagination:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                  perpage:
+                    type: integer
+              users:
+                type: array
+                items:
+                  $ref: '#/definitions/schemas/user_with_id'
       deprecated: false
     post:
       parameters:
@@ -339,23 +376,20 @@ paths:
           name: body
           required: true
           schema:
-            type: object
-            properties:
-              username:
-                type: string
-              password:
-                type: string
-              admin:
-                type: boolean
+            $ref: '#/definitions/schemas/user_with_id'
       responses:
         "200":
           description: "create a new user"
+          schema:
+            $ref: '#/definitions/schemas/user_with_id'
       deprecated: false
   /users/{username}:
     get:
       responses:
         "200":
           description: "returns the user with the given username"
+          schema:
+            $ref: '#/definitions/schemas/user_with_id'
       parameters:
         - in: path
           name: username
@@ -366,6 +400,8 @@ paths:
       responses:
         "200":
           description: "modifies the user with the given username"
+          schema:
+            $ref: '#/definitions/schemas/user_with_id'
       parameters:
         - in: path
           name: username
@@ -375,17 +411,14 @@ paths:
           name: body
           required: true
           schema:
-            type: object
-            properties:
-              password:
-                type: string
-              admin:
-                type: boolean
+            $ref: '#/definitions/schemas/user'
       deprecated: false
     delete:
       responses:
         "200":
           description: "delete the user with the given username"
+          schema:
+            $ref: '#/definitions/schemas/user_with_id'
       parameters:
         - in: path
           name: username
@@ -395,6 +428,43 @@ paths:
 
 definitions:
   schemas:
+    user:
+      type: object
+      properties:
+        password:
+          type: string
+        admin:
+          type: boolean
+    user_with_id:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        admin:
+          type: boolean
+    tag:
+      type: object
+      properties:
+        tag:
+          type: string
+    tag_with_id:
+      type: object
+      properties:
+          tag:
+            type: string
+          id:
+            type: integer
+    lead_tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        lead_id:
+          type: integer
+        tag_id:
+          type: integer
     lead:
       type: object
       properties:
