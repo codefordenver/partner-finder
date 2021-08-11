@@ -93,6 +93,36 @@ Now source the environment variables: `source .env`
 Finally, you can create a new migration by doing `alembic revision -m "<description of migration>"`. This should create a new file under the `versions` directory.
 
 ## Development
+### Frontend
+#### Accessing the api docs
+The backend generates swagger documentation. This is a webpage that lets you make interactive api calls to test out the rest api before using it in your code. To run the swagger docs locally, make sure the `api` docker service is running. Check the api logs for a bearer token that you can use to authenticate on the swagger page. If you ran docker compose with the `-d` flag, you can get the logs with `docker compose logs api`.
+
+Now look for bearer tokens that let you authenticate as a normal user and as an admin:
+```
+api_1       | [2021-08-11 01:05:47 +0000] [19] [INFO] To authenticate as user@gmail.com, include this header with the request:
+api_1       |   Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJAZ21haWwuY29tIiwiZXhwaXJlcyI6IjIwMjEtMDgtMTJUMDE6MDU6NDcuNTM0NDgzKzAwOjAwIiwiYWRtaW4iOmZhbHNlfQ.41xKVHDz0ONRiWx-fWqifVvDBSzCN6vPmmf4ZWV0H3g
+api_1       | [2021-08-11 01:05:47 +0000] [19] [INFO] To authenticate as admin@gmail.com, include this header with the request:
+api_1       |   Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsImV4cGlyZXMiOiIyMDIxLTA4LTEyVDAxOjA1OjQ3LjU2NTExNCswMDowMCIsImFkbWluIjp0cnVlfQ.NNUMN92roOU44DKXcnstBUK_vpRfg57RYJyBMCuSdmQ
+```
+
+Copy only the value of the header, that is, the part that looks like
+
+```
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJAZ21haWwuY29tIiwiZXhwaXJlcyI6IjIwMjEtMDgtMTJUMDE6MDU6NDcuNTM0NDgzKzAwOjAwIiwiYWRtaW4iOmZhbHNlfQ.41xKVHDz0ONRiWx-fWqifVvDBSzCN6vPmmf4ZWV0H3g
+```
+
+Now in a web browser, navigate to http://localhost:8000/apidocs . You should see a page that looks like this:
+
+![](./docs/swagger-page.png)
+
+Click on the green "Authorize" button with the lock icon, paste the bearer token you copied into the login form, and click "Authorize".
+
+![](./docs/swagger-login.png)
+
+To send a request to any of the endpoints, click on one of the colored boxes, then click "Try it out" in the upper right corner. This lets you edit the request parameters and body through a form. You can send the request and view the response with the "Execute" button.
+
+![](./docs/swagger-try-it.png)
+
 ### Backend
 #### Linting and Formatting Scripts
 We have github actions that will check that backend code is in the correct format and abides by PEP8 standards. You will need to run a formatter and a linter on your code before committing in order for your changes to be accepted. In the `backend/scripts`, directory, there are scripts called `lint.sh` and `format.sh` for doing this. You can run them directly from the `backend` directory:
