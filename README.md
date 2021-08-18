@@ -140,6 +140,28 @@ After running `lint.sh`, you should see an output of `0` if everything is okay. 
 
 Once you've made formatting and linting changes, make a commit with a message like `lint and format` and add it to your PR. It is helpful to PR reviewers if you keep your formatting changes in their own commit because they can potentially make it harder to read your other code changes.
 
+
+#### Connecting to the AWS Postgres instance
+We run a postgres instance in AWS RDS. A simple method for connecting to the instance is with the psql command line tool. There is a script called `backend/database/psql.sh` that will run `psql` for you with arguments taken from environment variables. We will read these environment variables from a file called `.env-prod`. Please use this exact filename because it is already in `.gitignore`. Follow these steps to get into a psql session:
+
+1. create a file called `backend/.env-prod` if it does not already exist
+1. the contents of `backend/.env-prod` should look like this:
+    ```
+    export POSTGRES_PASSWORD=<insert password here>
+    export POSGRES_DB=<insert db here>
+    export POSTGRES_USER=<insert user here>
+    export POSTGRES_HOST=<insert host here>
+    ```
+1. contact a project maintainer (galbwe) for the values of the environment variables above
+1. source the environment variables to make them accessible in your terminal: `source backend/.env-prod`
+1. Run the database connection script: `./backend/database/psql.sh`
+1. You will be prompted for a password. It is the same as the `POSTGRES_PASSWORD` environment variable.
+1. The prompt should change to show psql. You can now run some sql commands to check that the connection worked:
+```sql
+\dt  -- list tables
+SELECT count(*) FROM leads;
+SELECT * FROM leads LIMIT 5;
+```
 #### Postman Collection
 Postman is a web client for testing out REST apis. See here to view and export [postman requests]() for this project. You will also need to install postman, import the collection, and then run the api on localhost to use postman in development.
 
