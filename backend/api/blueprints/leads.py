@@ -222,6 +222,11 @@ def _create_new_lead(request, valid_data_sources=VALID_DATA_SOURCES):
         if field != "id" and field in DEFAULT_LEAD_FIELDS and value is not None
     }
 
+    #validate company name field
+    company_name = body.get("company_name")
+    if not company_name:
+        return {"message": "company_name cannot be blank"}, 400
+
     # validate data source field
     data_source = body.get("data_source")
     if data_source:
