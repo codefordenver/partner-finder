@@ -101,10 +101,8 @@ def setup_dev_app():
                 )
             except KeyError as e:
                 dev_app.logger.error(e)
-                dev_app.logger.error(
-                    f"Could not log in development user. Response:"
-                    f" {json.dumps(res_json, indent=2, default=str)}"
-                )
+                response = json.dumps(res_json, indent=2, default=str)
+                dev_app.logger.error(f"Could not log in development user. Response: {response}")
 
     print_auth_headers("user@gmail.com", "password")
 
@@ -116,12 +114,11 @@ def setup_dev_app():
 def setup_prod_app():
     return app_factory(
         (healthcheck_bp, leads_bp, login_bp, users_bp, tags_bp),
-        logging.DEBUG,
+        logging.INFO,
         os.environ["SECRET_KEY"],
         True,
         swagger_template=load_swagger_yaml("prod.yml"),
-        swagger_variables={
-            "HOST": os.environ.get("EC2_DNS", "localhost:8000")},
+        swagger_variables={"HOST": os.environ.get("EC2_DNS", "localhost:8000")},
     )
 
 
