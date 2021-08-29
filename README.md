@@ -76,7 +76,7 @@ Then install requirements with `pip install -r requirements.txt`
 You should also need to set some environment variables so alembic can send queries to the locally running database. Create a `.env` file with `touch .env`, then add these lines to it:
 
 ```
-export FLASK_APP=api/app:dev_app
+export FLASK_APP=api/app:app
 export FLASK_ENV=development
 export POSTGRES_PASSWORD=password
 export POSTGRES_USER=cfd_partner_finder

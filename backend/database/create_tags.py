@@ -3,7 +3,7 @@ Populates the tags and leads_tags tables
 """
 from sqlalchemy import text
 
-from api.app import dev_app
+from api.app import app
 from api.db import db
 
 
@@ -70,7 +70,7 @@ def assign_tags_to_leads():
 
 
 if __name__ == "__main__":
-    with dev_app.app_context():
+    with app.app_context():
         print("Deleting all records from tags table")
         delete_all_tags()
         print("Creating tags for development...")
