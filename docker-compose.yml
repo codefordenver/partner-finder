@@ -11,7 +11,7 @@ services:
     api:
         build: ./backend
         environment:
-            - FLASK_APP=api/app:dev_app
+            - FLASK_APP=api/app:app
             - FLASK_ENV=development
             - POSTGRES_PASSWORD=password
             - POSTGRES_USER=cfd_partner_finder
@@ -31,7 +31,7 @@ services:
             && python database/scrape_socrata.py
             && python database/scrape_CNP.py
             && python database/create_tags.py
-            && gunicorn run_dev:dev_app -w 1 --threads 1 -b 0.0.0.0:8000 --reload"
+            && gunicorn run_app:app -w 1 --threads 1 -b 0.0.0.0:8000 --reload"
     frontend:
         build: ./frontend/cfd-partner-finder-frontend
         environment:
