@@ -41,7 +41,7 @@ def app_factory(
         if swagger_variables:
             template_str = json.dumps(swagger_template)
             for var, repl in swagger_variables.items():
-                var = '\$' + var
+                var = r"\$" + var
                 template_str = re.sub(var, repl, template_str)
             swagger_template = json.loads(template_str)
         Swagger(app, template=swagger_template)
@@ -75,7 +75,7 @@ def setup_dev_app():
         logging.DEBUG,
         os.environ["SECRET_KEY"],
         True,
-        swagger_template=load_swagger_yaml('dev.yml')
+        swagger_template=load_swagger_yaml("dev.yml"),
     )
 
     # authenticate user for dev app and get a bearer token
@@ -95,12 +95,15 @@ def setup_dev_app():
             try:
                 token = res_json["token"]
                 dev_app.logger.info(
-                    f"To authenticate as {username}, include this header with the request:\n\tAuthorization: Bearer {token}"
+                    f"To authenticate as {username},"
+                    f" include this header with the request:\n\tAuthorization:"
+                    f" Bearer {token}"
                 )
             except KeyError as e:
                 dev_app.logger.error(e)
                 dev_app.logger.error(
-                    f"Could not log in development user. Response: {json.dumps(res_json, indent=2, default=str)}"
+                    f"Could not log in development user. Response:"
+                    f" {json.dumps(res_json, indent=2, default=str)}"
                 )
 
     print_auth_headers("user@gmail.com", "password")
@@ -116,10 +119,9 @@ def setup_prod_app():
         logging.DEBUG,
         os.environ["SECRET_KEY"],
         True,
-        swagger_template=load_swagger_yaml('prod.yml'),
+        swagger_template=load_swagger_yaml("prod.yml"),
         swagger_variables={
-            "HOST": os.environ.get("EC2_DNS", "localhost:8000")
-        }
+            "HOST": os.environ.get("EC2_DNS", "localhost:8000")},
     )
 
 
