@@ -231,7 +231,7 @@ def _create_new_lead(request, valid_data_sources=VALID_DATA_SOURCES):
     else:
         # remove leading and trailing spaces
         company_name = company_name.strip()
-        
+
         # check company_name is not None post-strip
         if not company_name:
             return {"message": "company_name cannot be blank"}, 400
