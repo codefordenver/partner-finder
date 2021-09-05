@@ -1,0 +1,1 @@
+docker run --name cfd-partner-finder-api --env-file ./.env-docker -p 8000:8000 cfd-partner-finder-api:latest gunicorn run_app:app -w 1 --threads 1 -b 0.0.0.0:8000
