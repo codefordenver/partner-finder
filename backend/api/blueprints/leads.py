@@ -222,10 +222,23 @@ def _create_new_lead(request, valid_data_sources=VALID_DATA_SOURCES):
         if field != "id" and field in DEFAULT_LEAD_FIELDS and value is not None
     }
 
-    # validate company name field
+    # get input company_name
     company_name = body.get("company_name")
+
+    # check company_name is not None
     if not company_name:
         return {"message": "company_name cannot be blank"}, 400
+    else:
+        # remove leading and trailing spaces
+        company_name = company_name.strip()
+        
+        # check company_name is not None post-strip
+        if not company_name:
+            return {"message": "company_name cannot be blank"}, 400
+        else:
+            # check if company_name only contains alphanumeric characters or middle spaces
+            if not all(c.isalnum() or c.isspace() or c == "." or c == "&" or c == "'" for c in company_name):
+                return {"message": "company_name can only contain a-z, 0-9, ., &, ', whitespace"}, 400
 
     # validate data source field
     data_source = body.get("data_source")
