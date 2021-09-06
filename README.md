@@ -192,3 +192,20 @@ Postman is a web client for testing out REST apis. See here to view and export [
 1. Click on `notebooks`, and then `businesses.ipynb`. You should now see a notebook
     ![](./docs/jpyter-notebook-2.png)
 1. When you are done, stop the jupyter server with `Ctrl+C` and deactivate the virtual environment with `deactivate`.
+
+
+## Deployments
+
+### API
+
+This is the current manual process for building and deploying the rest api:
+
+1. Set the `AWS_PROFILE` environment variable
+2. Update the version number in `backend/scripts/build.sh`
+3. Run `build.sh` to build a docker image and push it to dockerhub
+4. Open a PR to update the version number in the github repo
+5. Use the `backend/scripts/ssh-server` script to start an ssh session in an ec2 instance
+6. update the version number in `partner-finder/start.sh`
+7. Pull the docker image from dockerhub
+8. stop and remove the running container with `sudo docker container stop <container name>` and `sudo docker container rm <container name>` you can get the container name by running `sudo docker ps`
+9. start a new container with the updated api with `sudo ./start.sh`
