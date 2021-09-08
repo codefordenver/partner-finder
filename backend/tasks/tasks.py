@@ -70,7 +70,7 @@ def find_CNP_leads() -> int:
             os.path.dirname(__file__),
             os.pardir,
             "database",
-            "CNPData_New.csv",
+            "CNPData.csv",
         )
     )
 
