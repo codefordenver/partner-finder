@@ -34,6 +34,11 @@ class CNPBusinessEntity:
     entitytwitter: str
     entityfacebook: str
     entitylinkedin: str
+    entityinstagram: str
+    mission_statement: str
+    populations_served: str
+    programs: str
+    county: str
 
 
 DATE_FORMAT = "%Y-%m-%d"
@@ -52,11 +57,16 @@ class Lead:
     twitter: Optional[str] = None
     facebook: Optional[str] = None
     linkedin: Optional[str] = None
+    instagram: Optional[str] = None
     last_email: Optional[datetime] = None
     last_google_search: Optional[datetime] = None
     last_twitter_search: Optional[datetime] = None
     last_facebook_search: Optional[datetime] = None
     last_linkedin_search: Optional[datetime] = None
+    mission_statement: Optional[str] = None
+    programs: Optional[str] = None
+    populations_served: Optional[str] = None
+    county: Optional[str] = None
 
     @property
     def formation_date_str(self):
@@ -91,7 +101,14 @@ def find_CNP_leads() -> int:
                         phone,
                         email,
                         facebook,
-                        data_source
+                        twitter,
+                        linkedin,
+                        instagram,
+                        data_source,
+                        mission_statement,
+                        programs,
+                        populations_served,
+                        county
                     )
                     SELECT
                         :company_name,
@@ -101,7 +118,14 @@ def find_CNP_leads() -> int:
                         :phone,
                         :email,
                         :facebook,
-                        'colorado_nonprofit_association'
+                        :twitter,
+                        :linkedin,
+                        :instagram,
+                        'colorado_nonprofit_association',
+                        :mission_statement,
+                        :programs,
+                        :populations_served,
+                        :county
                     WHERE NOT EXISTS (
                         SELECT 1 FROM leads
                         WHERE company_name = :company_name
@@ -115,6 +139,13 @@ def find_CNP_leads() -> int:
                 phone=lead.phone,
                 email=lead.email,
                 facebook=lead.facebook,
+                twitter=lead.twitter,
+                linkedin=lead.linkedin,
+                instagram=lead.instagram,
+                mission_statement=lead.mission_statement,
+                programs=lead.programs,
+                populations_served=lead.populations_served,
+                county=lead.county,
             )
             inserted += 1
     return inserted
@@ -134,7 +165,14 @@ def _map_CNP_entity_to_lead(entity: CNPBusinessEntity) -> Lead:
         phone=entity.entityphone,
         email=entity.entityemail,
         facebook=entity.entityfacebook,
+        linkedin=entity.entitylinkedin,
+        instagram=entity.entityinstagram,
+        twitter=entity.entitytwitter,
         formation_date=correct_date,
+        mission_statement=entity.mission_statement,
+        programs=entity.programs,
+        populations_served=entity.populations_served,
+        county=entity.county,
     )
 
 
@@ -163,6 +201,11 @@ def csv_to_entities(file_name: str):
                 entitytwitter=row["twitter"],
                 entityfacebook=row["facebook"],
                 entitylinkedin=row["linkedin"],
+                entityinstagram=row["instagram"],
+                mission_statement=row["mission_statement"],
+                populations_served=row["popu_served"],
+                programs=row["programs"],
+                county=row["county"],
             )
             business_entities.append(temp_entity)
 
