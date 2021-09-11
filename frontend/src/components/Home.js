@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   makeStyles,
@@ -73,8 +73,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function App() {
+export default function Home() {
   const classes = useStyles();
+
+  const [page, setPage] = useState(1);
+  const [perpage, setPerpage] = useState(10);
+  const [leads, setLeads] = useState([]);
+
+  // TODO: setup search and tags
+  // const [search, setSearch] = useState(null);
+  // const [tag, setTag] = useState(null);
+
+  useEffect(() => {
+    const url = `http://${process.env.API_HOST}/leads?page=${page}&perpage=${perpage}`;
+    const token = localStorage.getItem('partnerFinderToken');
+    fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setLeads(data.leads));
+  }, [page, perpage]);
+
+  console.log('leads', leads);
 
   return (
     <div id="home">
@@ -131,28 +154,36 @@ export default function App() {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>Do Better</TableCell>
-                <TableCell>Jane Doe</TableCell>
-                <TableCell>www.dobetter.org</TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell>
-                  <Box
-                    display="flex"
-                    flexDirection="row"
-                    justifyContent="center"
-                  >
-                    <Box className={classes.roundButton}>
-                      <EditOutlinedIcon />
+              {leads.map((lead) => (
+                <TableRow>
+                  <TableCell>{lead['company_name']}</TableCell>
+                  <TableCell>{lead['contact_name']}</TableCell>
+                  <TableCell>{lead['website']}</TableCell>
+                  <TableCell>
+                    {lead['facebook'] ||
+                      lead['linkedin'] ||
+                      lead['twitter'] ||
+                      lead['instagram']}
+                  </TableCell>
+                  <TableCell>{lead['assignee']}</TableCell>
+                  {/* TODO: get tags */}
+                  <TableCell></TableCell>
+                  <TableCell>
+                    <Box
+                      display="flex"
+                      flexDirection="row"
+                      justifyContent="center"
+                    >
+                      <Box className={classes.roundButton}>
+                        <EditOutlinedIcon />
+                      </Box>
+                      <Box className={classes.roundButton}>
+                        <DeleteOutlineOutlinedIcon />
+                      </Box>
                     </Box>
-                    <Box className={classes.roundButton}>
-                      <DeleteOutlineOutlinedIcon />
-                    </Box>
-                  </Box>
-                </TableCell>
-              </TableRow>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
