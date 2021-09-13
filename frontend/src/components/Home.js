@@ -3,8 +3,6 @@ import React, { useState, useEffect } from 'react';
 import {
   makeStyles,
   Button,
-  Typography,
-  TextField,
   Box,
   TableContainer,
   Table,
@@ -13,12 +11,11 @@ import {
   TableRow,
   TableCell,
 } from '@material-ui/core';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
 import Header from './Header';
+import PaginationControl from './PaginationControl';
 
 const useStyles = makeStyles((theme) => ({
   // TODO: make custom buttonPrimary and roundButton components that use these styles
@@ -97,8 +94,6 @@ export default function Home() {
       .then((data) => setLeads(data.leads));
   }, [page, perpage]);
 
-  console.log('leads', leads);
-
   return (
     <div id="home">
       <Header />
@@ -120,20 +115,13 @@ export default function Home() {
           >
             Add New
           </Button>
-          {/* TODO: refactor the following into a PaginationControl component */}
-          <Typography>Results</Typography>
-          <TextField
-            className={classes.paginationTextField}
-            variant="outlined"
-            defaultValue="10"
+          <PaginationControl
+            page={page}
+            perpage={perpage}
+            maxpages={100}
+            setPage={setPage}
+            setPerpage={setPerpage}
           />
-          <Button>
-            <ChevronLeftIcon></ChevronLeftIcon>
-          </Button>
-          <Typography>1 / 25</Typography>
-          <Button>
-            <ChevronRightIcon></ChevronRightIcon>
-          </Button>
         </Box>
 
         {/* Table with lead data */}
