@@ -23,10 +23,8 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
 1. Install Docker and Docker-compose
 1. Install node
 1. Install node dependencies:
-    - `cd` to `frontend/cfd-partner-finder-frontend`
-    - `npm i --save`
-    - `cd ../..`
-1. Run the frontend, rest api, and database in docker containers:
+    - `cd` to `frontend/
+1. Run the rest api and database in docker containers:
     ```bash
     docker-compose up --build -d
     ```
@@ -58,11 +56,14 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
         curl --location --request GET 'http://localhost:8000/leads' \
         --header 'Authorization: Bearer <insert your token here>'
         ```
-1. Check that the frontend is working:
-    - In a browser, go to http://localhost:3000
-    - You should see a login page. Use these credentials to continue to the homepage:
-        - username: `user@gmail.com`
-        - password: `password`
+1. Install node
+1. Install node dependencies:
+    - `cd` to `frontend/
+    - `yarn install`
+1. Run the react app:
+    - `yarn start`
+1. Check that the react app is running:
+    - in a browser, go to http://localhost:1234
 
 ## Creating Database Migration Files
 You'll need a python virtual environment in the `backend` directory. Make sure you have python 3.7 or up installed. Ideally 3.9 since that is what is used in the rest api. You can check the version with `python --version`

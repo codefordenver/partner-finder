@@ -38,13 +38,13 @@ jobs:
           node-version: 16.x
       - name: Install dependencies
         run: |
-          cd frontend/cfd-partner-finder-frontend
-          npm install
+          cd frontend
+          yarn install
       - name: Check formatter was run
         run: |
-          cd frontend/cfd-partner-finder-frontend
-          npm run format.check
+          cd frontend
+          yarn format.check
       - name: Run linter
         run: |
-          cd frontend/cfd-partner-finder-frontend
-          npm run lint
+          cd frontend
+          yarn lint
