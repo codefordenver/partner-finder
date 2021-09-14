@@ -29,9 +29,7 @@ export default function App() {
       },
       body: JSON.stringify({
         username: process.env.API_USER,
-        // username: 'dev01@gmail.com',
         password: process.env.API_PASSWORD,
-        // password: 'Linu$Torvald$',
       }),
     })
       .then((response) => response.json())
