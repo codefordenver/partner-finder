@@ -24,7 +24,6 @@ export default function PaginationControl({
   });
 
   const handlePerpageChange = (event) => {
-    console.log('value: ', event.target.value);
     let newPerpage = parseInt(event.target.value, 10);
     if (newPerpage < 1) {
       newPerpage = 1;

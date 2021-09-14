@@ -27,6 +27,7 @@ services:
             - postgres
         command: >
             /bin/bash -c "alembic upgrade head
+            && sleep 1
             && python database/create_dev_users.py
             && python database/scrape_socrata.py
             && python database/scrape_CNP.py
