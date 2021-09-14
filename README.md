@@ -47,7 +47,7 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
         curl --location --request POST 'http://localhost:8000/login' \
         --header 'Content-Type: application/json' \
         --data-raw '{
-            "username": "admin",
+            "username": "user@gmail.com",
             "password": "password"
         }'
         ```
@@ -58,8 +58,14 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
         ```
 1. Install node
 1. Install node dependencies:
-    - `cd` to `frontend/
+    - `cd` to `frontend/`
     - `yarn install`
+1. In the `frontend` directory, create a `.env` file with these contents:
+    ```bash
+    API_HOST='localhost:8000'
+    API_USER='user@gmail.com'
+    API_PASSWORD='password'
+    ```
 1. Run the react app:
     - `yarn start`
 1. Check that the react app is running:
