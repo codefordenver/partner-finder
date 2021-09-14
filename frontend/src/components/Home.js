@@ -16,6 +16,7 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 
 import Header from './Header';
 import PaginationControl from './PaginationControl';
+import { API_HOST } from '../config';
 
 const useStyles = makeStyles((theme) => ({
   // TODO: make custom buttonPrimary and roundButton components that use these styles
@@ -82,7 +83,7 @@ export default function Home() {
   // const [tag, setTag] = useState(null);
 
   useEffect(() => {
-    const url = `http://${process.env.API_HOST}/leads?page=${page}&perpage=${perpage}`;
+    const url = `http://${API_HOST}/leads?page=${page}&perpage=${perpage}`;
     const token = localStorage.getItem('partnerFinderToken');
     fetch(url, {
       headers: {
