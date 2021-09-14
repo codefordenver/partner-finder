@@ -194,6 +194,102 @@ def _get_all_leads(request):
         }, 200
 
 
+@leads_bp.route("/leads/n_pages", methods=["GET"])
+@auth("user")
+def leads_number_of_pages():
+    """
+    Determines the number of pages needed to show all paginated results
+    """
+    try:
+        search = _parse_search_param(request)
+        tag = _parse_tag_param(request)
+        _, perpage = parse_pagination_params(request)
+    except ValueError as e:
+        # TODO: log error message
+        return {
+            "message": "invalid query parameters",
+            "detail": {
+                "error": str(e),
+            },
+        }, 400
+
+    # get an id for the given tag
+    select_id_for_tag = text(
+        """
+        SELECT
+            id
+        FROM tags
+        WHERE tag = :tag
+        """
+    )
+    with db.get_connection() as conn:
+        row = conn.execute(select_id_for_tag, tag=tag).first()
+        tag_id = row[0] if row else None
+
+    if search is None and tag_id is None:
+        query = text(
+            """
+            SELECT count(id) as n_records
+            FROM leads;
+            """
+        )
+        query_args = {}
+    elif search is None:
+        query = text(
+            """
+            SELECT count(l.id) as n_records
+            FROM leads l
+            INNER JOIN lead_tag lt on l.id = lt.lead_id
+            WHERE lt.tag_id = :tag_id
+            """
+        )
+        query_args = {
+            "tag_id": tag_id,
+        }
+    elif tag_id is None:
+        query = text(
+            """
+            SELECT count(id) AS n_records
+            FROM leads
+            WHERE to_tsvector(company_name) @@ to_tsquery('{search}')
+            """.format(
+                search=search
+            )
+        )
+        query_args = {}
+    else:
+        query = text(
+            """
+            SELECT count(l.id) AS n_records
+            FROM lead_tag lt
+            JOIN leads l on l.id = lt.lead_id
+            JOIN tags t on t.id = lt.tag_id
+            WHERE to_tsvector(l.company_name) @@ to_tsquery('{search}')
+                AND lt.tag_id = :tag_id
+            """.format(
+                search=search
+            )
+        )
+        query_args = {
+            "tag_id": tag_id,
+        }
+
+    with db.get_connection() as connection:
+        row = connection.execute(query, **query_args).fetchone()
+        n_records = row["n_records"]
+        pages = n_records // perpage
+        if n_records % perpage != 0:
+            pages += 1
+        return {
+            "query": {
+                "search": search,
+                "tag": tag,
+                "perpage": perpage,
+            },
+            "pages": pages,
+        }, 200
+
+
 def _parse_search_param(request):
 
     return request.args.get("search")
