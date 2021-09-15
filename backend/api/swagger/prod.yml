@@ -5,7 +5,7 @@ info:
   description: "Aggregates data on Colorado nonprofits that Code For Denver can potentially partner with on projects. Data sources are socrata api and Colorado Nonprofits."
 host: "$HOST"
 schemes:
-  - "http"
+  - "https"
 securityDefinitions:
   bearerAuth:
       type: apiKey
