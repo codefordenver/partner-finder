@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { CssBaseline, createTheme, ThemeProvider } from '@material-ui/core';
 
 import About from './About';
 import Home from './Home';
 import Login from './Login';
+import { API_PASSWORD, API_USER, API_HOST } from '../config';
 
 const theme = createTheme({
   palette: {
@@ -21,15 +22,15 @@ export default function App() {
   // TODO: implement a login form that does this
 
   useEffect(() => {
-    const url = `http://${process.env.API_HOST}/login`;
+    const url = `http://${API_HOST}/login`;
     fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        username: process.env.API_USER,
-        password: process.env.API_PASSWORD,
+        username: API_USER,
+        password: API_PASSWORD,
       }),
     })
       .then((response) => response.json())
@@ -48,6 +49,8 @@ export default function App() {
             <Route path="/home">
               <Home />
             </Route>
+
+            <Redirect from="/" to="home" />
           </Switch>
         </BrowserRouter>
       </div>
