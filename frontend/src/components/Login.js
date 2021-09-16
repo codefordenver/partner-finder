@@ -77,7 +77,12 @@ export default function Login() {
           <label className={classes.inputLabel} htmlFor="password">
             Password
           </label>
-          <TextField id="password" name="password" variant="outlined" />
+          <TextField
+            id="password"
+            name="password"
+            type="password"
+            variant="outlined"
+          />
         </Box>
         <ButtonPrimary
           // for now, just redirect to the homepage without checking credentials
