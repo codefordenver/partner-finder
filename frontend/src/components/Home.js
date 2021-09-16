@@ -101,10 +101,7 @@ export default function Home() {
           justifyContent="flex-end"
           alignItems="center"
         >
-
-          <ButtonPrimary
-            marginRight="auto"
-          >Add New</ButtonPrimary>
+          <ButtonPrimary marginRight="auto">Add New</ButtonPrimary>
 
           <PaginationControl
             page={page}

@@ -10,21 +10,21 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'capitalize',
     background: theme.palette.primary.dark,
     borderRadius: '0px',
-    marginRight: props => props.marginRight,
+    marginRight: (props) => props.marginRight,
   },
-}))
+}));
 
-export default function ButtonPrimary({onClick, children, ...styles}) {
+export default function ButtonPrimary({ onClick, children, ...styles }) {
   const classes = useStyles(styles);
 
   return (
-  <Button
-    className={classes.buttonPrimary}
-    variant="contained"
-    color="primary"
-    onClick={onClick}
-  >
-    {children}
-  </Button>
-  )
+    <Button
+      className={classes.buttonPrimary}
+      variant="contained"
+      color="primary"
+      onClick={onClick}
+    >
+      {children}
+    </Button>
+  );
 }
