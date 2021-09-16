@@ -14,6 +14,7 @@ import {
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
+import ButtonPrimary from './ButtonPrimary';
 import Header from './Header';
 import PaginationControl from './PaginationControl';
 import { API_HOST } from '../config';
@@ -109,13 +110,9 @@ export default function Home() {
           justifyContent="flex-end"
           alignItems="center"
         >
-          <Button
-            className={classes.buttonPrimary}
-            variant="contained"
-            color="primary"
-          >
-            Add New
-          </Button>
+
+          <ButtonPrimary>Add New</ButtonPrimary>
+
           <PaginationControl
             page={page}
             perpage={perpage}
