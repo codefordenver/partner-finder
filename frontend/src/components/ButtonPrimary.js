@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function ButtonPrimary({children, ...styles}) {
+export default function ButtonPrimary({onClick, children, ...styles}) {
   const classes = useStyles(styles);
 
   return (
@@ -22,6 +22,7 @@ export default function ButtonPrimary({children, ...styles}) {
     className={classes.buttonPrimary}
     variant="contained"
     color="primary"
+    onClick={onClick}
   >
     {children}
   </Button>

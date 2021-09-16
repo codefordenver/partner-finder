@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { makeStyles, Typography, TextField, Box } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 import ButtonPrimary from './ButtonPrimary';
 
@@ -41,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
   const classes = useStyles();
+  const history = useHistory();
 
   return (
     <Box className={classes.loginPage}>
@@ -63,11 +65,7 @@ export default function Login() {
           <label className={classes.inputLabel} htmlFor="username">
             Username
           </label>
-          <TextField
-            id="username"
-            name="username"
-            variant="outlined"
-          />
+          <TextField id="username" name="username" variant="outlined" />
         </Box>
         <Box
           display="flex"
@@ -79,13 +77,15 @@ export default function Login() {
           <label className={classes.inputLabel} htmlFor="password">
             Password
           </label>
-          <TextField
-            id="password"
-            name="password"
-            variant="outlined"
-          />
+          <TextField id="password" name="password" variant="outlined" />
         </Box>
-        <ButtonPrimary>Login</ButtonPrimary>
+        <ButtonPrimary
+          // for now, just redirect to the homepage without checking credentials
+          // TODO: actually implement login logic
+          onClick={() => history.push('/home')}
+        >
+          Login
+        </ButtonPrimary>
       </Box>
     </Box>
   );

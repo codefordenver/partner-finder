@@ -53,8 +53,8 @@ export default function App() {
               <Home />
             </Route>
 
-            {/* TODO: if user is not logged in, redirect to the login page */}
-            {/* <Redirect from="/" to="home" /> */}
+            {/* TODO: if user is not logged in, redirect to login page */}
+            <Redirect from="/" to="login" />
           </Switch>
         </BrowserRouter>
       </div>
