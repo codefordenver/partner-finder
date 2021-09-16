@@ -10,12 +10,12 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'capitalize',
     background: theme.palette.primary.dark,
     borderRadius: '0px',
-    marginRight: 'auto', // positions button to the left edge of the flex container
+    marginRight: props => props.marginRight,
   },
 }))
 
-export default function ButtonPrimary({children}) {
-  const classes = useStyles();
+export default function ButtonPrimary({children, ...styles}) {
+  const classes = useStyles(styles);
 
   return (
   <Button
