@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { makeStyles, Typography, TextField, Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 
+import { API_HOST } from '../config';
 import ButtonPrimary from './ButtonPrimary';
 
 const useStyles = makeStyles((theme) => ({
@@ -44,6 +45,36 @@ export default function Login() {
   const classes = useStyles();
   const history = useHistory();
 
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (event) => {
+    const url = `http://${API_HOST}/login`;
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    })
+      .then(res => res.json())
+      .then(({ success, token, details }) => {
+        if (success) {
+          localStorage.setItem('partnerFinderToken', token);
+          history.push('/home');
+
+        } else if (details.user_found) {
+          console.log('Invalid password')
+        } else {
+          console.log('User not found')
+        }
+
+      })
+  }
+
   return (
     <Box className={classes.loginPage}>
       <Typography
@@ -62,10 +93,18 @@ export default function Login() {
           alignItems="center"
           marginBottom="40px"
         >
-          <label className={classes.inputLabel} htmlFor="username">
+          <label
+            className={classes.inputLabel}
+            htmlFor="username"
+          >
             Username
           </label>
-          <TextField id="username" name="username" variant="outlined" />
+          <TextField
+            id="username"
+            name="username"
+            variant="outlined"
+            onChange={event => setUsername(event.target.value)}
+          />
         </Box>
         <Box
           display="flex"
@@ -77,12 +116,18 @@ export default function Login() {
           <label className={classes.inputLabel} htmlFor="password">
             Password
           </label>
-          <TextField id="password" name="password" variant="outlined" />
+          <TextField
+            id="password"
+            name="password"
+            type="password"
+            variant="outlined"
+            onChange={event => setPassword(event.target.value)}
+          />
         </Box>
         <ButtonPrimary
           // for now, just redirect to the homepage without checking credentials
           // TODO: actually implement login logic
-          onClick={() => history.push('/home')}
+          onClick={handleSubmit}
         >
           Login
         </ButtonPrimary>
