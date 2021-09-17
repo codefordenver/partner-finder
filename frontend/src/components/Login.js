@@ -45,8 +45,8 @@ export default function Login() {
   const classes = useStyles();
   const history = useHistory();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleSubmit = (event) => {
     const url = `http://${API_HOST}/login`;
@@ -60,20 +60,19 @@ export default function Login() {
         password,
       }),
     })
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(({ success, token, details }) => {
+        const detailsParsed = details && JSON.parse(details)
         if (success) {
           localStorage.setItem('partnerFinderToken', token);
           history.push('/home');
-
-        } else if (details.user_found) {
-          console.log('Invalid password')
+        } else if (detailsParsed && detailsParsed.user_found) {
+          console.log('Invalid password');
         } else {
-          console.log('User not found')
+          console.log('User not found');
         }
-
-      })
-  }
+      });
+  };
 
   return (
     <Box className={classes.loginPage}>
@@ -93,17 +92,14 @@ export default function Login() {
           alignItems="center"
           marginBottom="40px"
         >
-          <label
-            className={classes.inputLabel}
-            htmlFor="username"
-          >
+          <label className={classes.inputLabel} htmlFor="username">
             Username
           </label>
           <TextField
             id="username"
             name="username"
             variant="outlined"
-            onChange={event => setUsername(event.target.value)}
+            onChange={(event) => setUsername(event.target.value)}
           />
         </Box>
         <Box
@@ -121,7 +117,7 @@ export default function Login() {
             name="password"
             type="password"
             variant="outlined"
-            onChange={event => setPassword(event.target.value)}
+            onChange={(event) => setPassword(event.target.value)}
           />
         </Box>
         <ButtonPrimary
