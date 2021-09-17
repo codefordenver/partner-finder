@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 
 import { makeStyles, Typography, TextField, Box } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import { useHistory } from 'react-router-dom';
 
 import { API_HOST } from '../config';
 import ButtonPrimary from './ButtonPrimary';
+
+const NO_ERRORS = '';
+
+const USER_NOT_FOUND = 'User not found';
+
+const INVALID_PASSWORD = 'Invalid password';
 
 const useStyles = makeStyles((theme) => ({
   loginPage: {
@@ -45,8 +52,14 @@ export default function Login() {
   const classes = useStyles();
   const history = useHistory();
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [state, setState] = useState({
+    username: '',
+    password: '',
+    errorMessage: NO_ERRORS,
+  });
+  const username = state.username;
+  const password = state.password;
+  const errorMessage = state.errorMessage;
 
   const handleSubmit = (event) => {
     const url = `http://${API_HOST}/login`;
@@ -62,14 +75,20 @@ export default function Login() {
     })
       .then((res) => res.json())
       .then(({ success, token, details }) => {
-        const detailsParsed = details && JSON.parse(details)
+        const detailsParsed = details && JSON.parse(details);
         if (success) {
           localStorage.setItem('partnerFinderToken', token);
           history.push('/home');
         } else if (detailsParsed && detailsParsed.user_found) {
-          console.log('Invalid password');
+          setState({
+            ...state,
+            errorMessage: INVALID_PASSWORD,
+          });
         } else {
-          console.log('User not found');
+          setState({
+            ...state,
+            errorMessage: USER_NOT_FOUND,
+          });
         }
       });
   };
@@ -99,7 +118,13 @@ export default function Login() {
             id="username"
             name="username"
             variant="outlined"
-            onChange={(event) => setUsername(event.target.value)}
+            onChange={(event) =>
+              setState({
+                ...state,
+                username: event.target.value,
+                errorMessage: NO_ERRORS,
+              })
+            }
           />
         </Box>
         <Box
@@ -117,12 +142,24 @@ export default function Login() {
             name="password"
             type="password"
             variant="outlined"
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={(event) =>
+              setState({
+                ...state,
+                password: event.target.value,
+                errorMessage: NO_ERRORS,
+              })
+            }
           />
         </Box>
+        {errorMessage && (
+          <Alert severity="error">
+            {errorMessage}
+          </Alert>
+        )}
         <ButtonPrimary
           // for now, just redirect to the homepage without checking credentials
           // TODO: actually implement login logic
+          marginTop={errorMessage ? '20px' : '0'}
           onClick={handleSubmit}
         >
           Login
