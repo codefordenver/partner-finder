@@ -43,6 +43,9 @@ export default function App() {
         <CssBaseline />
         <BrowserRouter>
           <Switch>
+            <Route path="/login">
+              <Login />
+            </Route>
             <Route path="/about">
               <About />
             </Route>
@@ -50,7 +53,8 @@ export default function App() {
               <Home />
             </Route>
 
-            <Redirect from="/" to="home" />
+            {/* TODO: if user is not logged in, redirect to login page */}
+            <Redirect from="/" to="login" />
           </Switch>
         </BrowserRouter>
       </div>

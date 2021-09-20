@@ -14,21 +14,13 @@ import {
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
+import ButtonPrimary from './ButtonPrimary';
 import Header from './Header';
 import PaginationControl from './PaginationControl';
 import { API_HOST } from '../config';
 
 const useStyles = makeStyles((theme) => ({
-  // TODO: make custom buttonPrimary and roundButton components that use these styles
-  buttonPrimary: {
-    width: '220px',
-    height: '50px',
-    fontSize: '1.2em', // guessed on this
-    textTransform: 'capitalize',
-    background: theme.palette.primary.dark,
-    borderRadius: '0px',
-    marginRight: 'auto', // positions button to the left edge of the flex container
-  },
+  // TODO: make custom roundButton component
   roundButton: {
     width: '50px',
     height: '50px',
@@ -109,13 +101,8 @@ export default function Home() {
           justifyContent="flex-end"
           alignItems="center"
         >
-          <Button
-            className={classes.buttonPrimary}
-            variant="contained"
-            color="primary"
-          >
-            Add New
-          </Button>
+          <ButtonPrimary marginRight="auto">Add New</ButtonPrimary>
+
           <PaginationControl
             page={page}
             perpage={perpage}
