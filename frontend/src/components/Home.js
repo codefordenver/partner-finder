@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+import { useHistory } from 'react-router';
 import {
   makeStyles,
   Button,
@@ -70,6 +71,8 @@ export default function Home() {
   const [perpage, setPerpage] = useState(10);
   const [leads, setLeads] = useState([]);
 
+  const history = useHistory();
+
   // TODO: setup search and tags
   // const [search, setSearch] = useState(null);
   // const [tag, setTag] = useState(null);
@@ -77,13 +80,22 @@ export default function Home() {
   useEffect(() => {
     const url = `http://${API_HOST}/leads?page=${page}&perpage=${perpage}`;
     const token = localStorage.getItem('partnerFinderToken');
+    if (!token) {
+      history.push('/login');
+    }
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status === 401) {
+          history.push('/login');
+        } else {
+          return response.json();
+        }
+      })
       .then((data) => setLeads(data.leads));
   }, [page, perpage]);
 

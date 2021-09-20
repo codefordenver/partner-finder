@@ -78,7 +78,7 @@ export default function Login() {
         const detailsParsed = details && JSON.parse(details);
         if (success) {
           localStorage.setItem('partnerFinderToken', token);
-          history.push('/home');
+          history.push('/');
         } else if (detailsParsed && detailsParsed.user_found) {
           setState({
             ...state,
@@ -151,14 +151,8 @@ export default function Login() {
             }
           />
         </Box>
-        {errorMessage && (
-          <Alert severity="error">
-            {errorMessage}
-          </Alert>
-        )}
+        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <ButtonPrimary
-          // for now, just redirect to the homepage without checking credentials
-          // TODO: actually implement login logic
           marginTop={errorMessage ? '20px' : '0'}
           onClick={handleSubmit}
         >
