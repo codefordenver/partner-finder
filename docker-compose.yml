@@ -29,7 +29,16 @@ services:
             /bin/bash -c "alembic upgrade head
             && sleep 1
             && python database/create_dev_users.py
-            && python database/scrape_socrata.py
             && python database/scrape_CNP.py
             && python database/create_tags.py
             && gunicorn run_app:app -w 1 --threads 1 -b 0.0.0.0:8000 --reload"
+    frontend:
+        build: ./frontend
+        environment:
+            - API_HOST=localhost:8000
+            - API_USER=user@gmail.com
+            - API_PASSWORD=password
+        volumes: ["./frontend:/app"]
+        ports:
+            - "1234:1234"
+            - "1235:1235"
