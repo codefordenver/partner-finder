@@ -20,11 +20,8 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
     git clone <git-repo-name>
     ```
 ## Running the app locally
-1. Install Docker and Docker-compose
-1. Install node
-1. Install node dependencies:
-    - `cd` to `frontend/
-1. Run the rest api and database in docker containers:
+1. Install Docker and Docker-compose.
+1. Run the database, api, and frontend in docker containers using compose.
     ```bash
     docker-compose up --build -d
     ```
@@ -55,21 +52,11 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
         ```bash
         curl --location --request GET 'http://localhost:8000/leads' \
         --header 'Authorization: Bearer <insert your token here>'
-        ```
-1. Install node
-1. Install node dependencies:
-    - `cd` to `frontend/`
-    - `yarn install`
-1. In the `frontend` directory, create a `.env` file with these contents:
-    ```bash
-    API_HOST='localhost:8000'
-    API_USER='user@gmail.com'
-    API_PASSWORD='password'
-    ```
-1. Run the react app:
-    - `yarn start`
 1. Check that the react app is running:
     - in a browser, go to http://localhost:1234
+1. You should see a login page. Use the following credentials for development:
+    - username: `user@gmail.com`
+    - password: `password`
 
 ## Creating Database Migration Files
 You'll need a python virtual environment in the `backend` directory. Make sure you have python 3.7 or up installed. Ideally 3.9 since that is what is used in the rest api. You can check the version with `python --version`
