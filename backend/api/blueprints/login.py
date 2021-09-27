@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from flask import Blueprint, request, jsonify, current_app
 from sqlalchemy import text
 
-from ..auth import verify_password, generate_jwt
+from ..auth import verify_password, generate_jwt, auth
 from ..db import db
 from ..util.datetime import utc_iso_8601
 
@@ -64,3 +64,10 @@ def login():
             ),
             401,
         )
+
+
+@login_bp.route("/authorize")
+@auth("user")
+def authorize_user():
+    """Endpoint to check that a submitted auth token is valid"""
+    return "success", 200

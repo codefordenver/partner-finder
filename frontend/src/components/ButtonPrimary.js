@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'capitalize',
     background: theme.palette.primary.dark,
     borderRadius: '0px',
+    marginTop: (props) => props.marginTop,
     marginRight: (props) => props.marginRight,
   },
 }));
