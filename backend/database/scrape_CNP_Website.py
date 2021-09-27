@@ -76,30 +76,20 @@ def analyze_mem_page(mem_page):
     phone = get_valid_data(soup.findAll("div", class_="views-field views-field-phone"))
     usefulData["phone"] = get_text(phone)
 
-    address = get_valid_data(
-        soup.findAll("div", class_="views-field views-field-postal-code")
-    )
+    address = get_valid_data(soup.findAll("div", class_="views-field views-field-postal-code"))
     usefulData["address"] = get_text(address)
 
-    mission_statement = get_valid_data(
-        soup.findAll("div", class_="views-field views-field-mission-statement-9")
-    )
+    mission_statement = get_valid_data(soup.findAll("div", class_="views-field views-field-mission-statement-9"))
     usefulData["mission_statement"] = get_text(mission_statement)
 
-    year_founded = get_valid_data(
-        soup.findAll("div", class_="views-field views-field-year-founded-10")
-    )
+    year_founded = get_valid_data(soup.findAll("div", class_="views-field views-field-year-founded-10"))
     usefulData["year_founded"] = get_text(year_founded)
 
-    popu_served = get_valid_data(
-        soup.findAll("div", class_="views-field views-field-populations-served-16")
-    )
+    popu_served = get_valid_data(soup.findAll("div", class_="views-field views-field-populations-served-16"))
     usefulData["popu_served"] = get_text(popu_served)
 
     socials = soup.find("div", class_="views-field views-field-nothing-1")
-    socials_dict = socials_from_soup(
-        socials, ["facebook", "linkedin", "twitter", "instagram"]
-    )
+    socials_dict = socials_from_soup(socials, ["facebook", "linkedin", "twitter", "instagram"])
     usefulData["twitter"] = socials_dict.get("twitter")
     usefulData["facebook"] = socials_dict.get("facebook")
     usefulData["linkedin"] = socials_dict.get("linkedin")
