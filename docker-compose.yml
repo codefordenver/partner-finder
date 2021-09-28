@@ -34,7 +34,7 @@ services:
     frontend:
         build: ./frontend
         environment:
-            - API_HOST=localhost:8000
+            - API_HOST=http://localhost:8000
             - API_USER=user@gmail.com
             - API_PASSWORD=password
         volumes: ["./frontend:/app"]
