@@ -63,6 +63,7 @@ export default function Login() {
 
   const handleSubmit = (event) => {
     const url = `http://${API_HOST}/login`;
+    console.log('url: ', API_HOST);
     fetch(url, {
       method: 'POST',
       headers: {
