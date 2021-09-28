@@ -4,27 +4,13 @@ Additional formating for python files after black has run.
 import os
 
 
-BACKEND_DIR = os.path.abspath(
-    os.path.join(
-        os.path.dirname(__file__),
-        os.pardir,
-    )
-)
+BACKEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
 
-EXLUDED_DIRS = frozenset(
-    [
-        "venv",
-        "__pycache__",
-    ]
-)
+EXLUDED_DIRS = frozenset(["venv", "__pycache__"])
 
 
-EXCLUDED_FILENAMES = frozenset(
-    [
-        __file__,
-    ]
-)
+EXCLUDED_FILENAMES = frozenset([__file__])
 
 
 for root, dirs, files in os.walk(BACKEND_DIR):
