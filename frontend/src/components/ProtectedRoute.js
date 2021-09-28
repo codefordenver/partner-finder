@@ -6,7 +6,7 @@ import { API_HOST } from '../config';
 
 const userLoggedIn = async () => {
   const token = localStorage.getItem('partnerFinderToken');
-  const url = `http://${API_HOST}/authorize`;
+  const url = `${API_HOST}/authorize`;
   if (token) {
     const response = await fetch(url, {
       method: 'GET',

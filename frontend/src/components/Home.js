@@ -78,7 +78,7 @@ export default function Home() {
   // const [tag, setTag] = useState(null);
 
   useEffect(() => {
-    const url = `http://${API_HOST}/leads?page=${page}&perpage=${perpage}`;
+    const url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
     const token = localStorage.getItem('partnerFinderToken');
     if (!token) {
       history.push('/login');
