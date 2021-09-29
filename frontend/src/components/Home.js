@@ -11,6 +11,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Typography,
 } from '@material-ui/core';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
@@ -18,6 +19,7 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import ButtonPrimary from './ButtonPrimary';
 import Header from './Header';
 import PaginationControl from './PaginationControl';
+import Search from './Search';
 import { API_HOST } from '../config';
 
 const useStyles = makeStyles((theme) => ({
@@ -61,6 +63,9 @@ const useStyles = makeStyles((theme) => ({
   },
   columnName: {
     color: '#fff',
+  },
+  logo: {
+    fontWeight: 'bold',
   },
 }));
 
@@ -118,7 +123,14 @@ export default function Home() {
 
   return (
     <div id="home">
-      <Header />
+      <Header>
+        {/* TODO: adjust title font size */}
+        {/* TODO: make "Code For Denver" a link back to the home page */}
+        <Typography className={classes.logo} variant="h4" component="h1">
+          Code For Denver
+        </Typography>
+        <Search />
+      </Header>
       <Box
         marginX="15px" // TODO: there must be a cleaner way to get the margins
       >
