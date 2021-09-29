@@ -72,42 +72,18 @@ const useStyles = makeStyles((theme) => ({
 export default function Home() {
   const classes = useStyles();
 
-  const [query, setQuery] = useState({
-    page: 1,
-    perpage: 10,
-    search: '',
-  });
-
-  // TODO: add filtering by tags
-  const setPage = (page) => {
-    setQuery({
-      ...query,
-      page,
-    });
-  };
-
-  const setPerpage = (perpage) => {
-    setQuery({
-      ...query,
-      perpage,
-    });
-  };
-
-  const setSearch = (search) => {
-    setQuery({
-      ...query,
-      search,
-    });
-  };
+  const [page, setPage] = useState(1);
+  const [perpage, setPerpage] = useState(10);
+  const [search, setSearch] = useState('');
 
   const [leads, setLeads] = useState([]);
 
   const history = useHistory();
 
   useEffect(() => {
-    let url = `${API_HOST}/leads?page=${query.page}&perpage=${query.perpage}`;
-    if (query.search) {
-      url += `&search=${query.search}`;
+    let url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
+    if (search) {
+      url += `&search=${search}`;
     }
     const token = localStorage.getItem('partnerFinderToken');
     if (!token) {
@@ -127,7 +103,7 @@ export default function Home() {
         }
       })
       .then((data) => setLeads(data.leads));
-  }, [query]);
+  }, [page, perpage, search]);
 
   return (
     <div id="home">
@@ -153,8 +129,8 @@ export default function Home() {
           <ButtonPrimary marginRight="auto">Add New</ButtonPrimary>
 
           <PaginationControl
-            page={query.page}
-            perpage={query.perpage}
+            page={page}
+            perpage={perpage}
             maxpages={100}
             setPage={setPage}
             setPerpage={setPerpage}
