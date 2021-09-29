@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { makeStyles, InputBase } from '@material-ui/core';
 
@@ -10,14 +10,29 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: '5px',
     paddingBottom: '5px',
   },
-}))
+}));
 
-export default function Search() {
-    const classes = useStyles();
+export default function Search({ onDebounce, debounceTime }) {
+  const classes = useStyles();
 
-    return (
-      <div className={classes.search}>
-        <InputBase placeholder="Search..." />
-      </div>
-    )
+  const [timeoutId, setTimeoutId] = useState(null);
+
+  const handleChange = (event) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    if (event.target.value) {
+      const newId = setTimeout(
+        () => onDebounce(event.target.value),
+        debounceTime
+      );
+      setTimeoutId(newId);
+    }
+  };
+
+  return (
+    <div className={classes.search}>
+      <InputBase placeholder="Search..." onChange={handleChange} />
+    </div>
+  );
 }

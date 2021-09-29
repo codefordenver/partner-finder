@@ -75,8 +75,10 @@ export default function Home() {
   const [query, setQuery] = useState({
     page: 1,
     perpage: 10,
+    search: '',
   });
 
+  // TODO: add filtering by tags
   const setPage = (page) => {
     setQuery({
       ...query,
@@ -91,16 +93,22 @@ export default function Home() {
     });
   };
 
+  const setSearch = (search) => {
+    setQuery({
+      ...query,
+      search,
+    });
+  };
+
   const [leads, setLeads] = useState([]);
 
   const history = useHistory();
 
-  // TODO: setup search and tags
-  // const [search, setSearch] = useState(null);
-  // const [tag, setTag] = useState(null);
-
   useEffect(() => {
-    const url = `${API_HOST}/leads?page=${query.page}&perpage=${query.perpage}`;
+    let url = `${API_HOST}/leads?page=${query.page}&perpage=${query.perpage}`;
+    if (query.search) {
+      url += `&search=${query.search}`;
+    }
     const token = localStorage.getItem('partnerFinderToken');
     if (!token) {
       history.push('/login');
@@ -129,7 +137,7 @@ export default function Home() {
         <Typography className={classes.logo} variant="h4" component="h1">
           Code For Denver
         </Typography>
-        <Search />
+        <Search debounceTime={500} onDebounce={setSearch} />
       </Header>
       <Box
         marginX="15px" // TODO: there must be a cleaner way to get the margins
