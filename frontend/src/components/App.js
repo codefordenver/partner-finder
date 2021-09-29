@@ -13,6 +13,8 @@ const theme = createTheme({
     primary: {
       main: '#E14E54',
       dark: '#C90E17',
+      green: '#0CC96F',
+      grey: '#A8A8A8',
     },
   },
 });
