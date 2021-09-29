@@ -103,6 +103,20 @@ export default function Home() {
     setOpen(false);
   };
 
+  const addLead = (lead) => {
+    const token = localStorage.getItem('partnerFinderToken');
+    const url = 'https://cfd-partner-finder-api.xyz/leads';
+    fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(lead),
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((response) => console.log('response', response));
+  };
+
   return (
     <div id="home">
       <Header />
@@ -120,7 +134,7 @@ export default function Home() {
           <ButtonPrimary marginRight="auto" onClick={handleOpen}>
             Add New
           </ButtonPrimary>
-          <LeadModal open={open} onClose={handleClose} />
+          <LeadModal open={open} onClose={handleClose} addLead={addLead} />
 
           <PaginationControl
             page={page}
