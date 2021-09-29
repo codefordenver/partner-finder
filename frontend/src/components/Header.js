@@ -1,12 +1,8 @@
 import React from 'react';
 
-import {
-  makeStyles,
-  Toolbar,
-  AppBar,
-  Typography,
-  InputBase,
-} from '@material-ui/core';
+import { makeStyles, Toolbar, AppBar, Typography } from '@material-ui/core';
+
+import Search from './Search';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,13 +11,6 @@ const useStyles = makeStyles((theme) => ({
   },
   logo: {
     fontWeight: 'bold',
-  },
-  search: {
-    backgroundColor: '#E5E5E5',
-    flexBasis: '25%',
-    paddingLeft: '10px',
-    paddingTop: '5px',
-    paddingBottom: '5px',
   },
 }));
 
@@ -36,9 +25,7 @@ export default function Header() {
         <Typography className={classes.logo} variant="h4" component="h1">
           Code For Denver
         </Typography>
-        <div className={classes.search}>
-          <InputBase placeholder="Search..." />
-        </div>
+        <Search />
       </Toolbar>
     </AppBar>
   );
