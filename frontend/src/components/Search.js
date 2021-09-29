@@ -21,13 +21,12 @@ export default function Search({ onDebounce, debounceTime }) {
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
-    if (event.target.value) {
-      const newId = setTimeout(
-        () => onDebounce(event.target.value),
-        debounceTime
-      );
-      setTimeoutId(newId);
-    }
+
+    const newId = setTimeout(
+      () => onDebounce(event.target.value),
+      debounceTime
+    );
+    setTimeoutId(newId);
   };
 
   return (
