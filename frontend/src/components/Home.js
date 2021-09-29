@@ -1,26 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
 import { useHistory } from 'react-router';
-import {
-  makeStyles,
-  Button,
-  Box,
-  TableContainer,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-} from '@material-ui/core';
+import { makeStyles, Button, Box } from '@material-ui/core';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-
+import { LeadTable } from './LeadTable';
 import ButtonPrimary from './ButtonPrimary';
 import Header from './Header';
 import PaginationControl from './PaginationControl';
 import { API_HOST } from '../config';
 
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
   // TODO: make custom roundButton component
   roundButton: {
     width: '50px',
@@ -123,58 +113,7 @@ export default function Home() {
             setPerpage={setPerpage}
           />
         </Box>
-
-        {/* Table with lead data */}
-        <TableContainer className={classes.leadTable}>
-          <Table>
-            <TableHead className={classes.leadTableHeader}>
-              <TableRow>
-                <TableCell className={classes.columnName}>Name</TableCell>
-                <TableCell className={classes.columnName}>Contact</TableCell>
-                <TableCell className={classes.columnName}>Website</TableCell>
-                <TableCell className={classes.columnName}>
-                  Social Media
-                </TableCell>
-                <TableCell className={classes.columnName}>Assignee</TableCell>
-                <TableCell className={classes.columnName}>Tags</TableCell>
-                {/* Extra cell for edit and delete buttons */}
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {leads.map((lead) => (
-                <TableRow>
-                  <TableCell>{lead['company_name']}</TableCell>
-                  <TableCell>{lead['contact_name']}</TableCell>
-                  <TableCell>{lead['website']}</TableCell>
-                  <TableCell>
-                    {lead['facebook'] ||
-                      lead['linkedin'] ||
-                      lead['twitter'] ||
-                      lead['instagram']}
-                  </TableCell>
-                  <TableCell>{lead['assignee']}</TableCell>
-                  {/* TODO: get tags */}
-                  <TableCell></TableCell>
-                  <TableCell>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      justifyContent="center"
-                    >
-                      <Box className={classes.roundButton}>
-                        <EditOutlinedIcon />
-                      </Box>
-                      <Box className={classes.roundButton}>
-                        <DeleteOutlineOutlinedIcon />
-                      </Box>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <LeadTable leads={leads} />
       </Box>
 
       <Button className={classes.aboutFooter}>About</Button>
