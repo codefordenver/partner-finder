@@ -5,6 +5,7 @@ import Modal from '@mui/material/Modal';
 import styled from 'styled-components';
 import ButtonPrimary from './ButtonPrimary';
 import { makeStyles } from '@material-ui/core';
+import { AddLocationRounded } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -20,22 +21,24 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: '2em',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    width: '40%',
+    width: '45%',
+    margin: '1em',
   },
   input: {
     padding: '0.25em',
-    margin: '0.5em',
-    width: '20em',
+    width: '21em',
   },
   label: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    margin: '0.75em',
   },
   buttonContainer: {
     display: 'flex',
@@ -43,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const LeadModal = ({ open, onClose }) => {
+export const LeadModal = ({ open, onClose, addLead }) => {
   const classes = useStyles();
   const [assigned, setAssigned] = useState('');
   const [companyName, setCompanyName] = useState('');
@@ -51,11 +54,30 @@ export const LeadModal = ({ open, onClose }) => {
   const [dataSource, setDataSource] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [Website, setWebsite] = useState('');
+  const [website, setWebsite] = useState('');
   const [facebook, setFacebook] = useState('');
   const [instagram, setInstagram] = useState('');
   const [linkedin, setLinkedin] = useState('');
   const [twitter, setTwitter] = useState('');
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    const newLead = {
+      assigned: assigned,
+      company_name: companyName,
+      contact_name: contactName,
+      data_source: dataSource,
+      email: email,
+      phone: phone,
+      facebook: facebook,
+      instagram: instagram,
+      linkedin: linkedin,
+      twitter: twitter,
+      website: website,
+    };
+
+    addLead(newLead);
+  };
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="modal-modal-title">
@@ -78,6 +100,7 @@ export const LeadModal = ({ open, onClose }) => {
             <input
               type="text"
               className={classes.input}
+              value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
             />
           </label>
@@ -86,6 +109,7 @@ export const LeadModal = ({ open, onClose }) => {
             <input
               type="text"
               className={classes.input}
+              value={contactName}
               onChange={(e) => setContactName(e.target.value)}
             />
           </label>
@@ -94,6 +118,7 @@ export const LeadModal = ({ open, onClose }) => {
             <input
               type="text"
               className={classes.input}
+              value={dataSource}
               onChange={(e) => setDataSource(e.target.value)}
             />
           </label>
@@ -102,6 +127,7 @@ export const LeadModal = ({ open, onClose }) => {
             <input
               type="text"
               className={classes.input}
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </label>
@@ -110,6 +136,7 @@ export const LeadModal = ({ open, onClose }) => {
             <input
               type="text"
               className={classes.input}
+              value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
           </label>
@@ -118,6 +145,7 @@ export const LeadModal = ({ open, onClose }) => {
             <input
               type="text"
               className={classes.input}
+              value={website}
               onChange={(e) => setWebsite(e.target.value)}
             />
           </label>
@@ -126,6 +154,7 @@ export const LeadModal = ({ open, onClose }) => {
             <input
               type="text"
               className={classes.input}
+              value={facebook}
               onChange={(e) => setFacebook(e.target.value)}
             />
           </label>
@@ -134,6 +163,7 @@ export const LeadModal = ({ open, onClose }) => {
             <input
               type="text"
               className={classes.input}
+              value={instagram}
               onChange={(e) => setInstagram(e.target.value)}
             />
           </label>
@@ -142,6 +172,7 @@ export const LeadModal = ({ open, onClose }) => {
             <input
               type="text"
               className={classes.input}
+              value={linkedin}
               onChange={(e) => setLinkedin(e.target.value)}
             />
           </label>
@@ -150,14 +181,17 @@ export const LeadModal = ({ open, onClose }) => {
             <input
               type="text"
               className={classes.input}
+              value={twitter}
               onChange={(e) => setTwitter(e.target.value)}
             />
           </label>
         </form>
         <div className={classes.buttonContainer}>
-          <ButtonPrimary>Save</ButtonPrimary>
-          <ButtonPrimary>Reset</ButtonPrimary>
-          <ButtonPrimary>Back</ButtonPrimary>
+          <ButtonPrimary marginRight="1em" onClick={(e) => handleSave(e)}>
+            Save
+          </ButtonPrimary>
+          <ButtonPrimary marginRight="1em">Reset</ButtonPrimary>
+          <ButtonPrimary marginRight="1em">Back</ButtonPrimary>
         </div>
       </Box>
     </Modal>
