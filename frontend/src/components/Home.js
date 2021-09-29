@@ -120,14 +120,7 @@ export default function Home() {
           <ButtonPrimary marginRight="auto" onClick={handleOpen}>
             Add New
           </ButtonPrimary>
-          {open && (
-            <LeadModal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            />
-          )}
+          <LeadModal open={open} onClose={handleClose} />
 
           <PaginationControl
             page={page}
