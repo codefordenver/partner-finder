@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
@@ -45,6 +45,17 @@ const useStyles = makeStyles((theme) => ({
 
 export const LeadModal = ({ open, onClose }) => {
   const classes = useStyles();
+  const [assigned, setAssigned] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [contactName, setContactName] = useState('');
+  const [dataSource, setDataSource] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [Website, setWebsite] = useState('');
+  const [facebook, setFacebook] = useState('');
+  const [instagram, setInstagram] = useState('');
+  const [linkedin, setLinkedin] = useState('');
+  const [twitter, setTwitter] = useState('');
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="modal-modal-title">
@@ -55,47 +66,92 @@ export const LeadModal = ({ open, onClose }) => {
         <form className={classes.form}>
           <label className={classes.label}>
             Assigned*
-            <input type="text" className={classes.input} />
+            <input
+              type="text"
+              className={classes.input}
+              value={assigned}
+              onChange={(e) => setAssigned(e.target.value)}
+            />
           </label>
           <label className={classes.label}>
             Company Name*
-            <input type="text" className={classes.input} />
+            <input
+              type="text"
+              className={classes.input}
+              onChange={(e) => setCompanyName(e.target.value)}
+            />
           </label>
           <label className={classes.label}>
             Contact Name*
-            <input type="text" className={classes.input} />
+            <input
+              type="text"
+              className={classes.input}
+              onChange={(e) => setContactName(e.target.value)}
+            />
           </label>
           <label className={classes.label}>
             Data Source*
-            <input type="text" className={classes.input} />
+            <input
+              type="text"
+              className={classes.input}
+              onChange={(e) => setDataSource(e.target.value)}
+            />
           </label>
           <label className={classes.label}>
             Email*
-            <input type="text" className={classes.input} />
+            <input
+              type="text"
+              className={classes.input}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </label>
           <label className={classes.label}>
             Phone*
-            <input type="text" className={classes.input} />
+            <input
+              type="text"
+              className={classes.input}
+              onChange={(e) => setPhone(e.target.value)}
+            />
           </label>
           <label className={classes.label}>
             Website*
-            <input type="text" className={classes.input} />
+            <input
+              type="text"
+              className={classes.input}
+              onChange={(e) => setWebsite(e.target.value)}
+            />
           </label>
           <label className={classes.label}>
             Facebook
-            <input type="text" className={classes.input} />
+            <input
+              type="text"
+              className={classes.input}
+              onChange={(e) => setFacebook(e.target.value)}
+            />
           </label>
           <label className={classes.label}>
             Instagram
-            <input type="text" className={classes.input} />
+            <input
+              type="text"
+              className={classes.input}
+              onChange={(e) => setInstagram(e.target.value)}
+            />
           </label>
           <label className={classes.label}>
             LinkedIn
-            <input type="text" className={classes.input} />
+            <input
+              type="text"
+              className={classes.input}
+              onChange={(e) => setLinkedin(e.target.value)}
+            />
           </label>
           <label className={classes.label}>
             Twitter
-            <input type="text" className={classes.input} />
+            <input
+              type="text"
+              className={classes.input}
+              onChange={(e) => setTwitter(e.target.value)}
+            />
           </label>
         </form>
         <div className={classes.buttonContainer}>
