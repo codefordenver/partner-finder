@@ -6,19 +6,12 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Box,
 } from '@material-ui/core';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { useStyles } from './Home';
 import { LeadRow } from './LeadRow';
 
 export const LeadTable = ({ leads }) => {
   const classes = useStyles();
-
-  const makeLeadRows = () => {
-    return leads.map((lead) => <LeadRow lead={lead} />);
-  };
 
   return (
     <TableContainer className={classes.leadTable}>
@@ -35,7 +28,11 @@ export const LeadTable = ({ leads }) => {
             <TableCell />
           </TableRow>
         </TableHead>
-        <TableBody>{leads.length && makeLeadRows(leads)}</TableBody>
+        <TableBody>
+          {leads.map((lead) => (
+            <LeadRow key={lead.id} lead={lead} />
+          ))}
+        </TableBody>
       </Table>
     </TableContainer>
   );
