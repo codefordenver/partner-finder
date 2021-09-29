@@ -113,7 +113,10 @@ export default function Home() {
         <Typography className={classes.logo} variant="h4" component="h1">
           Code For Denver
         </Typography>
-        <Search debounceTime={500} onDebounce={event => setSearch(event.target.value)} />
+        <Search
+          debounceTime={500}
+          onDebounce={(event) => setSearch(event.target.value)}
+        />
       </Header>
       <Box
         marginX="15px" // TODO: there must be a cleaner way to get the margins

@@ -14,9 +14,7 @@ export default function Header({ children }) {
 
   return (
     <AppBar position="static">
-      <Toolbar className={classes.root}>
-        { children }
-      </Toolbar>
+      <Toolbar className={classes.root}>{children}</Toolbar>
     </AppBar>
   );
 }

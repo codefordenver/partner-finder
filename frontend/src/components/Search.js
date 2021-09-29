@@ -22,10 +22,7 @@ export default function Search({ onDebounce, debounceTime }) {
       clearTimeout(timeoutId);
     }
 
-    const newId = setTimeout(
-      () => onDebounce(event),
-      debounceTime
-    );
+    const newId = setTimeout(() => onDebounce(event), debounceTime);
     setTimeoutId(newId);
   };
 
