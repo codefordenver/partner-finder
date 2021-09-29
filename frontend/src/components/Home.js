@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { makeStyles, Button, Box } from '@material-ui/core';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { LeadTable } from './LeadTable';
 import ButtonPrimary from './ButtonPrimary';
 import Header from './Header';
