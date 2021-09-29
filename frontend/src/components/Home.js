@@ -67,8 +67,25 @@ const useStyles = makeStyles((theme) => ({
 export default function Home() {
   const classes = useStyles();
 
-  const [page, setPage] = useState(1);
-  const [perpage, setPerpage] = useState(10);
+  const [query, setQuery] = useState({
+    page: 1,
+    perpage: 10,
+  });
+
+  const setPage = (page) => {
+    setQuery({
+      ...query,
+      page,
+    });
+  };
+
+  const setPerpage = (perpage) => {
+    setQuery({
+      ...query,
+      perpage,
+    });
+  };
+
   const [leads, setLeads] = useState([]);
 
   const history = useHistory();
@@ -78,7 +95,7 @@ export default function Home() {
   // const [tag, setTag] = useState(null);
 
   useEffect(() => {
-    const url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
+    const url = `${API_HOST}/leads?page=${query.page}&perpage=${query.perpage}`;
     const token = localStorage.getItem('partnerFinderToken');
     if (!token) {
       history.push('/login');
@@ -97,7 +114,7 @@ export default function Home() {
         }
       })
       .then((data) => setLeads(data.leads));
-  }, [page, perpage]);
+  }, [query]);
 
   return (
     <div id="home">
@@ -116,8 +133,8 @@ export default function Home() {
           <ButtonPrimary marginRight="auto">Add New</ButtonPrimary>
 
           <PaginationControl
-            page={page}
-            perpage={perpage}
+            page={query.page}
+            perpage={query.perpage}
             maxpages={100}
             setPage={setPage}
             setPerpage={setPerpage}
