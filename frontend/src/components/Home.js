@@ -6,6 +6,7 @@ import ButtonPrimary from './ButtonPrimary';
 import Header from './Header';
 import PaginationControl from './PaginationControl';
 import { API_HOST } from '../config';
+import { LeadModal } from './LeadModal';
 
 export const useStyles = makeStyles((theme) => ({
   // TODO: make custom roundButton component
@@ -57,6 +58,7 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const [perpage, setPerpage] = useState(10);
   const [leads, setLeads] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const history = useHistory();
 
@@ -93,6 +95,14 @@ export default function Home() {
       .catch((error) => console.error(error.message));
   }, [page, perpage]);
 
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <div id="home">
       <Header />
@@ -107,7 +117,17 @@ export default function Home() {
           justifyContent="flex-end"
           alignItems="center"
         >
-          <ButtonPrimary marginRight="auto">Add New</ButtonPrimary>
+          <ButtonPrimary marginRight="auto" onClick={handleOpen}>
+            Add New
+          </ButtonPrimary>
+          {open && (
+            <LeadModal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            />
+          )}
 
           <PaginationControl
             page={page}
