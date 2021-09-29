@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import { useHistory } from 'react-router';
 import { makeStyles, Button, Box } from '@material-ui/core';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
@@ -67,6 +66,16 @@ export default function Home() {
   // const [search, setSearch] = useState(null);
   // const [tag, setTag] = useState(null);
 
+  const checkForErrors = (response) => {
+    if (response.status === 200) {
+      return response.json();
+    } else if (response.status === 401) {
+      history.push('/login');
+    } else {
+      throw new Error('Something went wrong');
+    }
+  };
+
   useEffect(() => {
     const url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
     const token = localStorage.getItem('partnerFinderToken');
@@ -79,14 +88,11 @@ export default function Home() {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((response) => {
-        if (response.status === 401) {
-          history.push('/login');
-        } else {
-          return response.json();
-        }
-      })
-      .then((data) => setLeads(data.leads));
+      .then((response) => checkForErrors(response))
+      .then((data) => setLeads(data.leads))
+      // TODO: create state for error and set state instead of just console.error
+      // conditional rendering if there is an error
+      .catch((error) => console.error(error.message));
   }, [page, perpage]);
 
   return (
