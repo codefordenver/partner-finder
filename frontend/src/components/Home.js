@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
-import { makeStyles, Button, Box } from '@material-ui/core';
+import { makeStyles, Button, Box, Typography } from '@material-ui/core';
 import { LeadTable } from './LeadTable';
 import ButtonPrimary from './ButtonPrimary';
 import Header from './Header';
 import PaginationControl from './PaginationControl';
+import Search from './Search';
 import { API_HOST } from '../config';
 import { LeadModal } from './LeadModal';
+import { DEBOUNCE_TIME_MS } from '../constants';
 
 export const useStyles = makeStyles((theme) => ({
   // TODO: make custom roundButton component
@@ -50,6 +52,9 @@ export const useStyles = makeStyles((theme) => ({
   columnName: {
     color: '#fff',
   },
+  logo: {
+    fontWeight: 'bold',
+  },
 }));
 
 export default function Home() {
@@ -57,6 +62,8 @@ export default function Home() {
 
   const [page, setPage] = useState(1);
   const [perpage, setPerpage] = useState(10);
+  const [search, setSearch] = useState('');
+
   const [leads, setLeads] = useState([]);
   const [open, setOpen] = useState(false);
 
@@ -77,7 +84,10 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
+    let url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
+    if (search) {
+      url += `&search=${search}`;
+    }
     const token = localStorage.getItem('partnerFinderToken');
     if (!token) {
       history.push('/login');
@@ -93,7 +103,7 @@ export default function Home() {
       // TODO: create state for error and set state instead of just console.error
       // conditional rendering if there is an error
       .catch((error) => console.error(error.message));
-  }, [page, perpage]);
+  }, [page, perpage, search]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -119,7 +129,17 @@ export default function Home() {
 
   return (
     <div id="home">
-      <Header />
+      <Header>
+        {/* TODO: adjust title font size */}
+        {/* TODO: make "Code For Denver" a link back to the home page */}
+        <Typography className={classes.logo} variant="h4" component="h1">
+          Code For Denver
+        </Typography>
+        <Search
+          debounceTime={DEBOUNCE_TIME_MS}
+          onDebounce={(event) => setSearch(event.target.value)}
+        />
+      </Header>
       <Box
         marginX="15px" // TODO: there must be a cleaner way to get the margins
       >
