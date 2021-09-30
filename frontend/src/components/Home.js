@@ -7,6 +7,7 @@ import Header from './Header';
 import PaginationControl from './PaginationControl';
 import Search from './Search';
 import { API_HOST } from '../config';
+import { DEBOUNCE_TIME_MS } from '../constants';
 
 export const useStyles = makeStyles((theme) => ({
   // TODO: make custom roundButton component
@@ -111,7 +112,7 @@ export default function Home() {
           Code For Denver
         </Typography>
         <Search
-          debounceTime={500}
+          debounceTime={DEBOUNCE_TIME_MS}
           onDebounce={(event) => setSearch(event.target.value)}
         />
       </Header>
