@@ -2,6 +2,7 @@ import React, { useState, Fragment } from 'react';
 import { makeStyles, Typography, TextField, Button } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { DEBOUNCE_TIME_MS } from '../constants';
 
 const useStyles = makeStyles((theme) => ({
   paginationTextField: {
@@ -36,7 +37,7 @@ export default function PaginationControl({
       clearTimeout(state.timeoutId);
     }
     if (newPerpage) {
-      const newId = setTimeout(() => setPerpage(newPerpage), 2000);
+      const newId = setTimeout(() => setPerpage(newPerpage), DEBOUNCE_TIME_MS);
       setState({
         ...state,
         timeoutId: newId,
@@ -57,7 +58,6 @@ export default function PaginationControl({
         className={classes.paginationTextField}
         value={state.perpageText}
         variant="outlined"
-        defaultValue={`${perpage}`}
         onChange={handlePerpageChange}
       />
       <Button onClick={() => setPage(page - 1 > 0 ? page - 1 : 1)}>
