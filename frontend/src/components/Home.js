@@ -1,26 +1,15 @@
 import React, { useState, useEffect } from 'react';
-
 import { useHistory } from 'react-router';
-import {
-  makeStyles,
-  Button,
-  Box,
-  TableContainer,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-} from '@material-ui/core';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-
+import { makeStyles, Button, Box, Typography } from '@material-ui/core';
+import { LeadTable } from './LeadTable';
 import ButtonPrimary from './ButtonPrimary';
 import Header from './Header';
 import PaginationControl from './PaginationControl';
+import Search from './Search';
 import { API_HOST } from '../config';
+import { DEBOUNCE_TIME_MS } from '../constants';
 
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
   // TODO: make custom roundButton component
   roundButton: {
     width: '50px',
@@ -62,6 +51,9 @@ const useStyles = makeStyles((theme) => ({
   columnName: {
     color: '#fff',
   },
+  logo: {
+    fontWeight: 'bold',
+  },
 }));
 
 export default function Home() {
@@ -69,6 +61,8 @@ export default function Home() {
 
   const [page, setPage] = useState(1);
   const [perpage, setPerpage] = useState(10);
+  const [search, setSearch] = useState('');
+
   const [leads, setLeads] = useState([]);
 
   const history = useHistory();
@@ -77,8 +71,21 @@ export default function Home() {
   // const [search, setSearch] = useState(null);
   // const [tag, setTag] = useState(null);
 
+  const checkForErrors = (response) => {
+    if (response.status === 200) {
+      return response.json();
+    } else if (response.status === 401) {
+      history.push('/login');
+    } else {
+      throw new Error('Something went wrong');
+    }
+  };
+
   useEffect(() => {
-    const url = `https://${API_HOST}/leads?page=${page}&perpage=${perpage}`;
+    let url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
+    if (search) {
+      url += `&search=${search}`;
+    }
     const token = localStorage.getItem('partnerFinderToken');
     if (!token) {
       history.push('/login');
@@ -89,19 +96,26 @@ export default function Home() {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((response) => {
-        if (response.status === 401) {
-          history.push('/login');
-        } else {
-          return response.json();
-        }
-      })
-      .then((data) => setLeads(data.leads));
-  }, [page, perpage]);
+      .then((response) => checkForErrors(response))
+      .then((data) => setLeads(data.leads))
+      // TODO: create state for error and set state instead of just console.error
+      // conditional rendering if there is an error
+      .catch((error) => console.error(error.message));
+  }, [page, perpage, search]);
 
   return (
     <div id="home">
-      <Header />
+      <Header>
+        {/* TODO: adjust title font size */}
+        {/* TODO: make "Code For Denver" a link back to the home page */}
+        <Typography className={classes.logo} variant="h4" component="h1">
+          Code For Denver
+        </Typography>
+        <Search
+          debounceTime={DEBOUNCE_TIME_MS}
+          onDebounce={(event) => setSearch(event.target.value)}
+        />
+      </Header>
       <Box
         marginX="15px" // TODO: there must be a cleaner way to get the margins
       >
@@ -123,58 +137,7 @@ export default function Home() {
             setPerpage={setPerpage}
           />
         </Box>
-
-        {/* Table with lead data */}
-        <TableContainer className={classes.leadTable}>
-          <Table>
-            <TableHead className={classes.leadTableHeader}>
-              <TableRow>
-                <TableCell className={classes.columnName}>Name</TableCell>
-                <TableCell className={classes.columnName}>Contact</TableCell>
-                <TableCell className={classes.columnName}>Website</TableCell>
-                <TableCell className={classes.columnName}>
-                  Social Media
-                </TableCell>
-                <TableCell className={classes.columnName}>Assignee</TableCell>
-                <TableCell className={classes.columnName}>Tags</TableCell>
-                {/* Extra cell for edit and delete buttons */}
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {leads.map((lead) => (
-                <TableRow>
-                  <TableCell>{lead['company_name']}</TableCell>
-                  <TableCell>{lead['contact_name']}</TableCell>
-                  <TableCell>{lead['website']}</TableCell>
-                  <TableCell>
-                    {lead['facebook'] ||
-                      lead['linkedin'] ||
-                      lead['twitter'] ||
-                      lead['instagram']}
-                  </TableCell>
-                  <TableCell>{lead['assignee']}</TableCell>
-                  {/* TODO: get tags */}
-                  <TableCell></TableCell>
-                  <TableCell>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      justifyContent="center"
-                    >
-                      <Box className={classes.roundButton}>
-                        <EditOutlinedIcon />
-                      </Box>
-                      <Box className={classes.roundButton}>
-                        <DeleteOutlineOutlinedIcon />
-                      </Box>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <LeadTable leads={leads} />
       </Box>
 
       <Button className={classes.aboutFooter}>About</Button>

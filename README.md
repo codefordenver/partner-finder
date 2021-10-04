@@ -77,7 +77,6 @@ export POSTGRES_USER=cfd_partner_finder
 export POSTGRES_DB=cfd_partner_finder
 export POSTGRES_HOST=localhost
 export POSTGRES_PORT=5432
-export ALLOW_CORS=true
 export SECRET_KEY=supersafe
 export PYTHONPATH="${pwd}"
 ```

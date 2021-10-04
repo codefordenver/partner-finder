@@ -116,7 +116,7 @@ def setup_prod_app():
         (healthcheck_bp, leads_bp, login_bp, users_bp, tags_bp),
         logging.INFO,
         os.environ["SECRET_KEY"],
-        True,
+        False,
         swagger_template=load_swagger_yaml("prod.yml"),
         swagger_variables={"HOST": os.environ.get("EC2_DNS", "localhost:8000")},
     )
