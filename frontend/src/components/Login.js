@@ -62,7 +62,7 @@ export default function Login() {
   const errorMessage = state.errorMessage;
 
   const handleSubmit = (event) => {
-    const url = `http://${API_HOST}/login`;
+    const url = `https://${API_HOST}/login`;
     console.log('url: ', API_HOST);
     fetch(url, {
       method: 'POST',
