@@ -56,6 +56,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
   const [instagram, setInstagram] = useState('');
   const [linkedin, setLinkedin] = useState('');
   const [twitter, setTwitter] = useState('');
+  const [requiredField, setRequiredField] = useState(false);
 
   const clearForm = () => {
     setAssigned('');
@@ -72,22 +73,26 @@ export const LeadModal = ({ open, onClose, addLead }) => {
 
   const handleSave = (e) => {
     e.preventDefault();
-    //company name required
-    const newLead = {
-      assigned: assigned,
-      company_name: companyName,
-      contact_name: contactName,
-      data_source: 'user_entry',
-      email: email,
-      phone: phone,
-      facebook: facebook,
-      instagram: instagram,
-      linkedin: linkedin,
-      twitter: twitter,
-      website: website,
-    };
-    addLead(newLead);
-    clearForm();
+    setRequiredField(false);
+    if (companyName) {
+      const newLead = {
+        assigned: assigned,
+        company_name: companyName,
+        contact_name: contactName,
+        data_source: 'user_entry',
+        email: email,
+        phone: phone,
+        facebook: facebook,
+        instagram: instagram,
+        linkedin: linkedin,
+        twitter: twitter,
+        website: website,
+      };
+      addLead(newLead);
+      clearForm();
+    } else {
+      setRequiredField(true);
+    }
   };
 
   return (
@@ -97,15 +102,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
           Add a Lead
         </Typography>
         <form className={classes.form}>
-          <label className={classes.label}>
-            Assigned*
-            <input
-              type="text"
-              className={classes.input}
-              value={assigned}
-              onChange={(e) => setAssigned(e.target.value)}
-            />
-          </label>
+          {requiredField && <p>Company name is required</p>}
           <label className={classes.label}>
             Company Name*
             <input
@@ -116,7 +113,16 @@ export const LeadModal = ({ open, onClose, addLead }) => {
             />
           </label>
           <label className={classes.label}>
-            Contact Name*
+            Assigned
+            <input
+              type="text"
+              className={classes.input}
+              value={assigned}
+              onChange={(e) => setAssigned(e.target.value)}
+            />
+          </label>
+          <label className={classes.label}>
+            Contact Name
             <input
               type="text"
               className={classes.input}
@@ -125,7 +131,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
             />
           </label>
           <label className={classes.label}>
-            Email*
+            Email
             <input
               type="text"
               className={classes.input}
@@ -134,7 +140,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
             />
           </label>
           <label className={classes.label}>
-            Phone*
+            Phone
             <input
               type="text"
               className={classes.input}
@@ -143,7 +149,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
             />
           </label>
           <label className={classes.label}>
-            Website*
+            Website
             <input
               type="text"
               className={classes.input}
