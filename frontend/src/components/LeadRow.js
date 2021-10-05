@@ -12,7 +12,11 @@ const SocialMediaLink = ({ lead }) => {
     lead['instagram'] ||
     null;
 
-  return <a href={link} target="no_blank">{link}</a>;
+  return (
+    <a href={link} target="no_blank">
+      {link}
+    </a>
+  );
 };
 
 export const LeadRow = ({ lead }) => {
