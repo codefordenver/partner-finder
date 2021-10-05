@@ -106,8 +106,6 @@ export default function Home() {
     })
       .then((response) => checkForErrors(response))
       .then((data) => setLeads(data.leads))
-      // TODO: create state for error and set state instead of just console.error
-      // conditional rendering if there is an error
       .catch((error) => {
         setErrorState(error);
       });
