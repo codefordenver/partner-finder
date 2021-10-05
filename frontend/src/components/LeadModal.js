@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import styled from 'styled-components';
 import ButtonPrimary from './ButtonPrimary';
 import { makeStyles } from '@material-ui/core';
-import { AddLocationRounded } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -51,7 +49,6 @@ export const LeadModal = ({ open, onClose, addLead }) => {
   const [assigned, setAssigned] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [contactName, setContactName] = useState('');
-  const [dataSource, setDataSource] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [website, setWebsite] = useState('');
@@ -60,13 +57,27 @@ export const LeadModal = ({ open, onClose, addLead }) => {
   const [linkedin, setLinkedin] = useState('');
   const [twitter, setTwitter] = useState('');
 
+  const clearForm = () => {
+    setAssigned('');
+    setCompanyName('');
+    setContactName('');
+    setEmail('');
+    setPhone('');
+    setWebsite('');
+    setFacebook('');
+    setInstagram('');
+    setLinkedin('');
+    setTwitter('');
+  };
+
   const handleSave = (e) => {
     e.preventDefault();
+    //company name required
     const newLead = {
       assigned: assigned,
       company_name: companyName,
       contact_name: contactName,
-      data_source: dataSource,
+      data_source: 'user_entry',
       email: email,
       phone: phone,
       facebook: facebook,
@@ -75,8 +86,8 @@ export const LeadModal = ({ open, onClose, addLead }) => {
       twitter: twitter,
       website: website,
     };
-
     addLead(newLead);
+    clearForm();
   };
 
   return (
@@ -111,15 +122,6 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               className={classes.input}
               value={contactName}
               onChange={(e) => setContactName(e.target.value)}
-            />
-          </label>
-          <label className={classes.label}>
-            Data Source*
-            <input
-              type="text"
-              className={classes.input}
-              value={dataSource}
-              onChange={(e) => setDataSource(e.target.value)}
             />
           </label>
           <label className={classes.label}>
