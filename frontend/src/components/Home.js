@@ -63,10 +63,8 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState('');
-
   const [leads, setLeads] = useState([]);
   const [open, setOpen] = useState(false);
-
   const history = useHistory();
 
   // TODO: setup search and tags
@@ -115,16 +113,18 @@ export default function Home() {
 
   const addLead = (lead) => {
     const token = localStorage.getItem('partnerFinderToken');
-    const url = 'https://cfd-partner-finder-api.xyz/leads';
+    const url = `${API_HOST}/leads`;
     fetch(url, {
       method: 'POST',
       body: JSON.stringify(lead),
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
         Authorization: `Bearer ${token}`,
       },
-    }).then((response) => console.log('response', response));
+    })
+      .then((response) => checkForErrors(response))
+      .then(() => handleClose())
+      .catch((err) => console.error(err));
   };
 
   return (
