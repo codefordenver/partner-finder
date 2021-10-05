@@ -35,6 +35,7 @@ export const useStyles = makeStyles((theme) => ({
     textTransform: 'capitalize',
     background: theme.palette.primary.main,
     borderRadius: '0px',
+    marginTop: '0.4rem',
   },
   pageSelect: {
     display: 'flex',
