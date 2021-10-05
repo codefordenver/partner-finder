@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
-import { makeStyles, Button, Box, Typography } from '@material-ui/core';
+import {
+  makeStyles,
+  Button,
+  Box,
+  Typography,
+  Snackbar,
+} from '@material-ui/core';
 import { LeadTable } from './LeadTable';
 import ButtonPrimary from './ButtonPrimary';
 import Header from './Header';
@@ -8,6 +14,7 @@ import PaginationControl from './PaginationControl';
 import Search from './Search';
 import { API_HOST } from '../config';
 import { DEBOUNCE_TIME_MS } from '../constants';
+import Alert from '@mui/material/Alert';
 
 export const useStyles = makeStyles((theme) => ({
   // TODO: make custom roundButton component
@@ -62,6 +69,7 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState('');
+  const [errorState, setErrorState] = useState('null');
 
   const [leads, setLeads] = useState([]);
 
@@ -100,7 +108,9 @@ export default function Home() {
       .then((data) => setLeads(data.leads))
       // TODO: create state for error and set state instead of just console.error
       // conditional rendering if there is an error
-      .catch((error) => console.error(error.message));
+      .catch((error) => {
+        setErrorState(error);
+      });
   }, [page, perpage, search]);
 
   return (
@@ -138,8 +148,21 @@ export default function Home() {
           />
         </Box>
         <LeadTable leads={leads} />
+        <Snackbar
+          open={errorState !== null}
+          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+        >
+          <Alert
+            onClose={() => {
+              setErrorState(null);
+            }}
+            severity="error"
+            variant="filled"
+          >
+            {`${errorState}`}
+          </Alert>
+        </Snackbar>
       </Box>
-
       <Button className={classes.aboutFooter}>About</Button>
     </div>
   );
