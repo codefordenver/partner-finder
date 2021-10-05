@@ -8,8 +8,9 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
 - Twitter?
 - LinkedIn?
 
-
 # Getting Started
+
+
 ## Get the Code
 1. Go to the project's [github page](https://github.com/codefordenver/partner-finder).
 1. Find the green "Code" button
@@ -20,6 +21,8 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
     git clone <git-repo-name>
     ```
 ## Running the app locally
+
+### Using Docker Compose
 1. Install Docker and Docker-compose.
 1. Run the database, api, and frontend in docker containers using compose.
     ```bash
@@ -57,6 +60,19 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
 1. You should see a login page. Use the following credentials for development:
     - username: `user@gmail.com`
     - password: `password`
+
+
+### With the Backend Development Server (Frontend Only)
+
+If you only plan to work on the frontend and do not want to use docker compose, we also have the backend running on a development server. In this case, you will need to have @galbwe set up a user account for you to log in with. Follow these steps to get up and running:
+
+1. Email galbwe92@gmail.com requesting a username and password for development.
+1. Once your credentials are set up, `cd` to the `frontend` directory.
+1. Install dependencies by running `yarn`
+1. Start the app with `yarn dev`
+
+You should see a login screen where you can test your credentials.
+
 
 ## Creating Database Migration Files
 You'll need a python virtual environment in the `backend` directory. Make sure you have python 3.7 or up installed. Ideally 3.9 since that is what is used in the rest api. You can check the version with `python --version`
