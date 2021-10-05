@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
     height: '50px',
     fontSize: '1.2em', // guessed on this
     textTransform: 'capitalize',
-    background: theme.palette.primary.dark,
+    background: 'theme.palette.primary.dark',
     borderRadius: '0px',
     marginTop: (props) => props.marginTop,
     marginRight: (props) => props.marginRight,
