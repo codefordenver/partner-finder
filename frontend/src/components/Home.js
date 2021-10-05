@@ -9,6 +9,7 @@ import Search from './Search';
 import { API_HOST } from '../config';
 import { LeadModal } from './LeadModal';
 import { DEBOUNCE_TIME_MS } from '../constants';
+import { TramOutlined } from '@material-ui/icons';
 
 export const useStyles = makeStyles((theme) => ({
   // TODO: make custom roundButton component
@@ -65,6 +66,7 @@ export default function Home() {
   const [search, setSearch] = useState('');
   const [leads, setLeads] = useState([]);
   const [open, setOpen] = useState(false);
+  const [newLead, setNewLead] = useState(false);
   const history = useHistory();
 
   // TODO: setup search and tags
@@ -101,7 +103,7 @@ export default function Home() {
       // TODO: create state for error and set state instead of just console.error
       // conditional rendering if there is an error
       .catch((error) => console.error(error.message));
-  }, [page, perpage, search]);
+  }, [page, perpage, search, newLead]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -124,6 +126,8 @@ export default function Home() {
     })
       .then((response) => checkForErrors(response))
       .then(() => handleClose())
+      .then(() => setNewLead(true))
+      //TODO: should render an error inside of the modal instead of just console.error
       .catch((err) => console.error(err));
   };
 
