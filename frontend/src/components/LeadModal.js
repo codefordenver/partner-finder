@@ -198,8 +198,12 @@ export const LeadModal = ({ open, onClose, addLead }) => {
           <ButtonPrimary marginRight="1em" onClick={(e) => handleSave(e)}>
             Save
           </ButtonPrimary>
-          <ButtonPrimary marginRight="1em">Reset</ButtonPrimary>
-          <ButtonPrimary marginRight="1em">Back</ButtonPrimary>
+          <ButtonPrimary marginRight="1em" onClick={() => clearForm()}>
+            Reset
+          </ButtonPrimary>
+          <ButtonPrimary marginRight="1em" onClick={() => onClose()}>
+            Back
+          </ButtonPrimary>
         </div>
       </Box>
     </Modal>
