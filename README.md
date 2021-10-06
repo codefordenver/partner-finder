@@ -1,12 +1,28 @@
-A micro-CRM to help Code For Denver discover leads and manage its outreach to potential partners.
+A micro-CRM to help Code For Denver discover leads and manage its outreach to nonprofits.
 
-# Data Sources For Leads
-- [Socrata API](https://data.colorado.gov/Business/Business-Entities-in-Colorado/4ykn-tg5h)
-    - Dataset with registered business entities in Colorado. It can be filtered to return only nonprofits.
-- [Colorado Nonprofit Association](https://coloradononprofits.org/membership/nonprofit-member-directory)
-    - Website with nonprofit members registered with Colorado Nonprofit Association.
-- Twitter?
-- LinkedIn?
+# Table of Contents
+
+[Getting Started](#getting-started)
+- [Get the Code](#get-the-code)
+- [Running the app locally](#running-the-app-locally)
+    - [Using Docker Compose](#using-docker-compose)
+    - [Running Frontend Only](#running-frontend-only)
+
+[Development](#development)
+- [Frontent](#frontend)
+    - [Accessing Api Docs](#accessing-api-docs)
+        - [With Docker Compose](#with-docker-compose)
+        - [Without Docker Compose](#without-docker-compose)
+- [Backend](#backend)
+    - [Linting and Formatting Scripts](#linting-and-formatting-scripts)
+    - [Connecting to the AWS Postgres instance](#connecting-to-the-aws-postgres-instance)
+    - [Postman Collection](#postman-collection)
+- [Running a data analysis jupyter notebook](#running-a-data-analysis-jupyter-notebook)
+
+[Deployments](#deployments)
+- [API](#api)
+
+[Data Sources For Leads](#data-sources-for-leads)
 
 # Getting Started
 
@@ -62,7 +78,7 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
     - password: `password`
 
 
-### With the Backend Development Server (Frontend Only)
+### Running Frontend Only
 
 If you only plan to work on the frontend and do not want to use docker compose, we also have the backend running on a development server. In this case, you will need to have @galbwe set up a user account for you to log in with. Follow these steps to get up and running:
 
@@ -101,9 +117,10 @@ Now source the environment variables: `source .env`
 
 Finally, you can create a new migration by doing `alembic revision -m "<description of migration>"`. This should create a new file under the `versions` directory.
 
-## Development
-### Frontend
-#### Accessing the api docs
+# Development
+## Frontend
+### Accessing Api Docs
+#### With Docker Compose
 The backend generates swagger documentation. This is a webpage that lets you make interactive api calls to test out the rest api before using it in your code. To run the swagger docs locally, make sure the `api` docker service is running. Check the api logs for a bearer token that you can use to authenticate on the swagger page. If you ran docker compose with the `-d` flag, you can get the logs with `docker compose logs api`.
 
 Now look for bearer tokens that let you authenticate as a normal user and as an admin:
@@ -132,8 +149,10 @@ To send a request to any of the endpoints, click on one of the colored boxes, th
 
 ![](./docs/swagger-try-it.png)
 
-### Backend
-#### Linting and Formatting Scripts
+#### Without Docker Compose
+
+## Backend
+### Linting and Formatting Scripts
 We have github actions that will check that backend code is in the correct format and abides by PEP8 standards. You will need to run a formatter and a linter on your code before committing in order for your changes to be accepted. In the `backend/scripts`, directory, there are scripts called `lint.sh` and `format.sh` for doing this. You can run them directly from the `backend` directory:
 
 ```
@@ -150,7 +169,7 @@ After running `lint.sh`, you should see an output of `0` if everything is okay. 
 Once you've made formatting and linting changes, make a commit with a message like `lint and format` and add it to your PR. It is helpful to PR reviewers if you keep your formatting changes in their own commit because they can potentially make it harder to read your other code changes.
 
 
-#### Connecting to the AWS Postgres instance
+### Connecting to the AWS Postgres instance
 We run a postgres instance in AWS RDS. A simple method for connecting to the instance is with the psql command line tool. There is a script called `backend/database/psql.sh` that will run `psql` for you with arguments taken from environment variables. We will read these environment variables from a file called `.env-prod`. Please use this exact filename because it is already in `.gitignore`. Follow these steps to get into a psql session:
 
 1. create a file called `backend/.env-prod` if it does not already exist
@@ -171,10 +190,10 @@ We run a postgres instance in AWS RDS. A simple method for connecting to the ins
 SELECT count(*) FROM leads;
 SELECT * FROM leads LIMIT 5;
 ```
-#### Postman Collection
+### Postman Collection
 Postman is a web client for testing out REST apis. See here to view and export [postman requests]() for this project. You will also need to install postman, import the collection, and then run the api on localhost to use postman in development.
 
-## Running a data analysis jupyter notebook (Optional)
+## Running a data analysis jupyter notebook
 1. Make sure python 3 is installed on your system
 1. from the project root directory, change to the data analysis directory
     - `cd ./data_analysis`
@@ -203,9 +222,9 @@ Postman is a web client for testing out REST apis. See here to view and export [
 1. When you are done, stop the jupyter server with `Ctrl+C` and deactivate the virtual environment with `deactivate`.
 
 
-## Deployments
+# Deployments
 
-### API
+## API
 
 This is the current manual process for building and deploying the rest api:
 
@@ -218,3 +237,11 @@ This is the current manual process for building and deploying the rest api:
 7. Pull the docker image from dockerhub
 8. stop and remove the running container with `sudo docker container stop <container name>` and `sudo docker container rm <container name>` you can get the container name by running `sudo docker ps`
 9. start a new container with the updated api with `sudo ./start.sh`
+
+# Data Sources For Leads
+- [Socrata API](https://data.colorado.gov/Business/Business-Entities-in-Colorado/4ykn-tg5h)
+    - Dataset with registered business entities in Colorado. It can be filtered to return only nonprofits.
+- [Colorado Nonprofit Association](https://coloradononprofits.org/membership/nonprofit-member-directory)
+    - Website with nonprofit members registered with Colorado Nonprofit Association.
+- Twitter?
+- LinkedIn?
