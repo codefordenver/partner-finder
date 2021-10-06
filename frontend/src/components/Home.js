@@ -93,23 +93,25 @@ export default function Home() {
     }
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    };
     fetch(url, {
-      headers: headers
+      headers: headers,
     })
-    .then((response) => checkForErrors(response))
-    .then((data) => setLeads(data.leads))
-    // TODO: create state for error and set state instead of just console.error
-    // conditional rendering if there is an error
-    .catch((error) => console.error(error.message));
+      .then((response) => checkForErrors(response))
+      .then((data) => setLeads(data.leads))
+      // TODO: create state for error and set state instead of just console.error
+      // conditional rendering if there is an error
+      .catch((error) => console.error(error.message));
 
     fetch(n_pagesUrl, {
-      headers: headers
+      headers: headers,
     })
-    .then((response) => checkForErrors(response))
-    .then((data) => setMaxPages( Math.ceil(data.pages * data.query.perpage / perpage) ))
-    .catch((error) => console.error(error.message));
+      .then((response) => checkForErrors(response))
+      .then((data) =>
+        setMaxPages(Math.ceil((data.pages * data.query.perpage) / perpage))
+      )
+      .catch((error) => console.error(error.message));
   }, [page, perpage, maxpages, search]);
 
   return (
