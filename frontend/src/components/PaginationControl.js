@@ -7,6 +7,7 @@ import { DEBOUNCE_TIME_MS } from '../constants';
 const useStyles = makeStyles((theme) => ({
   paginationTextField: {
     width: '115px',
+    maringLeft: '5px'
   },
 }));
 
