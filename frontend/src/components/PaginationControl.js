@@ -7,6 +7,7 @@ import { DEBOUNCE_TIME_MS } from '../constants';
 const useStyles = makeStyles((theme) => ({
   paginationTextField: {
     width: '115px',
+    marginLeft: '5px'
   },
 }));
 
@@ -66,7 +67,7 @@ export default function PaginationControl({
       <Typography>
         {page} / {maxpages}
       </Typography>
-      <Button onClick={() => setPage(page + 1 <= 100 ? page + 1 : 100)}>
+      <Button onClick={() => setPage(page + 1 <= maxpages ? page + 1 : maxpages)}>
         <ChevronRightIcon></ChevronRightIcon>
       </Button>
     </Fragment>
