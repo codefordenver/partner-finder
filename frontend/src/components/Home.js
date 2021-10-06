@@ -83,7 +83,7 @@ export default function Home() {
 
   useEffect(() => {
     let url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
-    const n_pagesUrl = `${API_HOST}/leads/n_pages`;
+    const n_pagesUrl = `${API_HOST}/leads/n_pages?perpage=${perpage}`;
     if (search) {
       url += `&search=${search}`;
     }
@@ -108,9 +108,7 @@ export default function Home() {
       headers: headers,
     })
       .then((response) => checkForErrors(response))
-      .then((data) =>
-        setMaxPages(Math.ceil((data.pages * data.query.perpage) / perpage))
-      )
+      .then((data) => setMaxPages(data.pages))
       .catch((error) => console.error(error.message));
   }, [page, perpage, maxpages, search]);
 
