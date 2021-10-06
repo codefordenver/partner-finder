@@ -37,7 +37,7 @@ services:
             - API_HOST=http://localhost:8000
             - API_USER=user@gmail.com
             - API_PASSWORD=password
-        volumes: ["./frontend:/app"]
+        volumes: ["./frontend/src:/app/src"]
         ports:
             - "1234:1234"
             - "1235:1235"
