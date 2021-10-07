@@ -26,7 +26,7 @@ export const useStyles = makeStyles((theme) => ({
     },
   },
   aboutFooter: {
-    position: 'fixed',
+    position: 'sticky',
     bottom: '0',
     width: '100%',
     height: '50px',
@@ -35,6 +35,7 @@ export const useStyles = makeStyles((theme) => ({
     textTransform: 'capitalize',
     background: theme.palette.primary.main,
     borderRadius: '0px',
+    marginTop: '0.4rem',
   },
   pageSelect: {
     display: 'flex',
