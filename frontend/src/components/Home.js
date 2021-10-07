@@ -61,8 +61,8 @@ export default function Home() {
 
   const [page, setPage] = useState(1);
   const [perpage, setPerpage] = useState(10);
+  const [maxpages, setMaxPages] = useState(100);
   const [search, setSearch] = useState('');
-
   const [leads, setLeads] = useState([]);
 
   const history = useHistory();
@@ -83,6 +83,7 @@ export default function Home() {
 
   useEffect(() => {
     let url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
+    const n_pagesUrl = `${API_HOST}/leads/n_pages?perpage=${perpage}`;
     if (search) {
       url += `&search=${search}`;
     }
@@ -90,18 +91,26 @@ export default function Home() {
     if (!token) {
       history.push('/login');
     }
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    };
     fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+      headers: headers,
     })
       .then((response) => checkForErrors(response))
       .then((data) => setLeads(data.leads))
       // TODO: create state for error and set state instead of just console.error
       // conditional rendering if there is an error
       .catch((error) => console.error(error.message));
-  }, [page, perpage, search]);
+
+    fetch(n_pagesUrl, {
+      headers: headers,
+    })
+      .then((response) => checkForErrors(response))
+      .then((data) => setMaxPages(data.pages))
+      .catch((error) => console.error(error.message));
+  }, [page, perpage, maxpages, search]);
 
   return (
     <div id="home">
@@ -132,7 +141,7 @@ export default function Home() {
           <PaginationControl
             page={page}
             perpage={perpage}
-            maxpages={100}
+            maxpages={maxpages}
             setPage={setPage}
             setPerpage={setPerpage}
           />
