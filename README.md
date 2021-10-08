@@ -1,15 +1,37 @@
-A micro-CRM to help Code For Denver discover leads and manage its outreach to potential partners.
+A micro-CRM to help Code For Denver discover leads and manage its outreach to nonprofits.
 
-# Data Sources For Leads
-- [Socrata API](https://data.colorado.gov/Business/Business-Entities-in-Colorado/4ykn-tg5h)
-    - Dataset with registered business entities in Colorado. It can be filtered to return only nonprofits.
-- [Colorado Nonprofit Association](https://coloradononprofits.org/membership/nonprofit-member-directory)
-    - Website with nonprofit members registered with Colorado Nonprofit Association.
-- Twitter?
-- LinkedIn?
+![](./docs/app-screen-shot.png)
+# Table of Contents
 
+[Getting Started](#getting-started)
+- [Get the Code](#get-the-code)
+- [Running the app locally](#running-the-app-locally)
+    - [Using Docker Compose](#using-docker-compose)
+    - [Running Frontend Only](#running-frontend-only)
+
+[Development](#development)
+- [Frontent](#frontend)
+    - [Accessing Api Docs](#accessing-api-docs)
+        - [With Docker Compose](#with-docker-compose)
+        - [Without Docker Compose](#without-docker-compose)
+    - [Linting and Formatting](#linting-and-formatting)
+- [Backend](#backend)
+    - [Linting and Formatting Scripts](#linting-and-formatting-scripts)
+    - [Creating Database Migration Files](#creating-database-migration-files)
+    - [Connecting to the AWS Postgres instance](#connecting-to-the-aws-postgres-instance)
+    - [Postman Collection](#postman-collection)
+- [Running a data analysis jupyter notebook](#running-a-data-analysis-jupyter-notebook)
+
+[Deployments](#deployments)
+- [API](#api)
+
+[Data Sources For Leads](#data-sources-for-leads)
+
+[Community](#community)
 
 # Getting Started
+
+
 ## Get the Code
 1. Go to the project's [github page](https://github.com/codefordenver/partner-finder).
 1. Find the green "Code" button
@@ -20,6 +42,10 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
     git clone <git-repo-name>
     ```
 ## Running the app locally
+
+There are two methods for setting up your local machine for development. If you are planning on working on the backend, or want to use docker compose to work on the frontend, follow [Using Docker Compose](#using-docker-compose). If you want to just work on the frontend, and do not want to use docker compose, follow [Running Frontend Only](#running-frontend-only).
+
+### Using Docker Compose
 1. Install Docker and Docker-compose.
 1. Run the database, api, and frontend in docker containers using compose.
     ```bash
@@ -58,36 +84,24 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to po
     - username: `user@gmail.com`
     - password: `password`
 
-## Creating Database Migration Files
-You'll need a python virtual environment in the `backend` directory. Make sure you have python 3.7 or up installed. Ideally 3.9 since that is what is used in the rest api. You can check the version with `python --version`
 
-Change into the backend directory then do `python -m venv venv`. This should create a `venv` directory.
+### Running Frontend Only
 
-Next you'll want to activate the virtual environment with `source venv/bin/activate`.
+If you only plan to work on the frontend and do not want to use docker compose, we also have the backend running on a development server. In this case, you will need to have @galbwe set up a user account for you to log in with. Follow these steps to get up and running:
 
-Then install requirements with `pip install -r requirements.txt`
+1. Email galbwe92@gmail.com requesting credentials for the development server.
+1. Once your credentials are set up, `cd` to the `frontend` directory.
+1. Install dependencies by running `yarn`
+1. Start the app with `yarn dev`
 
-You should also need to set some environment variables so alembic can send queries to the locally running database. Create a `.env` file with `touch .env`, then add these lines to it:
+You should see a login screen where you can test your credentials.
 
-```
-export FLASK_APP=api/app:app
-export FLASK_ENV=development
-export POSTGRES_PASSWORD=password
-export POSTGRES_USER=cfd_partner_finder
-export POSTGRES_DB=cfd_partner_finder
-export POSTGRES_HOST=localhost
-export POSTGRES_PORT=5432
-export SECRET_KEY=supersafe
-export PYTHONPATH="${pwd}"
-```
 
-Now source the environment variables: `source .env`
 
-Finally, you can create a new migration by doing `alembic revision -m "<description of migration>"`. This should create a new file under the `versions` directory.
-
-## Development
-### Frontend
-#### Accessing the api docs
+# Development
+## Frontend
+### Accessing Api Docs
+#### With Docker Compose
 The backend generates swagger documentation. This is a webpage that lets you make interactive api calls to test out the rest api before using it in your code. To run the swagger docs locally, make sure the `api` docker service is running. Check the api logs for a bearer token that you can use to authenticate on the swagger page. If you ran docker compose with the `-d` flag, you can get the logs with `docker compose logs api`.
 
 Now look for bearer tokens that let you authenticate as a normal user and as an admin:
@@ -116,8 +130,40 @@ To send a request to any of the endpoints, click on one of the colored boxes, th
 
 ![](./docs/swagger-try-it.png)
 
-### Backend
-#### Linting and Formatting Scripts
+#### Without Docker Compose
+To access the api documentation page without docker compose, go to https://cfd-partner-finder-api.xyz/apidocs/ . This will allow you to view the available api endpoints. By clicking on one of the endpoints, you should also be able to view the request parameters and the shape of the api response.
+
+In order to use the swagger docs interactively, you will need a set of login credentials for the development server. See [Running Frontend Only](running-frontend-only).
+
+Once you have credentials, you will need to get your bearer token. One way to do this is to run the frontend in development mode on `localhost:1234` by running `yarn dev` in the `frontend` directory. Once you have done this and successfully submitted the login form, open developer tools in your browser (command + option + J on macOS, or right click and select "inspect")
+
+Once dev tools are open, go to the "Application" tab:
+
+![](./docs/dev-tools-application.png)
+
+In the side panel, under "Local Storage", select `http://localhost:1234`. You should see a key called `partnerFinderToken` in the right pane, along with a bearer token.
+
+![](./docs/dev-tools-local-storage.png)
+
+Now in the docs page, click the green "Authorize" button near the top right corner. You will be prompted to enter an Authorization header. Enter `Bearer <your token>` and submit the form.
+
+![](./docs/swagger-page.png)
+
+![](./docs/swagger-login.png)
+
+You should now be able to send api requests to the backend by clicking the "Try it out" button and entering request parameters.
+
+![](./docs/swagger-try-it.png)
+
+### Linting and Formatting
+
+We use `prettier` to consistly format our javascript and `eslint` as a linter. To run them, make sure you are in the frontend directory, then run
+- `yarn format` to run `prettier`, and
+- `yarn lint` to run `eslint`
+ you'll need to commit your formatting changes. It's fine to put them in their own commit, or if you want to include them in a recent commit that has not been pushed to the remote yet, you can use `git commit --amend`.
+
+## Backend
+### Linting and Formatting Scripts
 We have github actions that will check that backend code is in the correct format and abides by PEP8 standards. You will need to run a formatter and a linter on your code before committing in order for your changes to be accepted. In the `backend/scripts`, directory, there are scripts called `lint.sh` and `format.sh` for doing this. You can run them directly from the `backend` directory:
 
 ```
@@ -133,8 +179,34 @@ After running `lint.sh`, you should see an output of `0` if everything is okay. 
 
 Once you've made formatting and linting changes, make a commit with a message like `lint and format` and add it to your PR. It is helpful to PR reviewers if you keep your formatting changes in their own commit because they can potentially make it harder to read your other code changes.
 
+### Creating Database Migration Files
+You'll need a python virtual environment in the `backend` directory. Make sure you have python 3.7 or up installed. Ideally 3.9 since that is what is used in the rest api. You can check the version with `python --version`
 
-#### Connecting to the AWS Postgres instance
+Change into the backend directory then do `python -m venv venv`. This should create a `venv` directory.
+
+Next you'll want to activate the virtual environment with `source venv/bin/activate`.
+
+Then install requirements with `pip install -r requirements.txt`
+
+You should also need to set some environment variables so alembic can send queries to the locally running database. Create a `.env` file with `touch .env`, then add these lines to it:
+
+```
+export FLASK_APP=api/app:app
+export FLASK_ENV=development
+export POSTGRES_PASSWORD=password
+export POSTGRES_USER=cfd_partner_finder
+export POSTGRES_DB=cfd_partner_finder
+export POSTGRES_HOST=localhost
+export POSTGRES_PORT=5432
+export SECRET_KEY=supersafe
+export PYTHONPATH="${pwd}"
+```
+
+Now source the environment variables: `source .env`
+
+Finally, you can create a new migration by doing `alembic revision -m "<description of migration>"`. This should create a new file under the `versions` directory.
+
+### Connecting to the AWS Postgres instance
 We run a postgres instance in AWS RDS. A simple method for connecting to the instance is with the psql command line tool. There is a script called `backend/database/psql.sh` that will run `psql` for you with arguments taken from environment variables. We will read these environment variables from a file called `.env-prod`. Please use this exact filename because it is already in `.gitignore`. Follow these steps to get into a psql session:
 
 1. create a file called `backend/.env-prod` if it does not already exist
@@ -155,10 +227,10 @@ We run a postgres instance in AWS RDS. A simple method for connecting to the ins
 SELECT count(*) FROM leads;
 SELECT * FROM leads LIMIT 5;
 ```
-#### Postman Collection
+### Postman Collection
 Postman is a web client for testing out REST apis. See here to view and export [postman requests]() for this project. You will also need to install postman, import the collection, and then run the api on localhost to use postman in development.
 
-## Running a data analysis jupyter notebook (Optional)
+## Running a data analysis jupyter notebook
 1. Make sure python 3 is installed on your system
 1. from the project root directory, change to the data analysis directory
     - `cd ./data_analysis`
@@ -187,9 +259,9 @@ Postman is a web client for testing out REST apis. See here to view and export [
 1. When you are done, stop the jupyter server with `Ctrl+C` and deactivate the virtual environment with `deactivate`.
 
 
-## Deployments
+# Deployments
 
-### API
+## API
 
 This is the current manual process for building and deploying the rest api:
 
@@ -202,3 +274,17 @@ This is the current manual process for building and deploying the rest api:
 7. Pull the docker image from dockerhub
 8. stop and remove the running container with `sudo docker container stop <container name>` and `sudo docker container rm <container name>` you can get the container name by running `sudo docker ps`
 9. start a new container with the updated api with `sudo ./start.sh`
+
+# Data Sources For Leads
+- [Socrata API](https://data.colorado.gov/Business/Business-Entities-in-Colorado/4ykn-tg5h)
+    - Dataset with registered business entities in Colorado. It can be filtered to return only nonprofits.
+- [Colorado Nonprofit Association](https://coloradononprofits.org/membership/nonprofit-member-directory)
+    - Website with nonprofit members registered with Colorado Nonprofit Association.
+- Twitter?
+- LinkedIn?
+
+# Community
+
+This is a Code For Denver project. For more about the organization, see https://codefordenver.org/
+
+Code for Denver has a [discord server](https://discord.com/invite/aKVgZSN) and runs online [meetups](https://www.meetup.com/CodeForDenver) roughly every two weeks. This project has a channel called `#partner-finder` on the discord server. The project also has a weekly standup at 6pm MT. Typically a link to a google hangout is shared in the discord channel. If you would like to join, but do not have access to the channel, please email galbwe92@gmail.com expressing your interest to participate.

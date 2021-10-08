@@ -94,6 +94,11 @@ def _get_all_leads(request):
     with db.get_connection() as conn:
         row = conn.execute(select_id_for_tag, tag=tag).first()
         tag_id = row[0] if row else None
+        if tag is not None and tag_id is None:
+            return {
+                "count": 0,
+                "leads": [],
+            }, 200
 
     if search is None and tag_id is None:
         query = text(
