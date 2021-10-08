@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "parcel ./src/index.html --open --hmr-port=1235",
     "build": "parcel build ./src/index.html",
-    "start": "parcel ./src/index.html -p 1235 --open",
+    "start": "parcel ./src/dist/index.html -p 1235 --open",
     "lint": "eslint src",
     "format": "prettier --write src",
     "format.check": "prettier --check src"
