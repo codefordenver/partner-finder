@@ -7,7 +7,9 @@ import Header from './Header';
 import PaginationControl from './PaginationControl';
 import Search from './Search';
 import { API_HOST } from '../config';
+import { LeadModal } from './LeadModal';
 import { DEBOUNCE_TIME_MS } from '../constants';
+import { ContactPhoneSharp, TramOutlined } from '@material-ui/icons';
 
 export const useStyles = makeStyles((theme) => ({
   // TODO: make custom roundButton component
@@ -65,7 +67,8 @@ export default function Home() {
   const [maxpages, setMaxPages] = useState(100);
   const [search, setSearch] = useState('');
   const [leads, setLeads] = useState([]);
-
+  const [open, setOpen] = useState(false);
+  const [newLead, setNewLead] = useState(false);
   const history = useHistory();
 
   // TODO: setup search and tags
@@ -83,35 +86,61 @@ export default function Home() {
   };
 
   useEffect(() => {
-    let url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
-    const n_pagesUrl = `${API_HOST}/leads/n_pages?perpage=${perpage}`;
-    if (search) {
-      url += `&search=${search}`;
-    }
+    const url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
+    const pagesUrl = `${API_HOST}/leads/n_pages?perpage=${perpage}`;
     const token = localStorage.getItem('partnerFinderToken');
-    if (!token) {
-      history.push('/login');
-    }
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     };
+
+    if (search) {
+      url += `&search=${search}`;
+    }
+    if (!token) {
+      history.push('/login');
+    }
+
     fetch(url, {
       headers: headers,
     })
       .then((response) => checkForErrors(response))
       .then((data) => setLeads(data.leads))
-      // TODO: create state for error and set state instead of just console.error
-      // conditional rendering if there is an error
       .catch((error) => console.error(error.message));
 
-    fetch(n_pagesUrl, {
+    fetch(pagesUrl, {
       headers: headers,
     })
       .then((response) => checkForErrors(response))
       .then((data) => setMaxPages(data.pages))
       .catch((error) => console.error(error.message));
-  }, [page, perpage, maxpages, search]);
+  }, [page, perpage, search, maxpages, newLead]);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const addLead = (lead) => {
+    const token = localStorage.getItem('partnerFinderToken');
+    const url = `${API_HOST}/leads`;
+    fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(lead),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => checkForErrors(response))
+      .then(() => handleClose())
+      .then(() => setNewLead(true))
+      //TODO: should render an error inside of the modal instead of just console.error
+      .catch((err) => console.error(err));
+  };
 
   return (
     <div id="home">
@@ -137,7 +166,10 @@ export default function Home() {
           justifyContent="flex-end"
           alignItems="center"
         >
-          <ButtonPrimary marginRight="auto">Add New</ButtonPrimary>
+          <ButtonPrimary marginRight="auto" onClick={handleOpen}>
+            Add New
+          </ButtonPrimary>
+          <LeadModal open={open} onClose={handleClose} addLead={addLead} />
 
           <PaginationControl
             page={page}
