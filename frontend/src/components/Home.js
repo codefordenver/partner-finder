@@ -85,30 +85,36 @@ export default function Home() {
     }
   };
 
+  const getLeadsUrl = () => {
+    if (search) {
+      return `${API_HOST}/leads?page=${page}&perpage=${perpage}&search=${search}`
+    }
+    return `${API_HOST}/leads?page=${page}&perpage=${perpage}`
+  }
+
+  const getPagesUrl = () => {
+    return `${API_HOST}/leads/n_pages?perpage=${perpage}`;
+  }
+
   useEffect(() => {
-    let url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
-    const pagesUrl = `${API_HOST}/leads/n_pages?perpage=${perpage}`;
     const token = localStorage.getItem('partnerFinderToken');
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     };
 
-    if (search) {
-      url += `&search=${search}`;
-    }
     if (!token) {
       history.push('/login');
     }
 
-    fetch(url, {
+    fetch(getLeadsUrl(), {
       headers: headers,
     })
       .then((response) => checkForErrors(response))
       .then((data) => setLeads(data.leads))
       .catch((error) => console.error(error.message));
 
-    fetch(pagesUrl, {
+    fetch(getPagesUrl(), {
       headers: headers,
     })
       .then((response) => checkForErrors(response))
