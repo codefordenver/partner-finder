@@ -87,14 +87,14 @@ export default function Home() {
 
   const getLeadsUrl = () => {
     if (search) {
-      return `${API_HOST}/leads?page=${page}&perpage=${perpage}&search=${search}`
+      return `${API_HOST}/leads?page=${page}&perpage=${perpage}&search=${search}`;
     }
-    return `${API_HOST}/leads?page=${page}&perpage=${perpage}`
-  }
+    return `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
+  };
 
   const getPagesUrl = () => {
     return `${API_HOST}/leads/n_pages?perpage=${perpage}`;
-  }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('partnerFinderToken');
