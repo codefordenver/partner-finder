@@ -7,37 +7,6 @@ from api.app import app
 from api.db import db
 
 
-# values taken from the populations_served column of the leads table
-POPULATIONS_SERVED_TAGS = frozenset(
-    [
-        "African-American",
-        # 'All Populations',
-        "American Indian/Native American",
-        "Animals",
-        "Asian-American",
-        "At-Risk Youth",
-        "Bisexual",
-        "Children and Youth",
-        "Elderly",
-        "Families",
-        "Gay",
-        "Immigrants",
-        "Latino/Hispanic",
-        "Lesbian",
-        "Low Income",
-        "Men and Boys",
-        # 'Other',
-        "People Experiencing Homelessness",
-        "People Living With Disabilities",
-        "Rural",
-        "Transgender",
-        "Urban",
-        "Veterans",
-        "Women and Girls",
-    ]
-)
-
-
 def delete_all_tags():
     delete_tags = text(
         """
@@ -48,8 +17,8 @@ def delete_all_tags():
         conn.execute(delete_tags)
 
 
-def create_tags(tags):
-    # write sql query
+def create_tags():
+    tags = tags_from_populations_served()
     insert_tag = text(
         """
         INSERT INTO tags
@@ -58,12 +27,27 @@ def create_tags(tags):
         (:tag)
     """
     )
-    # execute sql query
-    tags = list(tags)
     with db.get_connection() as conn:
         with conn.begin():
             for tag in tags:
                 conn.execute(insert_tag, tag=tag)
+
+
+def tags_from_populations_served():
+    rows = db.get_connection().execute(
+        text(
+            """
+        SELECT populations_served FROM leads;
+    """
+        )
+    )
+    tags = set()
+    for row in rows:
+        populations_served = row["populations_served"]
+        for tag in populations_served.split(", "):
+            if tag.lower() not in ("all populations", "other"):
+                tags.add(tag)
+    return sorted(tags)
 
 
 def assign_tags_to_leads():
@@ -107,6 +91,6 @@ if __name__ == "__main__":
         print("Deleting all records from tags table")
         delete_all_tags()
         print("Creating tags for development...")
-        create_tags(POPULATIONS_SERVED_TAGS)
+        create_tags()
         print("Assigning tags to leads for development...")
         assign_tags_to_leads()
