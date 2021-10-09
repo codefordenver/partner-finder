@@ -45,7 +45,7 @@ def tags_from_populations_served():
     for row in rows:
         populations_served = row["populations_served"]
         for tag in populations_served.split(", "):
-            if tag.lower() not in ("all populations", "other"):
+            if tag and tag.lower() not in ("all populations", "other"):
                 tags.add(tag)
     return sorted(tags)
 
