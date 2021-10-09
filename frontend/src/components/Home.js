@@ -86,7 +86,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
+    let url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
     const pagesUrl = `${API_HOST}/leads/n_pages?perpage=${perpage}`;
     const token = localStorage.getItem('partnerFinderToken');
     const headers = {
