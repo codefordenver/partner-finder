@@ -13,8 +13,10 @@ import Header from './Header';
 import PaginationControl from './PaginationControl';
 import Search from './Search';
 import { API_HOST } from '../config';
+import { LeadModal } from './LeadModal';
 import { DEBOUNCE_TIME_MS } from '../constants';
 import Alert from '@mui/material/Alert';
+import { ContactPhoneSharp, TramOutlined } from '@material-ui/icons';
 
 export const useStyles = makeStyles((theme) => ({
   // TODO: make custom roundButton component
@@ -33,7 +35,7 @@ export const useStyles = makeStyles((theme) => ({
     },
   },
   aboutFooter: {
-    position: 'fixed',
+    position: 'sticky',
     bottom: '0',
     width: '100%',
     height: '50px',
@@ -42,6 +44,7 @@ export const useStyles = makeStyles((theme) => ({
     textTransform: 'capitalize',
     background: theme.palette.primary.main,
     borderRadius: '0px',
+    marginTop: '0.4rem',
   },
   pageSelect: {
     display: 'flex',
@@ -68,11 +71,16 @@ export default function Home() {
 
   const [page, setPage] = useState(1);
   const [perpage, setPerpage] = useState(10);
+  const [maxpages, setMaxPages] = useState(100);
   const [search, setSearch] = useState('');
+<<<<<<< HEAD
   const [errorState, setErrorState] = useState('null');
 
+=======
+>>>>>>> main
   const [leads, setLeads] = useState([]);
-
+  const [open, setOpen] = useState(false);
+  const [newLead, setNewLead] = useState(false);
   const history = useHistory();
 
   // TODO: setup search and tags
@@ -90,26 +98,69 @@ export default function Home() {
   };
 
   useEffect(() => {
-    let url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
+    const url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
+    const pagesUrl = `${API_HOST}/leads/n_pages?perpage=${perpage}`;
+    const token = localStorage.getItem('partnerFinderToken');
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    };
+
     if (search) {
       url += `&search=${search}`;
     }
-    const token = localStorage.getItem('partnerFinderToken');
     if (!token) {
       history.push('/login');
     }
+
     fetch(url, {
+      headers: headers,
+    })
+      .then((response) => checkForErrors(response))
+      .then((data) => setLeads(data.leads))
+      .catch((error) => console.error(error.message));
+
+    fetch(pagesUrl, {
+      headers: headers,
+    })
+      .then((response) => checkForErrors(response))
+      .then((data) => setMaxPages(data.pages))
+      .catch((error) => console.error(error.message));
+  }, [page, perpage, search, maxpages, newLead]);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const addLead = (lead) => {
+    const token = localStorage.getItem('partnerFinderToken');
+    const url = `${API_HOST}/leads`;
+    fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(lead),
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => checkForErrors(response))
+<<<<<<< HEAD
       .then((data) => setLeads(data.leads))
       .catch((error) => {
         setErrorState(error);
       });
   }, [page, perpage, search]);
+=======
+      .then(() => handleClose())
+      .then(() => setNewLead(true))
+      //TODO: should render an error inside of the modal instead of just console.error
+      .catch((err) => console.error(err));
+  };
+>>>>>>> main
 
   return (
     <div id="home">
@@ -135,12 +186,15 @@ export default function Home() {
           justifyContent="flex-end"
           alignItems="center"
         >
-          <ButtonPrimary marginRight="auto">Add New</ButtonPrimary>
+          <ButtonPrimary marginRight="auto" onClick={handleOpen}>
+            Add New
+          </ButtonPrimary>
+          <LeadModal open={open} onClose={handleClose} addLead={addLead} />
 
           <PaginationControl
             page={page}
             perpage={perpage}
-            maxpages={100}
+            maxpages={maxpages}
             setPage={setPage}
             setPerpage={setPerpage}
           />
