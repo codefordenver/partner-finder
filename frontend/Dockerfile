@@ -10,7 +10,7 @@ COPY package.json ./
 COPY yarn.lock ./
 
 RUN yarn install
-RUN yarn build
+# RUN yarn build
 
 
 FROM node:lts
@@ -22,4 +22,4 @@ COPY --from=builder /app  .
 ENV HOST 0.0.0.0
 EXPOSE 1234
 
-CMD ["yarn", "start"]
+CMD ["yarn", "dev"]
