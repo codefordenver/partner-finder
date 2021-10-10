@@ -47,9 +47,14 @@ There are two methods for setting up your local machine for development. If you 
 
 ### Using Docker Compose
 1. Install Docker and Docker-compose.
-1. Run the database, api, and frontend in docker containers using compose.
+1. Run the database, api, and frontend in docker containers using compose on **production** mode.
     ```bash
     docker-compose up --build -d
+    ```
+    or 
+    **development** mode
+    ```bash
+     docker-compose -f docker-compose.yml up --build -d
     ```
 1. Check the containers are running
     ```bash
