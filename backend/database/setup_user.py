@@ -31,7 +31,7 @@ def setup_user(username, password):
             username=username,
             password_hash=hash_password(password),
         )
-    print(username, " created")
+    print("success!")
 
 
 if __name__ == "__main__":
