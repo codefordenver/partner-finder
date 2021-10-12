@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import ButtonPrimary from './ButtonPrimary';
 import { makeStyles } from '@material-ui/core';
+import { SentimentVerySatisfiedOutlined } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -56,7 +57,6 @@ export const LeadModal = ({ open, onClose, addLead }) => {
   const [instagram, setInstagram] = useState('');
   const [linkedin, setLinkedin] = useState('');
   const [twitter, setTwitter] = useState('');
-  const [requiredField, setRequiredField] = useState(false);
 
   const clearForm = () => {
     setAssigned('');
@@ -71,10 +71,43 @@ export const LeadModal = ({ open, onClose, addLead }) => {
     setTwitter('');
   };
 
+  const validateInputs = () => {
+    const validEmail = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$');
+    const validPhone = new RegExp(
+      '^(?([0-9]{3}))?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$'
+    );
+    const validUrl = new RegExp();
+
+    if (!companyName) {
+      throw new Error('Company name is required');
+    } else if (!validEmail.test(email)) {
+      throw new Error('Please enter a valid email');
+    } else if (!validPhone.test(phone)) {
+      throw new Error('Please enter a valid phone number');
+    } else if (validPhone.test(phone)) {
+      //if valid phone, formats into standardized (XXX) XXX-XXXX
+      const formattedPhoneNumber = phone.replace(validPhone, '($1) $2-$3');
+      setPhone(formattedPhoneNumber);
+    } else if (!validUrl.test(facebook)) {
+      throw new Error('Please enter only valid URLs');
+    } else if (!validUrl.test(instagram)) {
+      throw new Error('Please enter only valid URLs');
+    } else if (!validUrl.test(linkedin)) {
+      throw new Error('Please enter only valid URLs');
+    } else if (!validUrl.test(twitter)) {
+      throw new Error('Please enter only valid URLs');
+    } else if (!validUrl.test(website)) {
+      throw new Error('Please enter only valid URLs');
+    }
+    // else if () {
+    //   //assigned must be username of registered user
+    // }
+  };
+
   const handleSave = (e) => {
     e.preventDefault();
-    setRequiredField(false);
-    if (companyName) {
+    try {
+      validateInputs();
       const newLead = {
         assigned: assigned,
         company_name: companyName,
@@ -90,8 +123,8 @@ export const LeadModal = ({ open, onClose, addLead }) => {
       };
       addLead(newLead);
       clearForm();
-    } else {
-      setRequiredField(true);
+    } catch (err) {
+      console.log('error!!!', err);
     }
   };
 
@@ -102,7 +135,6 @@ export const LeadModal = ({ open, onClose, addLead }) => {
           Add a Lead
         </Typography>
         <form className={classes.form}>
-          {requiredField && <p>Company name is required</p>}
           <label className={classes.label}>
             Company Name*
             <input
