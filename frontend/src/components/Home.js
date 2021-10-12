@@ -57,6 +57,10 @@ export const useStyles = makeStyles((theme) => ({
   logo: {
     fontWeight: 'bold',
   },
+  link: {
+    textDecoration: 'none',
+    color: '#fff',
+  },
 }));
 
 export default function Home() {
@@ -148,7 +152,13 @@ export default function Home() {
         {/* TODO: adjust title font size */}
         {/* TODO: make "Code For Denver" a link back to the home page */}
         <Typography className={classes.logo} variant="h4" component="h1">
-          Code For Denver
+          <a
+            className={classes.link}
+            href="https://codefordenver.org/"
+            target="_blank"
+          >
+            Code For Denver
+          </a>
         </Typography>
         <Search
           debounceTime={DEBOUNCE_TIME_MS}
