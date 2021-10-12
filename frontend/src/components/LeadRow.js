@@ -18,21 +18,17 @@ const SocialMediaLink = ({ lead }) => {
 
   return (
     <a href={link} target="no_blank">
-      {
-      link && link.includes('facebook') ? 
-      <FacebookIcon/> :
-
-      link && link.includes('linkedin') ? 
-      <LinkedInIcon/> :
-
-      link && link.includes('twitter') ?
-      <TwitterIcon/> :
-
-      link && link.includes('instagram') ?
-      <InstagramIcon/> :
-      
-      link
-      }
+      {link && link.includes('facebook') ? (
+        <FacebookIcon />
+      ) : link && link.includes('linkedin') ? (
+        <LinkedInIcon />
+      ) : link && link.includes('twitter') ? (
+        <TwitterIcon />
+      ) : link && link.includes('instagram') ? (
+        <InstagramIcon />
+      ) : (
+        link
+      )}
     </a>
   );
 };
