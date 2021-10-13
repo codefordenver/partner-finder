@@ -77,9 +77,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
     if (companyName) {
       const newLead = {
         assigned: assigned,
-        company_name: companyName,
-        contact_name: contactName,
-        data_source: 'user_entry',
+        'company_name': companyName,
+        'contact_name': contactName,
+        'data_source': 'user_entry',
         email: email,
         phone: phone,
         facebook: facebook,
