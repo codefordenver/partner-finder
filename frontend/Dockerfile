@@ -10,7 +10,6 @@ COPY package.json ./
 COPY yarn.lock ./
 
 RUN yarn install
-# RUN yarn build
 
 
 FROM node:lts
