@@ -4,7 +4,6 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import ButtonPrimary from './ButtonPrimary';
 import { makeStyles } from '@material-ui/core';
-import { SentimentVerySatisfiedOutlined } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -71,37 +70,74 @@ export const LeadModal = ({ open, onClose, addLead }) => {
     setTwitter('');
   };
 
+  const checkAssignedUserExists = () => {
+    const validate = (response) => {
+      if (response.status === 200) {
+        console.log('user exists');
+      } else if (response.status !== 200) {
+        console.log('user does not exist');
+      }
+    };
+
+    const token = localStorage.getItem('partnerFinderToken');
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    };
+
+    fetch(`https://cfd-partner-finder-api.xyz/users/${assigned}`, {
+      headers: headers,
+    }).then((response) => validate(response));
+  };
+
+  const checkValidPhone = (number) => {
+    const extractedNums = number.replace(/[^0-9]/g, '');
+    if (extractedNums.length !== 10) {
+      return false;
+    } else {
+      return extractedNums;
+    }
+  };
+
   const validateInputs = () => {
     const validEmail = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$');
-    const validPhone = new RegExp(
-      '^(?([0-9]{3}))?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$'
+    var validUrl = new RegExp(
+      '^(https?:\\/\\/)?' + // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+        '(\\#[-a-z\\d_]*)?$',
+      'i'
     );
-    const validUrl = new RegExp();
 
     if (!companyName) {
       throw new Error('Company name is required');
     } else if (!validEmail.test(email)) {
       throw new Error('Please enter a valid email');
-    } else if (!validPhone.test(phone)) {
+    } else if (!checkValidPhone(phone)) {
       throw new Error('Please enter a valid phone number');
-    } else if (validPhone.test(phone)) {
+    } else if (checkValidPhone(phone)) {
       //if valid phone, formats into standardized (XXX) XXX-XXXX
-      const formattedPhoneNumber = phone.replace(validPhone, '($1) $2-$3');
+      const num = checkValidPhone(phone);
+      const formattedPhoneNumber = `(${num.slice(0, 3)}) ${num.slice(
+        3,
+        6
+      )}-${num.slice(6, 10)}`;
       setPhone(formattedPhoneNumber);
-    } else if (!validUrl.test(facebook)) {
+    } else if (facebook && !validUrl.test(facebook)) {
       throw new Error('Please enter only valid URLs');
-    } else if (!validUrl.test(instagram)) {
+    } else if (instagram && !validUrl.test(instagram)) {
       throw new Error('Please enter only valid URLs');
-    } else if (!validUrl.test(linkedin)) {
+    } else if (linkedin && !validUrl.test(linkedin)) {
       throw new Error('Please enter only valid URLs');
-    } else if (!validUrl.test(twitter)) {
+    } else if (twitter && !validUrl.test(twitter)) {
       throw new Error('Please enter only valid URLs');
-    } else if (!validUrl.test(website)) {
+    } else if (website && !validUrl.test(website)) {
       throw new Error('Please enter only valid URLs');
+    } else if (!checkAssignedUserExists()) {
+      //assigned must be username of registered user
     }
-    // else if () {
-    //   //assigned must be username of registered user
-    // }
   };
 
   const handleSave = (e) => {
@@ -183,7 +219,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
           <label className={classes.label}>
             Website
             <input
-              type="text"
+              type="url"
               className={classes.input}
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
@@ -192,7 +228,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
           <label className={classes.label}>
             Facebook
             <input
-              type="text"
+              type="url"
               className={classes.input}
               value={facebook}
               onChange={(e) => setFacebook(e.target.value)}
@@ -201,7 +237,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
           <label className={classes.label}>
             Instagram
             <input
-              type="text"
+              type="url"
               className={classes.input}
               value={instagram}
               onChange={(e) => setInstagram(e.target.value)}
@@ -210,7 +246,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
           <label className={classes.label}>
             LinkedIn
             <input
-              type="text"
+              type="url"
               className={classes.input}
               value={linkedin}
               onChange={(e) => setLinkedin(e.target.value)}
@@ -219,7 +255,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
           <label className={classes.label}>
             Twitter
             <input
-              type="text"
+              type="url"
               className={classes.input}
               value={twitter}
               onChange={(e) => setTwitter(e.target.value)}
