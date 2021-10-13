@@ -70,24 +70,30 @@ export const LeadModal = ({ open, onClose, addLead }) => {
     setTwitter('');
   };
 
-  const checkAssignedUserExists = () => {
-    const validate = (response) => {
-      if (response.status === 200) {
-        console.log('user exists');
-      } else if (response.status !== 200) {
-        console.log('user does not exist');
-      }
-    };
+  const validate = (response) => {
+    if (response.status === 200) {
+      console.log('user exists');
+      return true;
+    } else if (response.status !== 200) {
+      console.log('user does not exist');
+      return false;
+    }
+  };
 
+  const checkAssignedUserExists = async () => {
     const token = localStorage.getItem('partnerFinderToken');
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     };
 
-    fetch(`https://cfd-partner-finder-api.xyz/users/${assigned}`, {
-      headers: headers,
-    }).then((response) => validate(response));
+    const response = await fetch(
+      `https://cfd-partner-finder-api.xyz/users/${assigned}`,
+      {
+        headers: headers,
+      }
+    );
+    return validate(response);
   };
 
   const checkValidPhone = (number) => {
@@ -136,7 +142,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
     } else if (website && !validUrl.test(website)) {
       throw new Error('Please enter only valid URLs');
     } else if (!checkAssignedUserExists()) {
-      //assigned must be username of registered user
+      throw new Error('Username does not match any in our records');
     }
   };
 
