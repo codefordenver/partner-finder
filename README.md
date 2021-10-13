@@ -54,7 +54,7 @@ There are two methods for setting up your local machine for development. If you 
     or 
     **development** mode
     ```bash
-     docker-compose -f docker-compose.yml up --build -d
+     docker-compose -f docker-compose-dev.yml up --build -d
     ```
 1. Check the containers are running
     ```bash
