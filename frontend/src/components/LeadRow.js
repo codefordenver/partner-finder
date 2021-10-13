@@ -9,28 +9,37 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 
 const SocialMediaLink = ({ lead }) => {
-  const link =
-    lead['facebook'] ||
-    lead['linkedin'] ||
-    lead['twitter'] ||
-    lead['instagram'] ||
-    null;
-
-  return (
-    <a href={link} target="no_blank">
-      {link && link.includes('facebook') ? (
+  const availableLinks = [];
+  if ('facebook' in lead && lead['facebook'] !== '') {
+    availableLinks.push(
+      <a href={lead['facebook']}>
         <FacebookIcon />
-      ) : link && link.includes('linkedin') ? (
+      </a>
+    );
+  }
+  if ('linkedin' in lead && lead['linkedin'] !== '') {
+    availableLinks.push(
+      <a href={lead['linkedin']}>
         <LinkedInIcon />
-      ) : link && link.includes('twitter') ? (
+      </a>
+    );
+  }
+  if ('twitter' in lead && lead['twitter'] !== '') {
+    availableLinks.push(
+      <a href={lead['twitter']}>
         <TwitterIcon />
-      ) : link && link.includes('instagram') ? (
+      </a>
+    );
+  }
+  if ('instagram' in lead && lead['instagram'] !== '') {
+    availableLinks.push(
+      <a href={lead['instagram']}>
         <InstagramIcon />
-      ) : (
-        link
-      )}
-    </a>
-  );
+      </a>
+    );
+  }
+
+  return <div>{availableLinks}</div>;
 };
 
 export const LeadRow = ({ lead }) => {
