@@ -25,8 +25,8 @@ services:
         depends_on:
             - postgres
         command: >
-            /bin/bash -c "alembic upgrade head
-            && sleep 1
+            /bin/bash -c "python database/wait_for_db.py
+            && alembic upgrade head
             && python database/create_dev_users.py
             && python database/scrape_CNP.py
             && python database/create_tags.py

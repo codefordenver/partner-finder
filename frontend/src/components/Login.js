@@ -125,6 +125,7 @@ export default function Login() {
                 errorMessage: NO_ERRORS,
               })
             }
+            onKeyPress={(event) => event.key === 'Enter' && handleSubmit(event)}
           />
         </Box>
         <Box
@@ -149,6 +150,7 @@ export default function Login() {
                 errorMessage: NO_ERRORS,
               })
             }
+            onKeyPress={(event) => event.key === 'Enter' && handleSubmit(event)}
           />
         </Box>
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}

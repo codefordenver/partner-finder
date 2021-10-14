@@ -18,20 +18,37 @@ def delete_all_tags():
 
 
 def create_tags():
-    # write sql query
-    insert_tags = text(
+    tags = tags_from_populations_served()
+    insert_tag = text(
         """
         INSERT INTO tags
         (tag)
         VALUES
-        ('environmental'),
-        ('legal'),
-        ('educational')
+        (:tag)
     """
     )
-    # execute sql query
     with db.get_connection() as conn:
-        conn.execute(insert_tags)
+        with conn.begin():
+            for tag in tags:
+                conn.execute(insert_tag, tag=tag)
+
+
+def tags_from_populations_served():
+    rows = db.get_connection().execute(
+        text(
+            """
+        SELECT populations_served FROM leads;
+    """
+        )
+    )
+    tags = set()
+    for row in rows:
+        populations_served = row["populations_served"]
+        ps_tags = populations_served.split(", ") if populations_served else []
+        for tag in ps_tags:
+            if tag and tag.lower() not in ("all populations", "other"):
+                tags.add(tag)
+    return sorted(tags)
 
 
 def assign_tags_to_leads():
@@ -41,32 +58,33 @@ def assign_tags_to_leads():
     """
     )
 
+    with db.get_connection() as conn:
+        res = conn.execute(get_tag_ids)
+        tag_id = {row["tag"]: row["id"] for row in res}
+
     insert_tags_for_leads = text(
         """
         INSERT INTO lead_tag
         (lead_id, tag_id)
         VALUES
-        (42, :environmental_id),
-        (42, :educational_id),
-        (420, :legal_id),
-        (420, :educational_id)
-    """
+        (:lead_id, :tag_id)
+        """
     )
 
     with db.get_connection() as conn:
-        res = conn.execute(get_tag_ids)
-        dict_records = map(dict, res)
-        map_tag_name_to_id = {d["tag"]: d["id"] for d in dict_records}
-        environmental_id = map_tag_name_to_id["environmental"]
-        legal_id = map_tag_name_to_id["legal"]
-        educational_id = map_tag_name_to_id["educational"]
-
-        conn.execute(
-            insert_tags_for_leads,
-            environmental_id=environmental_id,
-            legal_id=legal_id,
-            educational_id=educational_id,
-        )
+        with conn.begin():
+            leads = conn.execute(
+                text(
+                    """
+                SELECT id, populations_served FROM leads;
+            """
+                )
+            )
+            for lead in leads:
+                if populations_served := lead["populations_served"]:
+                    for tag in populations_served.split(", "):
+                        if tid := tag_id.get(tag):
+                            conn.execute(insert_tags_for_leads, lead_id=lead["id"], tag_id=tid)
 
 
 if __name__ == "__main__":
