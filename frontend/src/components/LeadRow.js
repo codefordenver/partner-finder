@@ -12,28 +12,28 @@ const SocialMediaLink = ({ lead }) => {
   const availableLinks = [];
   if ('facebook' in lead && lead['facebook'] !== '') {
     availableLinks.push(
-      <a href={lead['facebook']} target="_blank">
+      <a href={lead['facebook']} target="_blank" rel="noopener noreferrer">
         <FacebookIcon />
       </a>
     );
   }
   if ('linkedin' in lead && lead['linkedin'] !== '') {
     availableLinks.push(
-      <a href={lead['linkedin']} target="_blank">
+      <a href={lead['linkedin']} target="_blank" rel="noopener noreferrer">
         <LinkedInIcon />
       </a>
     );
   }
   if ('twitter' in lead && lead['twitter'] !== '') {
     availableLinks.push(
-      <a href={lead['twitter']} target="_blank">
+      <a href={lead['twitter']} target="_blank" rel="noopener noreferrer">
         <TwitterIcon />
       </a>
     );
   }
   if ('instagram' in lead && lead['instagram'] !== '') {
     availableLinks.push(
-      <a href={lead['instagram']} target="_blank">
+      <a href={lead['instagram']} target="_blank" rel="noopener noreferrer">
         <InstagramIcon />
       </a>
     );
