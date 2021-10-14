@@ -302,10 +302,7 @@ def _parse_search_param(request):
 
 def _parse_tag_param(request):
 
-    tag = request.args.get("tag")
-    if tag is None:
-        return tag
-    return tag.lower()
+    return request.args.get("tag")
 
 
 VALID_DATA_SOURCES = (
