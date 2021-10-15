@@ -83,7 +83,7 @@ export default function Home() {
   };
   useEffect(() => {
     setUsername(localStorage.getItem('username'));
-  }, [])
+  }, []);
   useEffect(() => {
     let url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
     const n_pagesUrl = `${API_HOST}/leads/n_pages?perpage=${perpage}`;
@@ -123,7 +123,7 @@ export default function Home() {
         <Typography className={classes.logo} variant="h4" component="h1">
           Code For Denver
         </Typography>
-        <Typography className='username' variant="h6" component="h6">
+        <Typography className="username" variant="h6" component="h6">
           {username}
         </Typography>
         <Search
