@@ -4,17 +4,21 @@ from sqlalchemy import text
 from ..auth import hash_password, auth
 from ..db import db
 from ..pagination import parse_pagination_params
+from ..util.dict import exclude_keys
 
 users_bp = Blueprint("users", __name__)
 
 
-@users_bp.route("/users", methods=["GET", "POST"])
+@users_bp.route("/users", methods=["GET"])
+@auth("user")
+def get_all_users():
+    return _get_all_users(request)
+
+
+@users_bp.route("/users", methods=["POST"])
 @auth("admin")
-def user_collection_view():
-    if request.method == "GET":
-        return _get_all_users(request)
-    elif request.method == "POST":
-        return _create_user(request)
+def create_user():
+    return _create_user(request)
 
 
 def _get_all_users(request):
@@ -32,14 +36,19 @@ def _get_all_users(request):
     }
     with db.get_connection() as conn:
         res = conn.execute(query, query_params)
-        users = [dict(zip(res.keys(), row)) for row in res]
+        users = (parse_user_row(r) for r in res)
         return {
             "pagination": {
                 "page": page,
                 "perpage": perpage,
             },
-            "users": users,
+            "users": [user["username"] for user in users],
         }
+
+
+@exclude_keys(("password_hash"))
+def parse_user_row(row):
+    return dict(row)
 
 
 def _create_user(request):
@@ -66,17 +75,22 @@ def _create_user(request):
         return dict(zip(res.keys(), res.first()))
 
 
-@users_bp.route("/users/<username>", methods=["GET", "PUT", "DELETE"])
+@users_bp.route("/users/<username>", methods=["PUT", "DELETE"])
 @auth("admin")
 def single_user_view(username):
-    if request.method == "GET":
-        return _get_user_by_username(username)
-    elif request.method == "PUT":
+    if request.method == "PUT":
         return _update_user(username, request)
     elif request.method == "DELETE":
         return _delete_user_by_username(username)
 
 
+@users_bp.route("/users/<username>", methods=["GET"])
+@auth("user")
+def get_user_by_username(username):
+    return _get_user_by_username(username)
+
+
+@exclude_keys(("password_hash"))
 def _get_user_by_username(username):
     query = text(
         """
