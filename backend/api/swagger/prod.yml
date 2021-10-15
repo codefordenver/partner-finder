@@ -406,7 +406,7 @@ paths:
               users:
                 type: array
                 items:
-                  $ref: '#/definitions/schemas/user_with_id'
+                  type: string
       deprecated: false
     post:
       parameters:
@@ -427,7 +427,12 @@ paths:
         "200":
           description: "returns the user with the given username"
           schema:
-            $ref: '#/definitions/schemas/user_with_id'
+            type: object
+            properties:
+              username:
+                type: string
+              admin:
+                type: boolean
       parameters:
         - in: path
           name: username
