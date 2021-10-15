@@ -64,6 +64,7 @@ export default function Home() {
   const [maxpages, setMaxPages] = useState(100);
   const [search, setSearch] = useState('');
   const [leads, setLeads] = useState([]);
+  const [username, setUsername] = useState('');
 
   const history = useHistory();
 
@@ -80,7 +81,9 @@ export default function Home() {
       throw new Error('Something went wrong');
     }
   };
-
+  useEffect(() => {
+    setUsername(localStorage.getItem('username'));
+  }, [])
   useEffect(() => {
     let url = `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
     const n_pagesUrl = `${API_HOST}/leads/n_pages?perpage=${perpage}`;
@@ -119,6 +122,9 @@ export default function Home() {
         {/* TODO: make "Code For Denver" a link back to the home page */}
         <Typography className={classes.logo} variant="h4" component="h1">
           Code For Denver
+        </Typography>
+        <Typography className='username' variant="h6" component="h6">
+          {username}
         </Typography>
         <Search
           debounceTime={DEBOUNCE_TIME_MS}

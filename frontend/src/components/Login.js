@@ -78,6 +78,7 @@ export default function Login() {
         const detailsParsed = details && JSON.parse(details);
         if (success) {
           localStorage.setItem('partnerFinderToken', token);
+          localStorage.setItem('username', username);
           history.push('/');
         } else if (detailsParsed && detailsParsed.user_found) {
           setState({
