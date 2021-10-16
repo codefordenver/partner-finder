@@ -7,6 +7,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 
 const SocialMediaLink = ({ lead }) => {
   const availableLinks = [];
@@ -48,7 +49,15 @@ export const LeadRow = ({ lead }) => {
   return (
     <TableRow>
       <TableCell>{lead['company_name']}</TableCell>
-      <TableCell>{lead['contact_name']}</TableCell>
+      <TableCell>
+        {lead['email'] ? (
+          <a href={`mailto:${lead['email']}`}>
+            <MailOutlineIcon />
+          </a>
+        ) : (
+          <></>
+        )}
+      </TableCell>
       <TableCell>
         <a target="no_blank" href={lead['website']}>
           {lead['website']}
