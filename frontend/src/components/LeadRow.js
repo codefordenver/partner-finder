@@ -3,20 +3,43 @@ import { TableRow, TableCell, Box } from '@material-ui/core';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { useStyles } from './Home';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import InstagramIcon from '@mui/icons-material/Instagram';
 
 const SocialMediaLink = ({ lead }) => {
-  const link =
-    lead['facebook'] ||
-    lead['linkedin'] ||
-    lead['twitter'] ||
-    lead['instagram'] ||
-    null;
+  const availableLinks = [];
+  if ('facebook' in lead && lead['facebook'] !== '') {
+    availableLinks.push(
+      <a href={lead['facebook']} target="_blank" rel="noopener noreferrer">
+        <FacebookIcon />
+      </a>
+    );
+  }
+  if ('linkedin' in lead && lead['linkedin'] !== '') {
+    availableLinks.push(
+      <a href={lead['linkedin']} target="_blank" rel="noopener noreferrer">
+        <LinkedInIcon />
+      </a>
+    );
+  }
+  if ('twitter' in lead && lead['twitter'] !== '') {
+    availableLinks.push(
+      <a href={lead['twitter']} target="_blank" rel="noopener noreferrer">
+        <TwitterIcon />
+      </a>
+    );
+  }
+  if ('instagram' in lead && lead['instagram'] !== '') {
+    availableLinks.push(
+      <a href={lead['instagram']} target="_blank" rel="noopener noreferrer">
+        <InstagramIcon />
+      </a>
+    );
+  }
 
-  return (
-    <a href={link} target="no_blank">
-      {link}
-    </a>
-  );
+  return <div>{availableLinks}</div>;
 };
 
 export const LeadRow = ({ lead }) => {
