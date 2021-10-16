@@ -73,6 +73,8 @@ export default function Home() {
   const [leads, setLeads] = useState([]);
   const [open, setOpen] = useState(false);
   const [newLead, setNewLead] = useState(false);
+  const [username, setUsername] = useState('');
+
   const history = useHistory();
 
   // TODO: setup search and tags
@@ -101,6 +103,7 @@ export default function Home() {
   };
 
   useEffect(() => {
+    setUsername(localStorage.getItem('username'));
     const token = localStorage.getItem('partnerFinderToken');
     const headers = {
       'Content-Type': 'application/json',
@@ -165,6 +168,9 @@ export default function Home() {
           >
             Code For Denver
           </a>
+        </Typography>
+        <Typography variant="h6" component="h6">
+          {username}
         </Typography>
         <Search
           debounceTime={DEBOUNCE_TIME_MS}
