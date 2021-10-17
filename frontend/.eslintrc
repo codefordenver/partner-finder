@@ -5,7 +5,8 @@
     },
     "parser": "babel-eslint",
     "plugins": [
-      "react"
+      "react",
+      "unused-imports"
     ],
     "rules": {
       "space-in-parens": [ 0, "always" ],
@@ -22,6 +23,8 @@
       "react/jsx-filename-extension": 0,
       "react/jsx-curly-spacing": [ 0, 2, "always" ],
       "react/jsx-indent": [ 0, 2, 4 ],
+      "react/jsx-uses-react": "error",
+      "react/jsx-uses-vars": "error",
       "react/prop-types": 0,
       "react/no-array-index-key": [ 1 ],
       "class-methods-use-this": [ 1 ],
@@ -32,5 +35,6 @@
       "no-shadow": [ 1 ],
       "camelcase": [ 1 ],
       "no-underscore-dangle" : [0, "always"],
+      "unused-imports/no-unused-imports": "error"
     }
 }
