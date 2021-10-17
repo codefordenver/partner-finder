@@ -41,7 +41,7 @@ def create_database_client(env="prod"):
             os.environ["POSTGRES_PORT"],
         )
     except KeyError as e:
-        raise EnvironmentError(f"Unset environment variable for postgres client.\n\tError: {e}")
+        raise EnvironmentError(f"Unset environment variable for postgres client.")
 
 
 db = create_database_client()
