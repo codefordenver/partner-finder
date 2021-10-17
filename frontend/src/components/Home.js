@@ -60,6 +60,12 @@ export const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     color: '#fff',
   },
+  tagColumn: {
+    width: '100px',
+  },
+  chip: {
+    margin: '2.5px',
+  },
 }));
 
 export default function Home() {
@@ -117,7 +123,23 @@ export default function Home() {
       headers: headers,
     })
       .then((response) => checkForErrors(response))
-      .then((data) => setLeads(data.leads))
+      .then((data) => {
+        // for each lead in data, add a new property called 'tags' fetch tags from endpoint /leads/{lead.id}/tags
+        const leadsWithTags = data['leads'].map((lead) => {
+          return fetch(`${API_HOST}/leads/${lead.id}/tags`, {
+            headers: headers,
+          })
+            .then((response) => checkForErrors(response))
+            .then((leadTags) => {
+              return { ...lead, tags: leadTags.tags };
+            });
+        });
+
+        // eslint-disable-next-line no-undef
+        Promise.all(leadsWithTags).then((leadsWithTagsResult) => {
+          setLeads(leadsWithTagsResult);
+        });
+      })
       .catch((error) => console.error(error.message));
 
     fetch(getPagesUrl(), {
