@@ -135,7 +135,6 @@ export default function Home() {
             });
         });
 
-        // eslint-disable-next-line no-undef
         Promise.all(leadsWithTags).then((leadsWithTagsResult) => {
           setLeads(leadsWithTagsResult);
         });
