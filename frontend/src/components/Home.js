@@ -9,7 +9,6 @@ import Search from './Search';
 import { API_HOST } from '../config';
 import { LeadModal } from './LeadModal';
 import { DEBOUNCE_TIME_MS } from '../constants';
-import { ContactPhoneSharp, TramOutlined } from '@material-ui/icons';
 
 export const useStyles = makeStyles((theme) => ({
   // TODO: make custom roundButton component
