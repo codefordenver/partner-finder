@@ -108,16 +108,16 @@ export default function Home() {
   };
 
   const addTag = (headers) => (lead) => {
-   return fetch(`${API_HOST}/leads/${lead.id}/tags`, {
-     headers: headers,
-   })
-     .then((response) => checkForErrors(response))
-     .then((leadTags) => {
-       return { ...lead, tags: leadTags.tags };
-     })
-     .catch((error) => {
-       return { ...lead, tags: [] };
-     });
+    return fetch(`${API_HOST}/leads/${lead.id}/tags`, {
+      headers: headers,
+    })
+      .then((response) => checkForErrors(response))
+      .then((leadTags) => {
+        return { ...lead, tags: leadTags.tags };
+      })
+      .catch((error) => {
+        return { ...lead, tags: [] };
+      });
   };
 
   useEffect(() => {
