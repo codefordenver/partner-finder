@@ -58,7 +58,7 @@ def _create_tag(request):
             row = connection.execute(query, tag=tag).first()
     except IntegrityError as e:
         current_app.logger.error(e)
-        return {"message": f"Could not create a new tag: {e}"}, 422
+        return {"message": f"Could not create a new tag: {tag}"}, 422
 
     return dict(row), 200
 
