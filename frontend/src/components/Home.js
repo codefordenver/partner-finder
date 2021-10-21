@@ -65,6 +65,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   chip: {
     margin: '2.5px',
+  },
   avatar: {
     background: '#E14E54',
     '&:hover': {
