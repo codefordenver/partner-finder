@@ -69,13 +69,13 @@ export const LeadRow = ({ lead }) => {
       </TableCell>
 
       <TableCell>
-        {lead['assignee'] &&
-          <Avatar className={classes.avatar} >
+        {lead['assignee'] && (
+          <Avatar className={classes.avatar}>
             <p title={lead['assignee']}>
               {lead['assignee'].charAt(0).toUpperCase()}
             </p>
           </Avatar>
-        }
+        )}
       </TableCell>
       {/* TODO: get tags */}
       <TableCell></TableCell>

@@ -65,7 +65,7 @@ export const useStyles = makeStyles((theme) => ({
     '&:hover': {
       cursor: 'pointer',
     },
-  }
+  },
 }));
 
 export default function Home() {
