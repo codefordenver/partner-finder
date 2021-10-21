@@ -60,6 +60,12 @@ export const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     color: '#fff',
   },
+  avatar: {
+    background: '#E14E54',
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  }
 }));
 
 export default function Home() {

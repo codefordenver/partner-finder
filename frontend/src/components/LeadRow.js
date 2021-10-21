@@ -8,6 +8,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import Avatar from "@material-ui/core/Avatar";
 
 const SocialMediaLink = ({ lead }) => {
   const availableLinks = [];
@@ -45,7 +46,7 @@ const SocialMediaLink = ({ lead }) => {
 
 export const LeadRow = ({ lead }) => {
   const classes = useStyles();
-
+  
   return (
     <TableRow>
       <TableCell>{lead['company_name']}</TableCell>
@@ -66,7 +67,16 @@ export const LeadRow = ({ lead }) => {
       <TableCell>
         <SocialMediaLink lead={lead} />
       </TableCell>
-      <TableCell>{lead['assignee']}</TableCell>
+
+      <TableCell>
+        {lead['assignee'] &&
+          <Avatar className={classes.avatar} >
+            <p title={lead['assignee']}>
+              {lead['assignee'].charAt(0).toUpperCase()}
+            </p>
+          </Avatar>
+        }
+      </TableCell>
       {/* TODO: get tags */}
       <TableCell></TableCell>
       <TableCell>
