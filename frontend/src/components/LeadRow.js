@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableRow, TableCell, Box } from '@material-ui/core';
+import { TableRow, TableCell, Box, Chip } from '@material-ui/core';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { useStyles } from './Home';
@@ -67,7 +67,7 @@ export const LeadRow = ({ lead }) => {
       <TableCell>
         <SocialMediaLink lead={lead} />
       </TableCell>
-
+      <TableCell>{lead['assignee']}</TableCell>
       <TableCell>
         {lead['assigned'] && (
           <Avatar className={classes.avatar}>
@@ -77,8 +77,17 @@ export const LeadRow = ({ lead }) => {
           </Avatar>
         )}
       </TableCell>
-      {/* TODO: get tags */}
-      <TableCell></TableCell>
+      <TableCell>
+        {lead['tags'].map((tag) => (
+          <Chip
+            key={tag.id}
+            label={tag.tag}
+            className={classes.chip}
+            size="small"
+            variant="outlined"
+          />
+        ))}
+      </TableCell>
       <TableCell>
         <Box display="flex" flexDirection="row" justifyContent="center">
           <Box className={classes.roundButton}>
