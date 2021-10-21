@@ -69,10 +69,10 @@ export const LeadRow = ({ lead }) => {
       </TableCell>
 
       <TableCell>
-        {lead['assignee'] && (
+        {lead['assigned'] && (
           <Avatar className={classes.avatar}>
-            <p title={lead['assignee']}>
-              {lead['assignee'].charAt(0).toUpperCase()}
+            <p title={lead['assigned']}>
+              {lead['assigned'].charAt(0).toUpperCase()}
             </p>
           </Avatar>
         )}
