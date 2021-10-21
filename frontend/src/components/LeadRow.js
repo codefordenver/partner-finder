@@ -67,7 +67,6 @@ export const LeadRow = ({ lead }) => {
       <TableCell>
         <SocialMediaLink lead={lead} />
       </TableCell>
-      <TableCell>{lead['assignee']}</TableCell>
       <TableCell>
         {lead['assigned'] && (
           <Avatar className={classes.avatar}>
