@@ -275,6 +275,23 @@ This is the current manual process for building and deploying the rest api:
 8. stop and remove the running container with `sudo docker container stop <container name>` and `sudo docker container rm <container name>` you can get the container name by running `sudo docker ps`
 9. start a new container with the updated api with `sudo ./start.sh`
 
+
+## Frontend
+
+This is the current manual process for building and deploying the frontend:
+
+1. Create a `.env` file in the `frontend` directory. Make sure it has the following contents
+    ```
+    API_HOST='http://cfd-partner-finder-api.xyz:8888'
+    ```
+1. Update the version number in `frontend/scripts/build.sh`
+1. Run `./scripts/build.sh` to build a docker image and push it to dockerhub
+1. Use the `backend/scripts/ssh-server` script to start an ssh session in the ec2 instance
+1. Update the version number in `partner-finder/frontend.sh`
+1. Pull the docker image from dockerhub
+1. stop and remove the running container with `sudo docker container stop <container name>` and `sudo docker container rm <container name>` you can get the container name by running `sudo docker ps`
+1. start a new container with the updated frontend with `sudo ./frontend.sh`
+
 # Data Sources For Leads
 - [Socrata API](https://data.colorado.gov/Business/Business-Entities-in-Colorado/4ykn-tg5h)
     - Dataset with registered business entities in Colorado. It can be filtered to return only nonprofits.
