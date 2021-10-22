@@ -197,7 +197,7 @@ def _get_all_leads(request):
                 "perpage": perpage,
             },
             "leads": leads_with_tags,
-            }, 200
+        }, 200
 
 
 def _get_tags(leads):
@@ -215,13 +215,14 @@ def _get_tags(leads):
         )
         lead_tags = [dict(row) for row in res]
         for lead in leads:
-            lead['tags'] = _get_tags_for_lead(lead['id'], lead_tags)
+            lead["tags"] = _get_tags_for_lead(lead["id"], lead_tags)
         return leads
 
 
 def _get_tags_for_lead(lead_id, lead_tags):
-    return [{'id': lead_tag['tag_id'], 'tag': lead_tag['tag']} for lead_tag in lead_tags if
-            lead_tag['lead_id'] == lead_id]
+    return [
+        {"id": lead_tag["tag_id"], "tag": lead_tag["tag"]} for lead_tag in lead_tags if lead_tag["lead_id"] == lead_id
+    ]
 
 
 @leads_bp.route("/leads/n_pages", methods=["GET"])
