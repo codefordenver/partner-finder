@@ -139,18 +139,18 @@ def _get_all_leads(request):
             SELECT
                 {columns}
             FROM leads
-            WHERE to_tsvector(company_name) @@ to_tsquery('{search}')
-            ORDER BY ts_rank(to_tsvector(company_name), '{search}')
+            WHERE to_tsvector(company_name) @@ to_tsquery(:search)
+            ORDER BY ts_rank(to_tsvector(company_name), :search)
             LIMIT :limit
             OFFSET :offset
         """.format(
                 columns=",".join(DEFAULT_LEAD_FIELDS),
-                search=search,
             )
         )
         query_args = {
             "limit": limit,
             "offset": offset,
+            "search": search,
         }
     else:
         query = text(
@@ -160,20 +160,20 @@ def _get_all_leads(request):
             FROM lead_tag lt
             JOIN leads l on l.id = lt.lead_id
             JOIN tags t on t.id = lt.tag_id
-            WHERE to_tsvector(l.company_name) @@ to_tsquery('{search}')
+            WHERE to_tsvector(l.company_name) @@ to_tsquery(:search)
                 AND lt.tag_id = :tag_id
-            ORDER BY ts_rank(to_tsvector(company_name), '{search}')
+            ORDER BY ts_rank(to_tsvector(company_name), :search)
             LIMIT :limit
             OFFSET :offset
         """.format(
                 columns=",".join("l." + f for f in DEFAULT_LEAD_FIELDS),
-                search=search,
             )
         )
         query_args = {
             "limit": limit,
             "offset": offset,
             "tag_id": tag_id,
+            "search": search,
         }
 
     # TODO: handle database error
@@ -256,12 +256,10 @@ def leads_number_of_pages():
             """
             SELECT count(id) AS n_records
             FROM leads
-            WHERE to_tsvector(company_name) @@ to_tsquery('{search}')
-            """.format(
-                search=search
-            )
+            WHERE to_tsvector(company_name) @@ to_tsquery(:search)
+            """
         )
-        query_args = {}
+        query_args = {"search": search}
     else:
         query = text(
             """
@@ -269,14 +267,13 @@ def leads_number_of_pages():
             FROM lead_tag lt
             JOIN leads l on l.id = lt.lead_id
             JOIN tags t on t.id = lt.tag_id
-            WHERE to_tsvector(l.company_name) @@ to_tsquery('{search}')
+            WHERE to_tsvector(l.company_name) @@ to_tsquery(:search)
                 AND lt.tag_id = :tag_id
-            """.format(
-                search=search
-            )
+            """
         )
         query_args = {
             "tag_id": tag_id,
+            "search": search,
         }
 
     with db.get_connection() as connection:
