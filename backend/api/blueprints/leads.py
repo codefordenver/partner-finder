@@ -191,13 +191,13 @@ def _get_all_leads(request):
             count += 1
         leads_with_tags = _get_tags(leads)
         return {
-                   "count": count,
-                   "query": {
-                       "page": page,
-                       "perpage": perpage,
-                   },
-                   "leads": leads_with_tags,
-               }, 200
+            "count": count,
+            "query": {
+                "page": page,
+                "perpage": perpage,
+            },
+            "leads": leads_with_tags,
+            }, 200
 
 
 def _get_tags(leads):
@@ -205,7 +205,7 @@ def _get_tags(leads):
         res = conn.execute(
             text(
                 """
-                SELECT lt.lead_id, t.id as tag_id, t.tag FROM 
+                SELECT lt.lead_id, t.id as tag_id, t.tag FROM
                 lead_tag lt
                 JOIN tags t
                 ON lt.tag_id = t.id
