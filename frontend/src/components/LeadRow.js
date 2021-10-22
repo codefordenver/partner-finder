@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TableRow, TableCell, Box, Chip } from '@material-ui/core';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
@@ -9,6 +9,7 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import Avatar from '@material-ui/core/Avatar';
+import AlertDialog from './Dialog';
 
 const SocialMediaLink = ({ lead }) => {
   const availableLinks = [];
@@ -44,9 +45,9 @@ const SocialMediaLink = ({ lead }) => {
   return <div>{availableLinks}</div>;
 };
 
-export const LeadRow = ({ lead }) => {
+export const LeadRow = ({ lead, deleteLead }) => {
   const classes = useStyles();
-
+  const [deleteDialog, setDeleteDialog] = useState(false);
   return (
     <TableRow>
       <TableCell>{lead['company_name']}</TableCell>
@@ -92,8 +93,14 @@ export const LeadRow = ({ lead }) => {
           <Box className={classes.roundButton}>
             <EditOutlinedIcon />
           </Box>
+          <AlertDialog
+            open={deleteDialog}
+            setPopUpState={setDeleteDialog}
+            content="Are you sure to delete the lead"
+            handleAction={() => deleteLead(lead)}
+          />
           <Box className={classes.roundButton}>
-            <DeleteOutlineOutlinedIcon />
+            <DeleteOutlineOutlinedIcon onClick={() => setDeleteDialog(true)} />
           </Box>
         </Box>
       </TableCell>

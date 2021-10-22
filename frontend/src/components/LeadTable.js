@@ -10,7 +10,7 @@ import {
 import { useStyles } from './Home';
 import { LeadRow } from './LeadRow';
 
-export const LeadTable = ({ leads }) => {
+export const LeadTable = ({ leads, deleteLead }) => {
   const classes = useStyles();
 
   return (
@@ -32,7 +32,7 @@ export const LeadTable = ({ leads }) => {
         </TableHead>
         <TableBody>
           {leads.map((lead) => (
-            <LeadRow key={lead.id} lead={lead} />
+            <LeadRow key={lead.id} lead={lead} deleteLead={deleteLead} />
           ))}
         </TableBody>
       </Table>

@@ -85,6 +85,7 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [newLead, setNewLead] = useState(false);
   const [username, setUsername] = useState('');
+  const [reload, setReload] = useState(false);
 
   const history = useHistory();
 
@@ -158,7 +159,7 @@ export default function Home() {
       .then((response) => checkForErrors(response))
       .then((data) => setMaxPages(data.pages))
       .catch((error) => console.error(error.message));
-  }, [page, perpage, search, maxpages, newLead]);
+  }, [page, perpage, search, maxpages, newLead, reload]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -183,6 +184,22 @@ export default function Home() {
       .then(() => handleClose())
       .then(() => setNewLead(true))
       //TODO: should render an error inside of the modal instead of just console.error
+      .catch((err) => console.error(err));
+  };
+
+  const deleteLead = (lead) => {
+    const token = localStorage.getItem('partnerFinderToken');
+    const url = `${API_HOST}/leads/${lead.id}`;
+    fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => checkForErrors(response))
+      .then(() => alert('Lead deleted successfully'))
+      .then(() => setReload(true))
       .catch((err) => console.error(err));
   };
 
@@ -232,7 +249,7 @@ export default function Home() {
             setPerpage={setPerpage}
           />
         </Box>
-        <LeadTable leads={leads} />
+        <LeadTable leads={leads} deleteLead={deleteLead} />
       </Box>
 
       <Button className={classes.aboutFooter}>About</Button>
