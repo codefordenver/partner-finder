@@ -180,23 +180,48 @@ def _get_all_leads(request):
     # just grab all fields for now to avoid exposing query to sql injection
     with db.get_connection() as connection:
         res = connection.execute(query, **query_args)
-        response_body = []
+        leads = []
         count = 0
         for row in res:
             # TODO: handle potential errors if the user chooses a field not in the row
             lead = {field: getattr(row, field) for field in include}
             if drop_null:
                 lead = {k: v for (k, v) in lead.items() if v is not None}
-            response_body.append(lead)
+            leads.append(lead)
             count += 1
+        leads_with_tags = _get_tags(leads)
         return {
             "count": count,
             "query": {
                 "page": page,
                 "perpage": perpage,
             },
-            "leads": response_body,
-        }, 200
+            "leads": leads_with_tags,
+            }, 200
+
+
+def _get_tags(leads):
+    with db.get_engine().connect() as conn:
+        res = conn.execute(
+            text(
+                """
+                SELECT lt.lead_id, t.id as tag_id, t.tag FROM
+                lead_tag lt
+                JOIN tags t
+                ON lt.tag_id = t.id
+                WHERE lt.lead_id = lead_id;
+            """
+            ),
+        )
+        lead_tags = [dict(row) for row in res]
+        for lead in leads:
+            lead['tags'] = _get_tags_for_lead(lead['id'], lead_tags)
+        return leads
+
+
+def _get_tags_for_lead(lead_id, lead_tags):
+    return [{'id': lead_tag['tag_id'], 'tag': lead_tag['tag']} for lead_tag in lead_tags if
+            lead_tag['lead_id'] == lead_id]
 
 
 @leads_bp.route("/leads/n_pages", methods=["GET"])
