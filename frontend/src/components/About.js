@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles, Typography, TextField, Box } from '@material-ui/core';
+import { NoEncryption } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
 	aboutPage: {
@@ -20,13 +21,12 @@ const useStyles = makeStyles((theme) => ({
 	},
 	aboutPageHeader: {
 		color: 'white',
-		position: 'absolute',
-		top: '10%'
+		position: 'relative',
+		marginBottom: '40px'
 	},
 	aboutText: {
 		background: 'white',
 		width: '390px',
-		height: '420px',
 		padding: '60px 40px',
 		display: 'flex',
 		flexDirection: 'column',
@@ -43,8 +43,8 @@ export default function App() {
 			<Typography className={classes.aboutHeader} variant="h2" component="h1" gutterBottom>
 				Code For Denver Partner Finder
 			</Typography>
-			<Typography className={classes.aboutPageHeader} variant="h3">
-				<h3>About</h3>
+			<Typography className={classes.aboutPageHeader} variant="h3" component="h2">
+				About
 			</Typography>
 			<Box className={classes.aboutText}>
 				<Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" marginBottom="40px">
