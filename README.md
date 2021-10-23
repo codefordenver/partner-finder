@@ -23,7 +23,8 @@ A micro-CRM to help Code For Denver discover leads and manage its outreach to no
 - [Running a data analysis jupyter notebook](#running-a-data-analysis-jupyter-notebook)
 
 [Deployments](#deployments)
-- [API](#api)
+- [Deploying The API](#deploying-the-api)
+- [Deploying The Frontend](#deploying-the-frontend)
 
 [Data Sources For Leads](#data-sources-for-leads)
 
@@ -261,7 +262,7 @@ Postman is a web client for testing out REST apis. See here to view and export [
 
 # Deployments
 
-## API
+## Deploying The API
 
 This is the current manual process for building and deploying the rest api:
 
@@ -276,7 +277,7 @@ This is the current manual process for building and deploying the rest api:
 9. start a new container with the updated api with `sudo ./start.sh`
 
 
-## Frontend
+## Deploying The Frontend
 
 This is the current manual process for building and deploying the frontend:
 
