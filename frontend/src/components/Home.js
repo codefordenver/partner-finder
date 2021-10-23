@@ -113,19 +113,6 @@ export default function Home() {
     return `${API_HOST}/leads/n_pages?perpage=${perpage}`;
   };
 
-  const addTag = (headers) => (lead) => {
-    return fetch(`${API_HOST}/leads/${lead.id}/tags`, {
-      headers: headers,
-    })
-      .then((response) => checkForErrors(response))
-      .then((leadTags) => {
-        return { ...lead, tags: leadTags.tags };
-      })
-      .catch((error) => {
-        return { ...lead, tags: [] };
-      });
-  };
-
   useEffect(() => {
     setUsername(localStorage.getItem('username'));
     const token = localStorage.getItem('partnerFinderToken');
@@ -143,12 +130,7 @@ export default function Home() {
     })
       .then((response) => checkForErrors(response))
       .then((data) => {
-        // for each lead in data, add a new property called 'tags' fetch tags from endpoint /leads/{lead.id}/tags
-        const leadsWithTags = data['leads'].map(addTag(headers));
-
-        Promise.all(leadsWithTags).then((leadsWithTagsResult) => {
-          setLeads(leadsWithTagsResult);
-        });
+        setLeads(data.leads);
       })
       .catch((error) => console.error(error.message));
 
