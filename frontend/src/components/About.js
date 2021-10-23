@@ -16,8 +16,7 @@ const useStyles = makeStyles((theme) => ({
 		color: 'white',
 		width: '40%',
 		textAlign: 'center',
-		fontWeight: '400',
-		marginBottom: '40px'
+		fontWeight: '400'
 	},
 	aboutPageHeader: {
 		color: 'white',
