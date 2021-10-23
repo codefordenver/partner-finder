@@ -109,7 +109,10 @@ export default function Home() {
     return `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
   };
 
-  const getPagesUrl = () => {
+  const getPagesUrl = (search) => {
+    if (search) {
+      return `${API_HOST}/leads/n_pages?perpage=${perpage}&search=${search}`;
+    }
     return `${API_HOST}/leads/n_pages?perpage=${perpage}`;
   };
 
@@ -152,11 +155,13 @@ export default function Home() {
       })
       .catch((error) => console.error(error.message));
 
-    fetch(getPagesUrl(), {
+    fetch(getPagesUrl(search), {
       headers: headers,
     })
       .then((response) => checkForErrors(response))
-      .then((data) => setMaxPages(data.pages))
+      .then((data) => {
+        setMaxPages(data.pages);
+      })
       .catch((error) => console.error(error.message));
   }, [page, perpage, search, maxpages, newLead]);
 
@@ -205,7 +210,10 @@ export default function Home() {
         </Typography>
         <Search
           debounceTime={DEBOUNCE_TIME_MS}
-          onDebounce={(event) => setSearch(event.target.value)}
+          onDebounce={(event) => {
+            setSearch(event.target.value);
+            setPage(1);
+          }}
         />
       </Header>
       <Box
