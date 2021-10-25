@@ -128,7 +128,14 @@ export default function Home() {
   };
 
   const getPagesUrl = () => {
-    return `${API_HOST}/leads/n_pages?perpage=${perpage}`;
+    if (search && tag) {
+      return `${API_HOST}/leads/n_pages?search=${search}&tag=${tag}&page=${page}&perpage=${perpage}`;
+    } else if (tag) {
+      return `${API_HOST}/leads/n_pages?tag=${tag}&page=${page}&perpage=${perpage}`;
+    } else if (search) {
+      return `${API_HOST}/leads/n_pages?page=${page}&perpage=${perpage}&search=${search}`;
+    }
+    return `${API_HOST}/leads/n_pages?page=${page}&perpage=${perpage}`;
   };
 
   const getTagsUrl = () => {
@@ -254,15 +261,18 @@ export default function Home() {
           onDebounce={(event) => setSearch(event.target.value)}
         />
         <FormControl className={classes.formControl}>
-          <InputLabel id="select-tag-label">--Tag--</InputLabel>
+          <InputLabel id="select-tag-label">Tag</InputLabel>
           <Select
             labelId="select-tag-label"
             id="select-tag"
             value={tag ? tag : ''}
-            onChange={(event) => setTag(event.target.value)}
+            onChange={(event) => {
+              setTag(event.target.value)
+              setPage(1)
+            }}
           >
             <MenuItem value="">
-              <em>--Tag--</em>
+              <em>None</em>
             </MenuItem>
             {tagOptions.map((tagOption) => (
               <MenuItem key={tagOption.tag} value={tagOption.tag}>
