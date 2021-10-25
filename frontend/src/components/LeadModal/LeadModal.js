@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import ButtonPrimary from './ButtonPrimary';
+import ButtonPrimary from '../ButtonPrimary';
 import { makeStyles } from '@material-ui/core';
+import './LeadModal.css';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -70,16 +71,6 @@ export const LeadModal = ({ open, onClose, addLead }) => {
     setTwitter('');
   };
 
-  const validate = (response) => {
-    if (response.status === 200) {
-      console.log('user exists');
-      return true;
-    } else if (response.status !== 200) {
-      console.log('user does not exist');
-      return false;
-    }
-  };
-
   const checkAssignedUserExists = async () => {
     const token = localStorage.getItem('partnerFinderToken');
     const headers = {
@@ -90,8 +81,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
     const response = await fetch('https://cfd-partner-finder-api.xyz/users', {
       headers: headers,
     });
-    console.log('res', response);
-    return validate(response);
+    console.log('all users response', response);
   };
 
   const checkValidPhone = (number) => {
@@ -103,9 +93,12 @@ export const LeadModal = ({ open, onClose, addLead }) => {
     }
   };
 
-  const validateInputs = () => {
-    checkAssignedUserExists();
+  const checkValidEmail = (email) => {
     const validEmail = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$');
+    return validEmail.test(email);
+  };
+
+  const checkValidUrl = (url) => {
     var validUrl = new RegExp(
       '^(https?:\\/\\/)?' + // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -115,14 +108,21 @@ export const LeadModal = ({ open, onClose, addLead }) => {
         '(\\#[-a-z\\d_]*)?$',
       'i'
     );
+    return validUrl.test(url);
+  };
 
+  const validateInputs = () => {
+    let element;
     if (!companyName) {
-      throw new Error('Company name is required');
-    } else if (!validEmail.test(email)) {
-      throw new Error('Please enter a valid email');
-    } else if (!checkValidPhone(phone)) {
-      throw new Error('Please enter a valid phone number');
-    } else if (checkValidPhone(phone)) {
+      element = document.getElementById('companyNameValidation');
+      element.classList.remove('hidden');
+      throw new Error('no company name');
+    }
+    if (phone.length && !checkValidPhone(phone)) {
+      element = document.getElementById('phoneValidation');
+      element.classList.remove('hidden');
+      throw new Error('bad phone number');
+    } else if (phone.length && checkValidPhone(phone)) {
       //if valid phone, formats into standardized (XXX) XXX-XXXX
       const num = checkValidPhone(phone);
       const formattedPhoneNumber = `(${num.slice(0, 3)}) ${num.slice(
@@ -130,19 +130,33 @@ export const LeadModal = ({ open, onClose, addLead }) => {
         6
       )}-${num.slice(6, 10)}`;
       setPhone(formattedPhoneNumber);
-    } else if (facebook && !validUrl.test(facebook)) {
-      throw new Error('Please enter only valid URLs');
-    } else if (instagram && !validUrl.test(instagram)) {
-      throw new Error('Please enter only valid URLs');
-    } else if (linkedin && !validUrl.test(linkedin)) {
-      throw new Error('Please enter only valid URLs');
-    } else if (twitter && !validUrl.test(twitter)) {
-      throw new Error('Please enter only valid URLs');
-    } else if (website && !validUrl.test(website)) {
-      throw new Error('Please enter only valid URLs');
-    } else if (!checkAssignedUserExists()) {
-      throw new Error('Username does not match any in our records');
+    } else if (facebook && !checkValidUrl(facebook)) {
+      element = document.getElementById('fbValidation');
+      element.classList.remove('hidden');
+      throw new Error('bad facebook url');
+    } else if (instagram && !checkValidUrl(instagram)) {
+      element = document.getElementById('instagramValidation');
+      element.classList.remove('hidden');
+      throw new Error('bad instagram url');
+    } else if (linkedin && !checkValidUrl(linkedin)) {
+      element = document.getElementById('linkedinValidation');
+      element.classList.remove('hidden');
+      throw new Error('bad linkedin url');
+    } else if (twitter && !checkValidUrl(twitter)) {
+      element = document.getElementById('twitterValidation');
+      element.classList.remove('hidden');
+      throw new Error('bad twitter url');
+    } else if (website && !checkValidUrl(website)) {
+      element = document.getElementById('websiteValidation');
+      element.classList.remove('hidden');
+      throw new Error('bad website url');
+    } else if (email && !checkValidEmail(email)) {
+      element = document.getElementById('emailValidation');
+      element.classList.remove('hidden');
+      throw new Error('bad email');
     }
+    // check username exists
+    checkAssignedUserExists();
   };
 
   const handleSave = (e) => {
@@ -176,6 +190,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
           Add a Lead
         </Typography>
         <form className={classes.form}>
+          <span className="error hidden" id="companyNameValidation">
+            <span>Company name is required</span>
+          </span>
           <label className={classes.label}>
             Company Name*
             <input
@@ -203,6 +220,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setContactName(e.target.value)}
             />
           </label>
+          <span className="error hidden" id="emailValidation">
+            <span>Please enter a valid email address</span>
+          </span>
           <label className={classes.label}>
             Email
             <input
@@ -212,15 +232,21 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setEmail(e.target.value)}
             />
           </label>
+          <span className="error hidden" id="phoneValidation">
+            <span>Please enter a valid ten digit phone number</span>
+          </span>
           <label className={classes.label}>
             Phone
             <input
-              type="text"
+              type="number"
               className={classes.input}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
           </label>
+          <span className="error hidden" id="websiteValidation">
+            <span>Please enter a valid url</span>
+          </span>
           <label className={classes.label}>
             Website
             <input
@@ -230,6 +256,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setWebsite(e.target.value)}
             />
           </label>
+          <span className="error hidden" id="fbValidation">
+            <span>Please enter a valid url</span>
+          </span>
           <label className={classes.label}>
             Facebook
             <input
@@ -239,6 +268,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setFacebook(e.target.value)}
             />
           </label>
+          <span className="error hidden" id="instagramValidation">
+            <span>Please enter a valid url</span>
+          </span>
           <label className={classes.label}>
             Instagram
             <input
@@ -248,6 +280,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setInstagram(e.target.value)}
             />
           </label>
+          <span className="error hidden" id="linkedinValidation">
+            <span>Please enter a valid url</span>
+          </span>
           <label className={classes.label}>
             LinkedIn
             <input
@@ -257,6 +292,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setLinkedin(e.target.value)}
             />
           </label>
+          <span className="error hidden" id="twitterValidation">
+            <span>Please enter a valid url</span>
+          </span>
           <label className={classes.label}>
             Twitter
             <input
