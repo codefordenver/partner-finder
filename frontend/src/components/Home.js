@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
-import { makeStyles, Button, Box, Typography } from '@material-ui/core';
+import { makeStyles, Button, Box, Typography, Select, FormControl, MenuItem } from '@material-ui/core';
 import { LeadTable } from './LeadTable';
 import ButtonPrimary from './ButtonPrimary';
 import Header from './Header';
@@ -88,12 +88,10 @@ export default function Home() {
   const [username, setUsername] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
+  const [tag, setTag] = useState('');
+  const [tagOptions, setTagOptions] = useState([]);
 
   const history = useHistory();
-
-  // TODO: setup search and tags
-  // const [search, setSearch] = useState(null);
-  // const [tag, setTag] = useState(null);
 
   const checkForErrors = (response) => {
     if (response.status === 200) {
@@ -106,7 +104,11 @@ export default function Home() {
   };
 
   const getLeadsUrl = () => {
-    if (search) {
+    if (search && tag) {
+      return `${API_HOST}/leads?search=${search}&tag=${tag}&page=${page}&perpage=${perpage}`;
+    } else if (tag) {
+      return `${API_HOST}/leads?tag=${tag}&page=${page}&perpage=${perpage}`;
+    } else if (search) {
       return `${API_HOST}/leads?page=${page}&perpage=${perpage}&search=${search}`;
     }
     return `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
@@ -115,6 +117,10 @@ export default function Home() {
   const getPagesUrl = () => {
     return `${API_HOST}/leads/n_pages?perpage=${perpage}`;
   };
+
+  const getTagsUrl = () => {
+    return `${API_HOST}/tags`;
+  }
 
   const addTag = (headers) => (lead) => {
     return fetch(`${API_HOST}/leads/${lead.id}/tags`, {
@@ -166,7 +172,16 @@ export default function Home() {
       .catch((error) => {
         setErrorMessage('Failed to fetch Pages!');
       });
-  }, [page, perpage, search, maxpages, newLead]);
+
+    fetch(getTagsUrl(), {
+      headers: headers,
+    })
+      .then((response) => checkForErrors(response))
+      .then((data) => setTagOptions(data.tags))
+      .catch((error) => {
+        setErrorMessage('Failed to fetch Tags!');
+      });
+  }, [page, perpage, search, maxpages, newLead, tag]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -225,6 +240,16 @@ export default function Home() {
           debounceTime={DEBOUNCE_TIME_MS}
           onDebounce={(event) => setSearch(event.target.value)}
         />
+        <FormControl>
+          <Select
+            value={tag ? tag : ''}
+            onChange={(event) => setTag(event.target.value)}
+          >
+            {tagOptions.map((tagOption) => (
+              <MenuItem key={tagOption.tag} value={tagOption.tag}>{tagOption.tag}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Header>
       <Box
         marginX="15px" // TODO: there must be a cleaner way to get the margins
