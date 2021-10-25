@@ -87,12 +87,10 @@ export const LeadModal = ({ open, onClose, addLead }) => {
       Authorization: `Bearer ${token}`,
     };
 
-    const response = await fetch(
-      `https://cfd-partner-finder-api.xyz/users/${assigned}`,
-      {
-        headers: headers,
-      }
-    );
+    const response = await fetch('https://cfd-partner-finder-api.xyz/users', {
+      headers: headers,
+    });
+    console.log('res', response);
     return validate(response);
   };
 
@@ -106,6 +104,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
   };
 
   const validateInputs = () => {
+    checkAssignedUserExists();
     const validEmail = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$');
     var validUrl = new RegExp(
       '^(https?:\\/\\/)?' + // protocol
