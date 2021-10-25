@@ -14,28 +14,48 @@ const SocialMediaLink = ({ lead }) => {
   const availableLinks = [];
   if ('facebook' in lead && lead['facebook'] !== '') {
     availableLinks.push(
-      <a href={lead['facebook']} target="_blank" rel="noopener noreferrer">
+      <a
+        href={lead['facebook']}
+        target="_blank"
+        rel="noopener noreferrer"
+        key="facebook"
+      >
         <FacebookIcon />
       </a>
     );
   }
   if ('linkedin' in lead && lead['linkedin'] !== '') {
     availableLinks.push(
-      <a href={lead['linkedin']} target="_blank" rel="noopener noreferrer">
+      <a
+        href={lead['linkedin']}
+        target="_blank"
+        rel="noopener noreferrer"
+        key="linkedin"
+      >
         <LinkedInIcon />
       </a>
     );
   }
   if ('twitter' in lead && lead['twitter'] !== '') {
     availableLinks.push(
-      <a href={lead['twitter']} target="_blank" rel="noopener noreferrer">
+      <a
+        href={lead['twitter']}
+        target="_blank"
+        rel="noopener noreferrer"
+        key="twitter"
+      >
         <TwitterIcon />
       </a>
     );
   }
   if ('instagram' in lead && lead['instagram'] !== '') {
     availableLinks.push(
-      <a href={lead['instagram']} target="_blank" rel="noopener noreferrer">
+      <a
+        href={lead['instagram']}
+        target="_blank"
+        rel="noopener noreferrer"
+        key="instagram"
+      >
         <InstagramIcon />
       </a>
     );
