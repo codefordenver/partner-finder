@@ -267,8 +267,8 @@ export default function Home() {
             id="select-tag"
             value={tag ? tag : ''}
             onChange={(event) => {
-              setTag(event.target.value)
-              setPage(1)
+              setTag(event.target.value);
+              setPage(1);
             }}
           >
             <MenuItem value="">
