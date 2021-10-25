@@ -9,7 +9,7 @@ import Search from './Search';
 import { API_HOST } from '../config';
 import { LeadModal } from './LeadModal';
 import { DEBOUNCE_TIME_MS } from '../constants';
-import { ContactPhoneSharp, TramOutlined } from '@material-ui/icons';
+import ErrorSnackbar from './ErrorSnackbar';
 
 export const useStyles = makeStyles((theme) => ({
   // TODO: make custom roundButton component
@@ -57,6 +57,22 @@ export const useStyles = makeStyles((theme) => ({
   logo: {
     fontWeight: 'bold',
   },
+  link: {
+    textDecoration: 'none',
+    color: '#fff',
+  },
+  tagColumn: {
+    width: '100px',
+  },
+  chip: {
+    margin: '2.5px',
+  },
+  avatar: {
+    background: '#E14E54',
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
 }));
 
 export default function Home() {
@@ -69,6 +85,10 @@ export default function Home() {
   const [leads, setLeads] = useState([]);
   const [open, setOpen] = useState(false);
   const [newLead, setNewLead] = useState(false);
+  const [username, setUsername] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
+
   const history = useHistory();
 
   // TODO: setup search and tags
@@ -96,7 +116,21 @@ export default function Home() {
     return `${API_HOST}/leads/n_pages?perpage=${perpage}`;
   };
 
+  const addTag = (headers) => (lead) => {
+    return fetch(`${API_HOST}/leads/${lead.id}/tags`, {
+      headers: headers,
+    })
+      .then((response) => checkForErrors(response))
+      .then((leadTags) => {
+        return { ...lead, tags: leadTags.tags };
+      })
+      .catch((error) => {
+        return { ...lead, tags: [] };
+      });
+  };
+
   useEffect(() => {
+    setUsername(localStorage.getItem('username'));
     const token = localStorage.getItem('partnerFinderToken');
     const headers = {
       'Content-Type': 'application/json',
@@ -111,15 +145,27 @@ export default function Home() {
       headers: headers,
     })
       .then((response) => checkForErrors(response))
-      .then((data) => setLeads(data.leads))
-      .catch((error) => console.error(error.message));
+      .then((data) => {
+        // for each lead in data, add a new property called 'tags' fetch tags from endpoint /leads/{lead.id}/tags
+        const leadsWithTags = data['leads'].map(addTag(headers));
+
+        Promise.all(leadsWithTags).then((leadsWithTagsResult) => {
+          setLeads(leadsWithTagsResult);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        setErrorMessage('Failed to fetch Leads!');
+      });
 
     fetch(getPagesUrl(), {
       headers: headers,
     })
       .then((response) => checkForErrors(response))
       .then((data) => setMaxPages(data.pages))
-      .catch((error) => console.error(error.message));
+      .catch((error) => {
+        setErrorMessage('Failed to fetch Pages!');
+      });
   }, [page, perpage, search, maxpages, newLead]);
 
   const handleOpen = () => {
@@ -148,13 +194,32 @@ export default function Home() {
       .catch((err) => console.error(err));
   };
 
+  useEffect(() => {
+    if (errorMessage) {
+      setShowErrorSnackbar(true);
+    }
+  }, [errorMessage]);
+
+  const onCloseErrorSnackbar = () => {
+    setShowErrorSnackbar(false);
+  };
+
   return (
     <div id="home">
       <Header>
         {/* TODO: adjust title font size */}
         {/* TODO: make "Code For Denver" a link back to the home page */}
         <Typography className={classes.logo} variant="h4" component="h1">
-          Code For Denver
+          <a
+            className={classes.link}
+            href="https://codefordenver.org/"
+            target="_blank"
+          >
+            Code For Denver
+          </a>
+        </Typography>
+        <Typography variant="h6" component="h6">
+          {username}
         </Typography>
         <Search
           debounceTime={DEBOUNCE_TIME_MS}
@@ -189,6 +254,12 @@ export default function Home() {
       </Box>
 
       <Button className={classes.aboutFooter}>About</Button>
+
+      <ErrorSnackbar
+        open={showErrorSnackbar}
+        onClose={onCloseErrorSnackbar}
+        message={errorMessage}
+      />
     </div>
   );
 }

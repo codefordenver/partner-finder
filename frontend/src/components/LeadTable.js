@@ -23,7 +23,9 @@ export const LeadTable = ({ leads }) => {
             <TableCell className={classes.columnName}>Website</TableCell>
             <TableCell className={classes.columnName}>Social Media</TableCell>
             <TableCell className={classes.columnName}>Assignee</TableCell>
-            <TableCell className={classes.columnName}>Tags</TableCell>
+            <TableCell className={`${classes.columnName} ${classes.tagColumn}`}>
+              Tags
+            </TableCell>
             {/* Extra cell for edit and delete buttons */}
             <TableCell />
           </TableRow>

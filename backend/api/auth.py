@@ -63,7 +63,7 @@ def auth(role):
                     if _credentials_valid(credentials, role):
                         return view(*args, **kwargs)
                     return _auth_failure_response()
-                except IndexError as e:
+                except (jwt.JWTError, IndexError) as e:
                     current_app.logger.error(repr(e))
                     return _auth_failure_response()
 

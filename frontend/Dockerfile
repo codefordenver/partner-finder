@@ -7,6 +7,11 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json ./
 COPY yarn.lock ./
 
+RUN apk --no-cache --virtual build-dependencies add \
+        python \
+        make \
+        g++
+
 RUN yarn install
 
 COPY . ./
