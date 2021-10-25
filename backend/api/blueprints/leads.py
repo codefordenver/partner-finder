@@ -320,7 +320,7 @@ def leads_number_of_pages():
 
 def _parse_search_param(request):
 
-    multi_term_fix = request.args.get("search").replace(' ', '&') 
+    multi_term_fix = request.args.get("search").replace(" ", "&")
     return multi_term_fix
 
 
