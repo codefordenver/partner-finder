@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
-import { makeStyles, Button, Box, Typography, Select, FormControl, MenuItem } from '@material-ui/core';
+import {
+  makeStyles,
+  Button,
+  Box,
+  Typography,
+  Select,
+  FormControl,
+  MenuItem,
+  InputLabel,
+} from '@material-ui/core';
 import { LeadTable } from './LeadTable';
 import ButtonPrimary from './ButtonPrimary';
 import Header from './Header';
@@ -73,6 +82,10 @@ export const useStyles = makeStyles((theme) => ({
       cursor: 'pointer',
     },
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
 }));
 
 export default function Home() {
@@ -120,7 +133,7 @@ export default function Home() {
 
   const getTagsUrl = () => {
     return `${API_HOST}/tags`;
-  }
+  };
 
   const addTag = (headers) => (lead) => {
     return fetch(`${API_HOST}/leads/${lead.id}/tags`, {
@@ -240,13 +253,21 @@ export default function Home() {
           debounceTime={DEBOUNCE_TIME_MS}
           onDebounce={(event) => setSearch(event.target.value)}
         />
-        <FormControl>
+        <FormControl className={classes.formControl}>
+          <InputLabel id="select-tag-label">--Tag--</InputLabel>
           <Select
+            labelId="select-tag-label"
+            id="select-tag"
             value={tag ? tag : ''}
             onChange={(event) => setTag(event.target.value)}
           >
+            <MenuItem value="">
+              <em>--Tag--</em>
+            </MenuItem>
             {tagOptions.map((tagOption) => (
-              <MenuItem key={tagOption.tag} value={tagOption.tag}>{tagOption.tag}</MenuItem>
+              <MenuItem key={tagOption.tag} value={tagOption.tag}>
+                {tagOption.tag}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
