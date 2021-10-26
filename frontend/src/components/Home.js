@@ -95,6 +95,13 @@ export default function Home() {
   // const [search, setSearch] = useState(null);
   // const [tag, setTag] = useState(null);
 
+  useEffect(() => {
+    console.log(username);
+    if (!username) {
+      setUsername('test name');
+    }
+  }, [username]);
+
   const checkForErrors = (response) => {
     if (response.status === 200) {
       return response.json();
@@ -204,6 +211,11 @@ export default function Home() {
     setShowErrorSnackbar(false);
   };
 
+  const logout = () => {
+    localStorage.removeItem('partnerFinderToken');
+    history.push('/login');
+  };
+
   return (
     <div id="home">
       <Header>
@@ -220,6 +232,8 @@ export default function Home() {
         </Typography>
         <Typography variant="h6" component="h6">
           {username}
+          {'\u0009'}
+          <button onClick={logout}>Logout</button>
         </Typography>
         <Search
           debounceTime={DEBOUNCE_TIME_MS}
