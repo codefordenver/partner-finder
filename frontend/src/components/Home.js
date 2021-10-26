@@ -95,13 +95,6 @@ export default function Home() {
   // const [search, setSearch] = useState(null);
   // const [tag, setTag] = useState(null);
 
-  useEffect(() => {
-    console.log(username);
-    if (!username) {
-      setUsername('test name');
-    }
-  }, [username]);
-
   const checkForErrors = (response) => {
     if (response.status === 200) {
       return response.json();
