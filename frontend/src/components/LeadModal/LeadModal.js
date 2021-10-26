@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
@@ -60,6 +60,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
   const [instagram, setInstagram] = useState('');
   const [linkedin, setLinkedin] = useState('');
   const [twitter, setTwitter] = useState('');
+  const [users, setUsers] = useState([]);
 
   const clearForm = () => {
     setAssigned('');
@@ -74,19 +75,30 @@ export const LeadModal = ({ open, onClose, addLead }) => {
     setTwitter('');
   };
 
-  const checkAssignedUserExists = async () => {
-    console.log('hi');
-    const token = localStorage.getItem('partnerFinderToken');
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    };
-
-    const response = await fetch(`${API_HOST}/users`, {
-      headers: headers,
-    });
-    console.log('all users response', response);
+  const checkForErrors = (response) => {
+    if (response.status === 200) {
+      return response.json();
+    } else {
+      throw new Error('Something went wrong');
+    }
   };
+
+  useEffect(() => {
+    const getUsers = async () => {
+      const token = localStorage.getItem('partnerFinderToken');
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+
+      const response = await fetch(`${API_HOST}/users`, {
+        headers: headers,
+      });
+      const data = await checkForErrors(response);
+      setUsers(data.users);
+    };
+    getUsers();
+  }, []);
 
   const checkValidPhone = (number) => {
     const extractedNums = number.replace(/[^0-9]/g, '');
@@ -115,17 +127,48 @@ export const LeadModal = ({ open, onClose, addLead }) => {
     return validUrl.test(url);
   };
 
+  const checkAssignedUserExists = (assignedUser) => {
+    if (users.includes(assignedUser)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const resetErrors = () => {
+    let element;
+    const ids = [
+      'companyNameValidation',
+      'phoneValidation',
+      'fbValidation',
+      'instagramValidation',
+      'linkedinValidation',
+      'twitterValidation',
+      'websiteValidation',
+      'emailValidation',
+      'userValidation',
+    ];
+    ids.forEach((id) => {
+      element = document.getElementById(id);
+      element.classList.add('hidden');
+    });
+  };
+
   const validateInputs = () => {
     let element;
+    resetErrors();
+    let error = false;
     if (!companyName) {
       element = document.getElementById('companyNameValidation');
       element.classList.remove('hidden');
+      error = true;
     }
-    if (phone.length && !checkValidPhone(phone)) {
+    if (phone && !checkValidPhone(phone)) {
       element = document.getElementById('phoneValidation');
       element.classList.remove('hidden');
+      error = true;
     }
-    if (phone.length && checkValidPhone(phone)) {
+    if (phone && checkValidPhone(phone)) {
       //if valid phone, formats into standardized (XXX) XXX-XXXX
       const num = checkValidPhone(phone);
       const formattedPhoneNumber = `(${num.slice(0, 3)}) ${num.slice(
@@ -133,39 +176,48 @@ export const LeadModal = ({ open, onClose, addLead }) => {
         6
       )}-${num.slice(6, 10)}`;
       setPhone(formattedPhoneNumber);
+      error = false;
     }
     if (facebook && !checkValidUrl(facebook)) {
       element = document.getElementById('fbValidation');
       element.classList.remove('hidden');
-      // throw new Error('bad facebook url');
+      error = true;
     }
     if (instagram && !checkValidUrl(instagram)) {
       element = document.getElementById('instagramValidation');
       element.classList.remove('hidden');
-      // throw new Error('bad instagram url');
+      error = true;
     }
     if (linkedin && !checkValidUrl(linkedin)) {
       element = document.getElementById('linkedinValidation');
       element.classList.remove('hidden');
-      // throw new Error('bad linkedin url');
+      error = true;
     }
     if (twitter && !checkValidUrl(twitter)) {
       element = document.getElementById('twitterValidation');
       element.classList.remove('hidden');
-      // throw new Error('bad twitter url');
+      error = true;
     }
     if (website && !checkValidUrl(website)) {
       element = document.getElementById('websiteValidation');
       element.classList.remove('hidden');
-      // throw new Error('bad website url');
+      error = true;
     }
     if (email && !checkValidEmail(email)) {
       element = document.getElementById('emailValidation');
       element.classList.remove('hidden');
-      // throw new Error('bad email');
+      error = true;
     }
-    // check username exists
-    checkAssignedUserExists();
+    if (assigned && !checkAssignedUserExists(assigned)) {
+      element = document.getElementById('userValidation');
+      element.classList.remove('hidden');
+      error = true;
+    }
+    if (error) {
+      return false;
+    } else {
+      return true;
+    }
   };
 
   const handleSave = (e) => {
@@ -213,6 +265,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setCompanyName(e.target.value)}
             />
           </label>
+          <span className="error hidden" id="userValidation">
+            <span>Enter a valid username</span>
+          </span>
           <label className={classes.label}>
             Assigned
             <input
@@ -249,7 +304,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
           <label className={classes.label}>
             Phone
             <input
-              type="number"
+              type="text"
               className={classes.input}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
