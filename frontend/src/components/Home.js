@@ -211,6 +211,7 @@ export default function Home() {
     setShowErrorSnackbar(false);
   };
 
+  // function to remove token from local storage and redirect user when logging out
   const logout = () => {
     localStorage.removeItem('partnerFinderToken');
     history.push('/login');
