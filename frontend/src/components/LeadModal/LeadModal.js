@@ -5,6 +5,7 @@ import Modal from '@mui/material/Modal';
 import ButtonPrimary from '../ButtonPrimary';
 import { makeStyles } from '@material-ui/core';
 import './LeadModal.css';
+import { API_HOST } from '../../config';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -21,6 +22,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     padding: '2em',
+    overflow: 'scroll',
+    height: '90%',
   },
   form: {
     display: 'flex',
@@ -72,13 +75,14 @@ export const LeadModal = ({ open, onClose, addLead }) => {
   };
 
   const checkAssignedUserExists = async () => {
+    console.log('hi');
     const token = localStorage.getItem('partnerFinderToken');
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     };
 
-    const response = await fetch('https://cfd-partner-finder-api.xyz/users', {
+    const response = await fetch(`${API_HOST}/users`, {
       headers: headers,
     });
     console.log('all users response', response);
@@ -116,13 +120,12 @@ export const LeadModal = ({ open, onClose, addLead }) => {
     if (!companyName) {
       element = document.getElementById('companyNameValidation');
       element.classList.remove('hidden');
-      throw new Error('no company name');
     }
     if (phone.length && !checkValidPhone(phone)) {
       element = document.getElementById('phoneValidation');
       element.classList.remove('hidden');
-      throw new Error('bad phone number');
-    } else if (phone.length && checkValidPhone(phone)) {
+    }
+    if (phone.length && checkValidPhone(phone)) {
       //if valid phone, formats into standardized (XXX) XXX-XXXX
       const num = checkValidPhone(phone);
       const formattedPhoneNumber = `(${num.slice(0, 3)}) ${num.slice(
@@ -130,30 +133,36 @@ export const LeadModal = ({ open, onClose, addLead }) => {
         6
       )}-${num.slice(6, 10)}`;
       setPhone(formattedPhoneNumber);
-    } else if (facebook && !checkValidUrl(facebook)) {
+    }
+    if (facebook && !checkValidUrl(facebook)) {
       element = document.getElementById('fbValidation');
       element.classList.remove('hidden');
-      throw new Error('bad facebook url');
-    } else if (instagram && !checkValidUrl(instagram)) {
+      // throw new Error('bad facebook url');
+    }
+    if (instagram && !checkValidUrl(instagram)) {
       element = document.getElementById('instagramValidation');
       element.classList.remove('hidden');
-      throw new Error('bad instagram url');
-    } else if (linkedin && !checkValidUrl(linkedin)) {
+      // throw new Error('bad instagram url');
+    }
+    if (linkedin && !checkValidUrl(linkedin)) {
       element = document.getElementById('linkedinValidation');
       element.classList.remove('hidden');
-      throw new Error('bad linkedin url');
-    } else if (twitter && !checkValidUrl(twitter)) {
+      // throw new Error('bad linkedin url');
+    }
+    if (twitter && !checkValidUrl(twitter)) {
       element = document.getElementById('twitterValidation');
       element.classList.remove('hidden');
-      throw new Error('bad twitter url');
-    } else if (website && !checkValidUrl(website)) {
+      // throw new Error('bad twitter url');
+    }
+    if (website && !checkValidUrl(website)) {
       element = document.getElementById('websiteValidation');
       element.classList.remove('hidden');
-      throw new Error('bad website url');
-    } else if (email && !checkValidEmail(email)) {
+      // throw new Error('bad website url');
+    }
+    if (email && !checkValidEmail(email)) {
       element = document.getElementById('emailValidation');
       element.classList.remove('hidden');
-      throw new Error('bad email');
+      // throw new Error('bad email');
     }
     // check username exists
     checkAssignedUserExists();
@@ -161,8 +170,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
 
   const handleSave = (e) => {
     e.preventDefault();
-    try {
-      validateInputs();
+    if (validateInputs()) {
       const newLead = {
         assigned: assigned,
         'company_name': companyName,
@@ -178,9 +186,12 @@ export const LeadModal = ({ open, onClose, addLead }) => {
       };
       addLead(newLead);
       clearForm();
-    } catch (err) {
-      console.log('error!!!', err);
     }
+  };
+
+  const handleClose = () => {
+    clearForm();
+    onClose();
   };
 
   return (
@@ -312,7 +323,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
           <ButtonPrimary marginRight="1em" onClick={() => clearForm()}>
             Reset
           </ButtonPrimary>
-          <ButtonPrimary marginRight="1em" onClick={() => onClose()}>
+          <ButtonPrimary marginRight="1em" onClick={() => handleClose()}>
             Back
           </ButtonPrimary>
         </div>
