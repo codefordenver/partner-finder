@@ -62,19 +62,6 @@ export const LeadModal = ({ open, onClose, addLead }) => {
   const [twitter, setTwitter] = useState('');
   const [users, setUsers] = useState([]);
 
-  const clearForm = () => {
-    setAssigned('');
-    setCompanyName('');
-    setContactName('');
-    setEmail('');
-    setPhone('');
-    setWebsite('');
-    setFacebook('');
-    setInstagram('');
-    setLinkedin('');
-    setTwitter('');
-  };
-
   const checkForErrors = (response) => {
     if (response.status === 200) {
       return response.json();
@@ -85,17 +72,21 @@ export const LeadModal = ({ open, onClose, addLead }) => {
 
   useEffect(() => {
     const getUsers = async () => {
-      const token = localStorage.getItem('partnerFinderToken');
-      const headers = {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      };
+      try {
+        const token = localStorage.getItem('partnerFinderToken');
+        const headers = {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        };
 
-      const response = await fetch(`${API_HOST}/users`, {
-        headers: headers,
-      });
-      const data = await checkForErrors(response);
-      setUsers(data.users);
+        const response = await fetch(`${API_HOST}/users`, {
+          headers: headers,
+        });
+        const data = await checkForErrors(response);
+        setUsers(data.users);
+      } catch (err) {
+        console.log(err.message);
+      }
     };
     getUsers();
   }, []);
@@ -109,9 +100,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
     }
   };
 
-  const checkValidEmail = (email) => {
+  const checkValidEmail = (address) => {
     const validEmail = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$');
-    return validEmail.test(email);
+    return validEmail.test(address);
   };
 
   const checkValidUrl = (url) => {
@@ -128,11 +119,7 @@ export const LeadModal = ({ open, onClose, addLead }) => {
   };
 
   const checkAssignedUserExists = (assignedUser) => {
-    if (users.includes(assignedUser)) {
-      return true;
-    } else {
-      return false;
-    }
+    return users.includes(assignedUser);
   };
 
   const resetErrors = () => {
@@ -154,18 +141,20 @@ export const LeadModal = ({ open, onClose, addLead }) => {
     });
   };
 
+  const showErrorElement = (id) => {
+    const element = document.getElementById(id);
+    element.classList.remove('hidden');
+  };
+
   const validateInputs = () => {
-    let element;
     resetErrors();
     let error = false;
     if (!companyName) {
-      element = document.getElementById('companyNameValidation');
-      element.classList.remove('hidden');
+      showErrorElement('companyNameValidation');
       error = true;
     }
     if (phone && !checkValidPhone(phone)) {
-      element = document.getElementById('phoneValidation');
-      element.classList.remove('hidden');
+      showErrorElement('phoneValidation');
       error = true;
     }
     if (phone && checkValidPhone(phone)) {
@@ -179,45 +168,49 @@ export const LeadModal = ({ open, onClose, addLead }) => {
       error = false;
     }
     if (facebook && !checkValidUrl(facebook)) {
-      element = document.getElementById('fbValidation');
-      element.classList.remove('hidden');
+      showErrorElement('fbValidation');
       error = true;
     }
     if (instagram && !checkValidUrl(instagram)) {
-      element = document.getElementById('instagramValidation');
-      element.classList.remove('hidden');
+      showErrorElement('instagramValidation');
       error = true;
     }
     if (linkedin && !checkValidUrl(linkedin)) {
-      element = document.getElementById('linkedinValidation');
-      element.classList.remove('hidden');
+      showErrorElement('linkedinValidation');
       error = true;
     }
     if (twitter && !checkValidUrl(twitter)) {
-      element = document.getElementById('twitterValidation');
-      element.classList.remove('hidden');
+      showErrorElement('twitterValidation');
       error = true;
     }
     if (website && !checkValidUrl(website)) {
-      element = document.getElementById('websiteValidation');
-      element.classList.remove('hidden');
+      showErrorElement('websiteValidation');
       error = true;
     }
     if (email && !checkValidEmail(email)) {
-      element = document.getElementById('emailValidation');
-      element.classList.remove('hidden');
+      showErrorElement('emailValidation');
       error = true;
     }
     if (assigned && !checkAssignedUserExists(assigned)) {
-      element = document.getElementById('userValidation');
-      element.classList.remove('hidden');
+      showErrorElement('userValidation');
       error = true;
     }
-    if (error) {
-      return false;
-    } else {
-      return true;
-    }
+
+    return !error;
+  };
+
+  const clearForm = () => {
+    setAssigned('');
+    setCompanyName('');
+    setContactName('');
+    setEmail('');
+    setPhone('');
+    setWebsite('');
+    setFacebook('');
+    setInstagram('');
+    setLinkedin('');
+    setTwitter('');
+    resetErrors();
   };
 
   const handleSave = (e) => {
