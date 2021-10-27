@@ -204,6 +204,12 @@ export default function Home() {
     setShowErrorSnackbar(false);
   };
 
+  // function to remove token from local storage and redirect user when logging out
+  const logout = () => {
+    localStorage.removeItem('partnerFinderToken');
+    history.push('/login');
+  };
+
   return (
     <div id="home">
       <Header>
@@ -220,6 +226,8 @@ export default function Home() {
         </Typography>
         <Typography variant="h6" component="h6">
           {username}
+          {'\u0009'}
+          <button onClick={logout}>Logout</button>
         </Typography>
         <Search
           debounceTime={DEBOUNCE_TIME_MS}
