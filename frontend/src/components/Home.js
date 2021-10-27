@@ -9,6 +9,7 @@ import Search from './Search';
 import { API_HOST } from '../config';
 import { LeadModal } from './LeadModal';
 import { DEBOUNCE_TIME_MS } from '../constants';
+import ErrorSnackbar from './ErrorSnackbar';
 
 export const useStyles = makeStyles((theme) => ({
   // TODO: make custom roundButton component
@@ -85,6 +86,8 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [newLead, setNewLead] = useState(false);
   const [username, setUsername] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
 
   const history = useHistory();
 
@@ -153,16 +156,19 @@ export default function Home() {
           setLeads(leadsWithTagsResult);
         });
       })
-      .catch((error) => console.error(error.message));
+      .catch((error) => {
+        console.log(error);
+        setErrorMessage('Failed to fetch Leads!');
+      });
 
     fetch(getPagesUrl(search), {
       headers: headers,
     })
       .then((response) => checkForErrors(response))
-      .then((data) => {
-        setMaxPages(data.pages);
-      })
-      .catch((error) => console.error(error.message));
+      .then((data) => setMaxPages(data.pages))
+      .catch((error) => {
+        setErrorMessage('Failed to fetch Pages!');
+      });
   }, [page, perpage, search, maxpages, newLead]);
 
   const handleOpen = () => {
@@ -191,6 +197,22 @@ export default function Home() {
       .catch((err) => console.error(err));
   };
 
+  useEffect(() => {
+    if (errorMessage) {
+      setShowErrorSnackbar(true);
+    }
+  }, [errorMessage]);
+
+  const onCloseErrorSnackbar = () => {
+    setShowErrorSnackbar(false);
+  };
+
+  // function to remove token from local storage and redirect user when logging out
+  const logout = () => {
+    localStorage.removeItem('partnerFinderToken');
+    history.push('/login');
+  };
+
   return (
     <div id="home">
       <Header>
@@ -207,6 +229,8 @@ export default function Home() {
         </Typography>
         <Typography variant="h6" component="h6">
           {username}
+          {'\u0009'}
+          <button onClick={logout}>Logout</button>
         </Typography>
         <Search
           debounceTime={DEBOUNCE_TIME_MS}
@@ -244,6 +268,12 @@ export default function Home() {
       </Box>
 
       <Button className={classes.aboutFooter}>About</Button>
+
+      <ErrorSnackbar
+        open={showErrorSnackbar}
+        onClose={onCloseErrorSnackbar}
+        message={errorMessage}
+      />
     </div>
   );
 }
