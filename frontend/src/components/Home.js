@@ -227,7 +227,7 @@ export default function Home() {
         <Typography variant="h6" component="h6">
           {username}
           {'\u0009'}
-          <button onClick={logout}>Logout</button>
+          <Button color="secondary" variant="outlined" onClick={logout}>Logout</Button>
         </Typography>
         <Search
           debounceTime={DEBOUNCE_TIME_MS}
