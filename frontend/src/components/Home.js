@@ -223,9 +223,9 @@ export default function Home() {
 				</Box>
 				<LeadTable leads={leads} />
 			</Box>
-			<Link to="/about">
+			<NavLink to="/about" className={classes.link}>
 				<Button className={classes.aboutFooter}>About</Button>
-			</Link>
+			</NavLink>
 		</div>
 	);
 }
