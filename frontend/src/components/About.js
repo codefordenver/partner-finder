@@ -1,6 +1,8 @@
 import React from 'react';
 import { makeStyles, Typography, TextField, Box } from '@material-ui/core';
 import { NoEncryption } from '@material-ui/icons';
+import ButtonPrimary from './ButtonPrimary';
+import { Link, NavLink } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   aboutPage: {
@@ -32,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  link: {
+    textDecoration: 'none',
+    color: '#fff',
+  },
 }));
 
 export default function App() {
@@ -57,16 +63,21 @@ export default function App() {
       <Box className={classes.aboutText}>
         <Box
           display="flex"
-          flexDirection="row"
+          flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          marginBottom="40px"
+          marginBottom="20px"
         >
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam
             efficitur volutpat sem, vel convallis nisl dignissim eget. Quisque
             molestie fermentum nisl vitae tincidunt.
           </p>
+          <NavLink to="/home" className={classes.link}>
+            <ButtonPrimary marginRight="auto" marginTop="40px">
+              Home
+            </ButtonPrimary>
+          </NavLink>
         </Box>
       </Box>
     </Box>
