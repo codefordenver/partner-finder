@@ -74,9 +74,7 @@ export default function App() {
             molestie fermentum nisl vitae tincidunt.
           </p>
           <NavLink to="/home" className={classes.link}>
-            <ButtonPrimary marginRight="auto" marginTop="40px">
-              Home
-            </ButtonPrimary>
+            <ButtonPrimary marginTop="40px">Home</ButtonPrimary>
           </NavLink>
         </Box>
       </Box>
