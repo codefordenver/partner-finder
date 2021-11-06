@@ -61,6 +61,17 @@ export const LeadModal = ({ open, onClose, addLead }) => {
   const [linkedin, setLinkedin] = useState('');
   const [twitter, setTwitter] = useState('');
   const [users, setUsers] = useState([]);
+  const [formErrors, setFormErrors] = useState({
+    companyNameValidation: false,
+    phoneValidation: false,
+    fbValidation: false,
+    instagramValidation: false,
+    linkedinValidation: false,
+    twitterValidation: false,
+    websiteValidation: false,
+    emailValidation: false,
+    userValidation: false,
+  });
 
   const checkForErrors = (response) => {
     if (response.status === 200) {
@@ -123,39 +134,26 @@ export const LeadModal = ({ open, onClose, addLead }) => {
   };
 
   const resetErrors = () => {
-    let element;
-    const ids = [
-      'companyNameValidation',
-      'phoneValidation',
-      'fbValidation',
-      'instagramValidation',
-      'linkedinValidation',
-      'twitterValidation',
-      'websiteValidation',
-      'emailValidation',
-      'userValidation',
-    ];
-    ids.forEach((id) => {
-      element = document.getElementById(id);
-      element.classList.add('hidden');
+    setFormErrors({
+      companyNameValidation: false,
+      phoneValidation: false,
+      fbValidation: false,
+      instagramValidation: false,
+      linkedinValidation: false,
+      twitterValidation: false,
+      websiteValidation: false,
+      emailValidation: false,
+      userValidation: false,
     });
-  };
-
-  const showErrorElement = (id) => {
-    const element = document.getElementById(id);
-    element.classList.remove('hidden');
   };
 
   const validateInputs = () => {
     resetErrors();
-    let error = false;
     if (!companyName) {
-      showErrorElement('companyNameValidation');
-      error = true;
+      setFormErrors({ ...formErrors, companyNameValidation: true });
     }
     if (phone && !checkValidPhone(phone)) {
-      showErrorElement('phoneValidation');
-      error = true;
+      setFormErrors({ ...formErrors, phoneValidation: true });
     }
     if (phone && checkValidPhone(phone)) {
       //if valid phone, formats into standardized (XXX) XXX-XXXX
@@ -165,38 +163,32 @@ export const LeadModal = ({ open, onClose, addLead }) => {
         6
       )}-${num.slice(6, 10)}`;
       setPhone(formattedPhoneNumber);
-      error = false;
+      setFormErrors({ ...formErrors, phoneValidation: false });
     }
     if (facebook && !checkValidUrl(facebook)) {
-      showErrorElement('fbValidation');
-      error = true;
+      setFormErrors({ ...formErrors, fbValidation: true });
     }
     if (instagram && !checkValidUrl(instagram)) {
-      showErrorElement('instagramValidation');
-      error = true;
+      setFormErrors({ ...formErrors, instagramValidation: true });
     }
     if (linkedin && !checkValidUrl(linkedin)) {
-      showErrorElement('linkedinValidation');
-      error = true;
+      setFormErrors({ ...formErrors, linkedinValidation: true });
     }
     if (twitter && !checkValidUrl(twitter)) {
-      showErrorElement('twitterValidation');
-      error = true;
+      setFormErrors({ ...formErrors, twitterValidation: true });
     }
     if (website && !checkValidUrl(website)) {
-      showErrorElement('websiteValidation');
-      error = true;
+      setFormErrors({ ...formErrors, websiteValidation: true });
     }
     if (email && !checkValidEmail(email)) {
-      showErrorElement('emailValidation');
-      error = true;
+      setFormErrors({ ...formErrors, emailValidation: true });
     }
     if (assigned && !checkAssignedUserExists(assigned)) {
-      showErrorElement('userValidation');
-      error = true;
+      setFormErrors({ ...formErrors, userValidation: true });
     }
 
-    return !error;
+    const errors = Object.values(formErrors);
+    return !errors.every((error) => !error);
   };
 
   const clearForm = () => {
@@ -246,9 +238,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
           Add a Lead
         </Typography>
         <form className={classes.form}>
-          <span className="error hidden" id="companyNameValidation">
-            <span>Company name is required</span>
-          </span>
+          {formErrors.companyNameValidation && (
+            <span className="error">Company name is required</span>
+          )}
           <label className={classes.label}>
             Company Name*
             <input
@@ -258,9 +250,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setCompanyName(e.target.value)}
             />
           </label>
-          <span className="error hidden" id="userValidation">
-            <span>Enter a valid username</span>
-          </span>
+          {formErrors.userValidation && (
+            <span className="error">Enter a valid username</span>
+          )}
           <label className={classes.label}>
             Assigned
             <input
@@ -279,9 +271,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setContactName(e.target.value)}
             />
           </label>
-          <span className="error hidden" id="emailValidation">
-            <span>Please enter a valid email address</span>
-          </span>
+          {formErrors.emailValidation && (
+            <span className="error">Please enter a valid email address</span>
+          )}
           <label className={classes.label}>
             Email
             <input
@@ -291,9 +283,11 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setEmail(e.target.value)}
             />
           </label>
-          <span className="error hidden" id="phoneValidation">
-            <span>Please enter a valid ten digit phone number</span>
-          </span>
+          {formErrors.phoneValidation && (
+            <span className="error">
+              Please enter a valid ten digit phone number
+            </span>
+          )}
           <label className={classes.label}>
             Phone
             <input
@@ -303,9 +297,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setPhone(e.target.value)}
             />
           </label>
-          <span className="error hidden" id="websiteValidation">
-            <span>Please enter a valid url</span>
-          </span>
+          {formErrors.websiteValidation && (
+            <span className="error">Please enter a valid url</span>
+          )}
           <label className={classes.label}>
             Website
             <input
@@ -315,9 +309,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setWebsite(e.target.value)}
             />
           </label>
-          <span className="error hidden" id="fbValidation">
-            <span>Please enter a valid url</span>
-          </span>
+          {formErrors.fbValidation && (
+            <span className="error">Please enter a valid url</span>
+          )}
           <label className={classes.label}>
             Facebook
             <input
@@ -327,9 +321,9 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setFacebook(e.target.value)}
             />
           </label>
-          <span className="error hidden" id="instagramValidation">
-            <span>Please enter a valid url</span>
-          </span>
+          {formErrors.instagramValidation && (
+            <span className="error">Please enter a valid url</span>
+          )}
           <label className={classes.label}>
             Instagram
             <input
@@ -339,9 +333,10 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setInstagram(e.target.value)}
             />
           </label>
-          <span className="error hidden" id="linkedinValidation">
-            <span>Please enter a valid url</span>
-          </span>
+
+          {formErrors.linkedinValidation && (
+            <span className="error">Please enter a valid url</span>
+          )}
           <label className={classes.label}>
             LinkedIn
             <input
@@ -351,9 +346,10 @@ export const LeadModal = ({ open, onClose, addLead }) => {
               onChange={(e) => setLinkedin(e.target.value)}
             />
           </label>
-          <span className="error hidden" id="twitterValidation">
-            <span>Please enter a valid url</span>
-          </span>
+
+          {formErrors.twitterValidation && (
+            <span className="error">Please enter a valid url</span>
+          )}
           <label className={classes.label}>
             Twitter
             <input
