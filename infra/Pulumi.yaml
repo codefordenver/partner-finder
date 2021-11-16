@@ -1,0 +1,7 @@
+name: partner-finder
+runtime:
+  name: python
+  options:
+    virtualenv: venv
+description: Infrastructure for code for denver partner finder project. We aggregate
+  data on colorado nonprofits in a web app.
