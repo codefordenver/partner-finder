@@ -149,11 +149,13 @@ export const LeadModal = ({ open, onClose, addLead }) => {
 
   const validateInputs = () => {
     resetErrors();
+    const errors = {};
+
     if (!companyName) {
-      setFormErrors({ ...formErrors, companyNameValidation: true });
+      errors.companyNameValidation = true;
     }
     if (phone && !checkValidPhone(phone)) {
-      setFormErrors({ ...formErrors, phoneValidation: true });
+      errors.phoneValidation = true;
     }
     if (phone && checkValidPhone(phone)) {
       //if valid phone, formats into standardized (XXX) XXX-XXXX
@@ -163,32 +165,33 @@ export const LeadModal = ({ open, onClose, addLead }) => {
         6
       )}-${num.slice(6, 10)}`;
       setPhone(formattedPhoneNumber);
-      setFormErrors({ ...formErrors, phoneValidation: false });
+      errors.phoneValidation = false;
     }
     if (facebook && !checkValidUrl(facebook)) {
-      setFormErrors({ ...formErrors, fbValidation: true });
+      errors.fbValidation = true;
     }
     if (instagram && !checkValidUrl(instagram)) {
-      setFormErrors({ ...formErrors, instagramValidation: true });
+      errors.instagramValidation = true;
     }
     if (linkedin && !checkValidUrl(linkedin)) {
-      setFormErrors({ ...formErrors, linkedinValidation: true });
+      errors.linkedinValidation = true;
     }
     if (twitter && !checkValidUrl(twitter)) {
-      setFormErrors({ ...formErrors, twitterValidation: true });
+      errors.twitterValidation = true;
     }
     if (website && !checkValidUrl(website)) {
-      setFormErrors({ ...formErrors, websiteValidation: true });
+      errors.websiteValidation = true;
     }
     if (email && !checkValidEmail(email)) {
-      setFormErrors({ ...formErrors, emailValidation: true });
+      errors.emailValidation = true;
     }
     if (assigned && !checkAssignedUserExists(assigned)) {
-      setFormErrors({ ...formErrors, userValidation: true });
+      errors.userValidation = true;
     }
 
-    const errors = Object.values(formErrors);
-    return !errors.every((error) => !error);
+    setFormErrors(errors);
+    const allErrors = Object.values(errors);
+    return !allErrors.includes(true);
   };
 
   const clearForm = () => {
