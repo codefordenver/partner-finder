@@ -7,7 +7,7 @@ import Header from './Header';
 import PaginationControl from './PaginationControl';
 import Search from './Search';
 import { API_HOST } from '../config';
-import { LeadModal } from './LeadModal';
+import { LeadModal } from './LeadModal/LeadModal';
 import { DEBOUNCE_TIME_MS } from '../constants';
 import ErrorSnackbar from './ErrorSnackbar';
 
