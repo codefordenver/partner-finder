@@ -61,6 +61,20 @@ export const LeadModal = ({ open, onClose, addLead }) => {
   const [linkedin, setLinkedin] = useState('');
   const [twitter, setTwitter] = useState('');
   const [users, setUsers] = useState([]);
+
+  const [formState, setFormState] = useState({
+    assigned: '',
+    companyName: '',
+    contactName: '',
+    email: '',
+    phone: '',
+    website: '',
+    facebook: '',
+    instagram: '',
+    linkedin: '',
+    twitter: '',
+  });
+
   const [formErrors, setFormErrors] = useState({
     companyNameValidation: false,
     phoneValidation: false,
@@ -232,6 +246,12 @@ export const LeadModal = ({ open, onClose, addLead }) => {
   const handleClose = () => {
     clearForm();
     onClose();
+  };
+
+  const changeState = (e) => {
+    console.log(e.target.value);
+    console.log(e.target.name);
+    setFormState({ ...formState, [e.target.name]: e.target.value });
   };
 
   return (
