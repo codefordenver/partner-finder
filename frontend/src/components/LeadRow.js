@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TableRow, TableCell, Box, Chip } from '@material-ui/core';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
@@ -66,7 +66,14 @@ const SocialMediaLink = ({ lead }) => {
   return <div>{availableLinks}</div>;
 };
 
+const handleChange = (event) => {
+  console.log(event.target);
+};
+
+
 export const LeadRow = ({ lead, users }) => {
+  const [assignee, setAssignee] = useState('');
+
   const classes = useStyles();
 console.log(lead)
   return (
@@ -95,9 +102,12 @@ console.log(lead)
             disablePortal
             id="assignee-field"
             options={users}
-            sx={{ width: 300 }}
-            defaultValue={lead.assigned && lead.assigned}
-            renderInput={(params) => <TextField {...params} label={lead.assigned ? lead.assigned : 'Assignee'} />}
+            sx={{ width: 250 }}
+            defaultValue={lead.assigned}
+            value={assignee}
+            renderInput={(params) => <TextField {...params} label={'Assignee'} />}
+            onChange={(event, newAssignee) => {setAssignee(newAssignee)
+            }}
           />
          
         {/* )} */}
