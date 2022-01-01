@@ -88,6 +88,7 @@ export default function Home() {
   const [username, setUsername] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
+  const [users, setUsers] = useState([]);
 
   const history = useHistory();
 
@@ -122,6 +123,8 @@ export default function Home() {
     })
       .then((response) => checkForErrors(response))
       .then((leadTags) => {
+        // console.log('leadTags', leadTags);
+        // console.log('lead', lead)
         return { ...lead, tags: leadTags.tags };
       })
       .catch((error) => {
@@ -147,6 +150,7 @@ export default function Home() {
       .then((response) => checkForErrors(response))
       .then((data) => {
         // for each lead in data, add a new property called 'tags' fetch tags from endpoint /leads/{lead.id}/tags
+        console.log(data);
         const leadsWithTags = data['leads'].map(addTag(headers));
 
         Promise.all(leadsWithTags).then((leadsWithTagsResult) => {
@@ -166,6 +170,20 @@ export default function Home() {
       .catch((error) => {
         setErrorMessage('Failed to fetch Pages!');
       });
+
+    fetch(`${API_HOST}/users`, {
+          headers: headers,
+        })
+      .then((response) => checkForErrors(response))
+      .then(data => {
+        console.log('data', data);
+        setUsers(data.users)
+      })
+      .catch((error) => {
+        console.log(error);
+        setErrorMessage('Failed to fetch users!');
+      });
+
   }, [page, perpage, search, maxpages, newLead]);
 
   const handleOpen = () => {
@@ -194,6 +212,15 @@ export default function Home() {
       .catch((err) => console.error(err));
   };
 
+  const getUsers = () => {
+    fetch(`${API_HOST}/users`)
+      .then((response) => checkForErrors(response))
+      .then(data => setUsers(data.users))
+      .catch((error) => {
+        console.log(error);
+        setErrorMessage('Failed to fetch users!');
+      });
+  };
   useEffect(() => {
     if (errorMessage) {
       setShowErrorSnackbar(true);
