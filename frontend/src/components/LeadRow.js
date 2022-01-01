@@ -68,7 +68,7 @@ const SocialMediaLink = ({ lead }) => {
 
 export const LeadRow = ({ lead, users }) => {
   const classes = useStyles();
-
+console.log(lead)
   return (
     <TableRow>
       <TableCell>{lead['company_name']}</TableCell>
@@ -90,17 +90,17 @@ export const LeadRow = ({ lead, users }) => {
         <SocialMediaLink lead={lead} />
       </TableCell>
       <TableCell>
-        {lead['assigned'] && (
+        {/* {lead['assigned'] && ( */}
           <Autocomplete
             disablePortal
             id="assignee-field"
             options={users}
             sx={{ width: 300 }}
-            defaultValue={lead.assignee && lead.assignee}
-            renderInput={(params) => <TextField {...params} label="Movie" />}
+            defaultValue={lead.assigned && lead.assigned}
+            renderInput={(params) => <TextField {...params} label={lead.assigned ? lead.assigned : 'Assignee'} />}
           />
          
-        )}
+        {/* )} */}
       </TableCell>
       <TableCell>
         {lead['tags'].map((tag) => (
