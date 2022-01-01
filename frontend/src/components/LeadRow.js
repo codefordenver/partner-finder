@@ -9,6 +9,8 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import Avatar from '@material-ui/core/Avatar';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 const SocialMediaLink = ({ lead }) => {
   const availableLinks = [];
@@ -64,7 +66,7 @@ const SocialMediaLink = ({ lead }) => {
   return <div>{availableLinks}</div>;
 };
 
-export const LeadRow = ({ lead }) => {
+export const LeadRow = ({ lead, users }) => {
   const classes = useStyles();
 
   return (
@@ -89,11 +91,15 @@ export const LeadRow = ({ lead }) => {
       </TableCell>
       <TableCell>
         {lead['assigned'] && (
-          <Avatar className={classes.avatar}>
-            <p title={lead['assigned']}>
-              {lead['assigned'].charAt(0).toUpperCase()}
-            </p>
-          </Avatar>
+          <Autocomplete
+            disablePortal
+            id="assignee-field"
+            options={users}
+            sx={{ width: 300 }}
+            defaultValue={lead.assignee && lead.assignee}
+            renderInput={(params) => <TextField {...params} label="Movie" />}
+          />
+         
         )}
       </TableCell>
       <TableCell>
@@ -120,3 +126,9 @@ export const LeadRow = ({ lead }) => {
     </TableRow>
   );
 };
+
+//  {/* <Avatar className={classes.avatar}>
+//             <p title={lead['assigned']}>
+//               {lead['assigned'].charAt(0).toUpperCase()}
+//             </p>
+//           </Avatar> */}

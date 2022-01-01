@@ -124,7 +124,7 @@ export default function Home() {
       .then((response) => checkForErrors(response))
       .then((leadTags) => {
         // console.log('leadTags', leadTags);
-        // console.log('lead', lead)
+        console.log('lead', lead)
         return { ...lead, tags: leadTags.tags };
       })
       .catch((error) => {
@@ -168,7 +168,7 @@ export default function Home() {
       .then((response) => checkForErrors(response))
       .then((data) => {
         // for each lead in data, add a new property called 'tags' fetch tags from endpoint /leads/{lead.id}/tags
-        console.log(data);
+        // console.log(data);
         const leadsWithTags = data['leads'].map(addTag(headers));
 
         Promise.all(leadsWithTags).then((leadsWithTagsResult) => {
@@ -179,7 +179,7 @@ export default function Home() {
         console.log(error);
         setErrorMessage('Failed to fetch Leads!');
       });
-
+console.log('leads', leads)
     fetch(getPagesUrl(), {
       headers: headers,
     })
@@ -193,6 +193,10 @@ export default function Home() {
       console.log('hello')
 
   }, [page, perpage, search, maxpages, newLead]);
+
+  const checkAssignedUserExists = (assignedUser) => {
+    return users.includes(assignedUser);
+  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -284,7 +288,7 @@ export default function Home() {
             setPerpage={setPerpage}
           />
         </Box>
-        <LeadTable leads={leads} />
+        <LeadTable leads={leads} users={users} />
       </Box>
 
       <Button className={classes.aboutFooter}>About</Button>
