@@ -132,6 +132,24 @@ export default function Home() {
       });
   };
 
+    const getUsers = async () => {
+      try {
+        const token = localStorage.getItem('partnerFinderToken');
+        const headers = {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        };
+
+        const response = await fetch(`${API_HOST}/users`, {
+          headers: headers,
+        });
+        const data = await checkForErrors(response);
+        setUsers(data.users);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+
   useEffect(() => {
     setUsername(localStorage.getItem('username'));
     const token = localStorage.getItem('partnerFinderToken');
@@ -171,18 +189,8 @@ export default function Home() {
         setErrorMessage('Failed to fetch Pages!');
       });
 
-    fetch(`${API_HOST}/users`, {
-          headers: headers,
-        })
-      .then((response) => checkForErrors(response))
-      .then(data => {
-        console.log('data', data);
-        setUsers(data.users)
-      })
-      .catch((error) => {
-        console.log(error);
-        setErrorMessage('Failed to fetch users!');
-      });
+      getUsers();
+      console.log('hello')
 
   }, [page, perpage, search, maxpages, newLead]);
 
@@ -212,15 +220,6 @@ export default function Home() {
       .catch((err) => console.error(err));
   };
 
-  const getUsers = () => {
-    fetch(`${API_HOST}/users`)
-      .then((response) => checkForErrors(response))
-      .then(data => setUsers(data.users))
-      .catch((error) => {
-        console.log(error);
-        setErrorMessage('Failed to fetch users!');
-      });
-  };
   useEffect(() => {
     if (errorMessage) {
       setShowErrorSnackbar(true);
