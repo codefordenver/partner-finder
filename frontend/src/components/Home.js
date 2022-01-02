@@ -130,23 +130,23 @@ export default function Home() {
       });
   };
 
-    const getUsers = async () => {
-      try {
-        const token = localStorage.getItem('partnerFinderToken');
-        const headers = {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        };
+  const getUsers = async () => {
+    try {
+      const token = localStorage.getItem('partnerFinderToken');
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
 
-        const response = await fetch(`${API_HOST}/users`, {
-          headers: headers,
-        });
-        const data = await checkForErrors(response);
-        setUsers(data.users);
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
+      const response = await fetch(`${API_HOST}/users`, {
+        headers: headers,
+      });
+      const data = await checkForErrors(response);
+      setUsers(data.users);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   useEffect(() => {
     setUsername(localStorage.getItem('username'));
@@ -178,16 +178,16 @@ export default function Home() {
         setErrorMessage('Failed to fetch Leads!');
       });
 
-      fetch(getPagesUrl(), {
-        headers: headers,
-      })
+    fetch(getPagesUrl(), {
+      headers: headers,
+    })
       .then((response) => checkForErrors(response))
       .then((data) => setMaxPages(data.pages))
       .catch((error) => {
         setErrorMessage('Failed to fetch Pages!');
       });
 
-      getUsers();
+    getUsers();
   }, [page, perpage, search, maxpages, newLead]);
 
   const checkAssignedUserExists = (assignedUser) => {
@@ -299,7 +299,7 @@ export default function Home() {
             setPerpage={setPerpage}
           />
         </Box>
-        <LeadTable leads={leads} users={users} editLead={editLead}/>
+        <LeadTable leads={leads} users={users} editLead={editLead} />
       </Box>
 
       <Button className={classes.aboutFooter}>About</Button>

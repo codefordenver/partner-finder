@@ -8,7 +8,6 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import Avatar from '@material-ui/core/Avatar';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
@@ -73,9 +72,12 @@ export const LeadRow = ({ lead, users, editLead }) => {
 
   const handleChange = (event, newAssignee) => {
     setAssignee(newAssignee);
-    editLead({ 
-      assigned: newAssignee
-    }, lead.id);
+    editLead(
+      {
+        assigned: newAssignee,
+      },
+      lead.id
+    );
   };
 
   return (
@@ -100,17 +102,17 @@ export const LeadRow = ({ lead, users, editLead }) => {
       </TableCell>
       <TableCell>
         {/* {lead['assigned'] && ( */}
-          <Autocomplete
-            disablePortal
-            id="assignee-field"
-            options={users}
-            sx={{ width: 250 }}
-            defaultValue={lead.assigned}
-            value={assignee}
-            renderInput={(params) => <TextField {...params} label={'Assignee'} />}
-            onChange={(event, newAssignee) => handleChange(event, newAssignee)}
-           />
-         
+        <Autocomplete
+          disablePortal
+          id="assignee-field"
+          options={users}
+          sx={{ width: 250 }}
+          defaultValue={lead.assigned}
+          value={assignee}
+          renderInput={(params) => <TextField {...params} label={'Assignee'} />}
+          onChange={(event, newAssignee) => handleChange(event, newAssignee)}
+        />
+
         {/* )} */}
       </TableCell>
       <TableCell>

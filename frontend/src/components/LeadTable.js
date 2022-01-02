@@ -32,7 +32,12 @@ export const LeadTable = ({ leads, users, editLead }) => {
         </TableHead>
         <TableBody>
           {leads.map((lead) => (
-            <LeadRow key={lead.id} lead={lead} users={users} editLead={editLead}/>
+            <LeadRow
+              key={lead.id}
+              lead={lead}
+              users={users}
+              editLead={editLead}
+            />
           ))}
         </TableBody>
       </Table>
