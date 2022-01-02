@@ -126,12 +126,16 @@ def _get_all_leads(request):
             JOIN leads l on l.id = lt.lead_id
             JOIN tags t on t.id = lt.tag_id
             WHERE lt.tag_id = :tag_id
+            LIMIT :limit
+            OFFSET :offset;
             """.format(
                 columns=",".join("l." + f for f in DEFAULT_LEAD_FIELDS)
             ),
         )
         query_args = {
             "tag_id": tag_id,
+            "limit": limit,
+            "offset": offset,
         }
     elif tag_id is None:
         query = text(
