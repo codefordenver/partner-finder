@@ -179,10 +179,10 @@ export default function Home() {
         console.log(error);
         setErrorMessage('Failed to fetch Leads!');
       });
-console.log('leads', leads)
-    fetch(getPagesUrl(), {
-      headers: headers,
-    })
+
+      fetch(getPagesUrl(), {
+        headers: headers,
+      })
       .then((response) => checkForErrors(response))
       .then((data) => setMaxPages(data.pages))
       .catch((error) => {
@@ -190,8 +190,6 @@ console.log('leads', leads)
       });
 
       getUsers();
-      console.log('hello')
-
   }, [page, perpage, search, maxpages, newLead]);
 
   const checkAssignedUserExists = (assignedUser) => {
@@ -219,8 +217,23 @@ console.log('leads', leads)
     })
       .then((response) => checkForErrors(response))
       .then(() => handleClose())
-      .then(() => setNewLead(true))
       //TODO: should render an error inside of the modal instead of just console.error
+      .catch((err) => console.error(err));
+  };
+
+  const editLead = (newValue, id) => {
+    const token = localStorage.getItem('partnerFinderToken');
+    const url = `${API_HOST}/leads/${id}`;
+    fetch(url, {
+      method: 'PUT',
+      body: JSON.stringify(newValue),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => checkForErrors(response))
+      .then(() => setNewLead(true))
       .catch((err) => console.error(err));
   };
 
@@ -288,7 +301,7 @@ console.log('leads', leads)
             setPerpage={setPerpage}
           />
         </Box>
-        <LeadTable leads={leads} users={users} />
+        <LeadTable leads={leads} users={users} editLead={editLead}/>
       </Box>
 
       <Button className={classes.aboutFooter}>About</Button>

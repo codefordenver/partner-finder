@@ -66,16 +66,19 @@ const SocialMediaLink = ({ lead }) => {
   return <div>{availableLinks}</div>;
 };
 
-const handleChange = (event) => {
-  console.log(event.target);
-};
-
-
-export const LeadRow = ({ lead, users }) => {
-  const [assignee, setAssignee] = useState('');
+export const LeadRow = ({ lead, users, editLead }) => {
+  // const [assignee, setAssignee] = useState('');
 
   const classes = useStyles();
-console.log(lead)
+
+  const handleChange = (event, newAssignee) => {
+    // setAssignee(newAssignee);
+    editLead({ 
+      assigned: newAssignee
+    }, lead.id);
+    console.log(lead);
+  };
+
   return (
     <TableRow>
       <TableCell>{lead['company_name']}</TableCell>
@@ -104,11 +107,10 @@ console.log(lead)
             options={users}
             sx={{ width: 250 }}
             defaultValue={lead.assigned}
-            value={assignee}
+            // value={assignee}
             renderInput={(params) => <TextField {...params} label={'Assignee'} />}
-            onChange={(event, newAssignee) => {setAssignee(newAssignee)
-            }}
-          />
+            onChange={(event, newAssignee) => handleChange(event, newAssignee)}
+           />
          
         {/* )} */}
       </TableCell>
