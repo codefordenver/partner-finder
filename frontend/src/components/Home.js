@@ -16,7 +16,7 @@ import Header from './Header';
 import PaginationControl from './PaginationControl';
 import Search from './Search';
 import { API_HOST } from '../config';
-import { LeadModal } from './LeadModal';
+import { LeadModal } from './LeadModal/LeadModal';
 import { DEBOUNCE_TIME_MS } from '../constants';
 import ErrorSnackbar from './ErrorSnackbar';
 
@@ -103,6 +103,7 @@ export default function Home() {
   const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
   const [tag, setTag] = useState('');
   const [tagOptions, setTagOptions] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const history = useHistory();
 
@@ -155,6 +156,24 @@ export default function Home() {
       });
   };
 
+  const getUsers = async () => {
+    try {
+      const token = localStorage.getItem('partnerFinderToken');
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+
+      const response = await fetch(`${API_HOST}/users`, {
+        headers: headers,
+      });
+      const data = await checkForErrors(response);
+      setUsers(data.users);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   useEffect(() => {
     setUsername(localStorage.getItem('username'));
     const token = localStorage.getItem('partnerFinderToken');
@@ -173,6 +192,7 @@ export default function Home() {
       .then((response) => checkForErrors(response))
       .then((data) => {
         // for each lead in data, add a new property called 'tags' fetch tags from endpoint /leads/{lead.id}/tags
+        // console.log(data);
         const leadsWithTags = data['leads'].map(addTag(headers));
 
         Promise.all(leadsWithTags).then((leadsWithTagsResult) => {
@@ -201,7 +221,14 @@ export default function Home() {
       .catch((error) => {
         setErrorMessage('Failed to fetch Tags!');
       });
+
+    getUsers();
+
   }, [page, perpage, search, maxpages, newLead, tag]);
+
+  const checkAssignedUserExists = (assignedUser) => {
+    return users.includes(assignedUser);
+  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -224,8 +251,23 @@ export default function Home() {
     })
       .then((response) => checkForErrors(response))
       .then(() => handleClose())
-      .then(() => setNewLead(true))
       //TODO: should render an error inside of the modal instead of just console.error
+      .catch((err) => console.error(err));
+  };
+
+  const editLead = (newValue, id) => {
+    const token = localStorage.getItem('partnerFinderToken');
+    const url = `${API_HOST}/leads/${id}`;
+    fetch(url, {
+      method: 'PUT',
+      body: JSON.stringify(newValue),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => checkForErrors(response))
+      .then(() => setNewLead(true))
       .catch((err) => console.error(err));
   };
 
@@ -237,6 +279,12 @@ export default function Home() {
 
   const onCloseErrorSnackbar = () => {
     setShowErrorSnackbar(false);
+  };
+
+  // function to remove token from local storage and redirect user when logging out
+  const logout = () => {
+    localStorage.removeItem('partnerFinderToken');
+    history.push('/login');
   };
 
   return (
@@ -255,6 +303,8 @@ export default function Home() {
         </Typography>
         <Typography variant="h6" component="h6">
           {username}
+          {'\u0009'}
+          <button onClick={logout}>Logout</button>
         </Typography>
         <Search
           debounceTime={DEBOUNCE_TIME_MS}
@@ -306,7 +356,7 @@ export default function Home() {
             setPerpage={setPerpage}
           />
         </Box>
-        <LeadTable leads={leads} />
+        <LeadTable leads={leads} users={users} editLead={editLead} />
       </Box>
 
       <Button className={classes.aboutFooter}>About</Button>
