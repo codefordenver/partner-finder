@@ -1,0 +1,11 @@
+.error {
+  color: red;
+  background-color: rgb(248, 165, 165);
+  border: 1px solid red;
+  padding: 0.25em;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}

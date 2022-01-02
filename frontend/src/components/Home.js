@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
-import { makeStyles, Button, Box, Typography } from '@material-ui/core';
+import {
+  makeStyles,
+  Button,
+  Box,
+  Typography,
+  Select,
+  FormControl,
+  MenuItem,
+  InputLabel,
+} from '@material-ui/core';
 import { LeadTable } from './LeadTable';
 import ButtonPrimary from './ButtonPrimary';
 import Header from './Header';
 import PaginationControl from './PaginationControl';
 import Search from './Search';
 import { API_HOST } from '../config';
-import { LeadModal } from './LeadModal';
+import { LeadModal } from './LeadModal/LeadModal';
 import { DEBOUNCE_TIME_MS } from '../constants';
+import ErrorSnackbar from './ErrorSnackbar';
 
 export const useStyles = makeStyles((theme) => ({
   // TODO: make custom roundButton component
@@ -72,6 +82,10 @@ export const useStyles = makeStyles((theme) => ({
       cursor: 'pointer',
     },
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
 }));
 
 export default function Home() {
@@ -85,12 +99,13 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [newLead, setNewLead] = useState(false);
   const [username, setUsername] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
+  const [tag, setTag] = useState('');
+  const [tagOptions, setTagOptions] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const history = useHistory();
-
-  // TODO: setup search and tags
-  // const [search, setSearch] = useState(null);
-  // const [tag, setTag] = useState(null);
 
   const checkForErrors = (response) => {
     if (response.status === 200) {
@@ -103,14 +118,47 @@ export default function Home() {
   };
 
   const getLeadsUrl = () => {
-    if (search) {
+    if (search && tag) {
+      return `${API_HOST}/leads?search=${search}&tag=${tag}&page=${page}&perpage=${perpage}`;
+    } else if (tag) {
+      return `${API_HOST}/leads?tag=${tag}&page=${page}&perpage=${perpage}`;
+    } else if (search) {
       return `${API_HOST}/leads?page=${page}&perpage=${perpage}&search=${search}`;
     }
     return `${API_HOST}/leads?page=${page}&perpage=${perpage}`;
   };
 
   const getPagesUrl = () => {
-    return `${API_HOST}/leads/n_pages?perpage=${perpage}`;
+    if (search && tag) {
+      return `${API_HOST}/leads/n_pages?search=${search}&tag=${tag}&page=${page}&perpage=${perpage}`;
+    } else if (tag) {
+      return `${API_HOST}/leads/n_pages?tag=${tag}&page=${page}&perpage=${perpage}`;
+    } else if (search) {
+      return `${API_HOST}/leads/n_pages?page=${page}&perpage=${perpage}&search=${search}`;
+    }
+    return `${API_HOST}/leads/n_pages?page=${page}&perpage=${perpage}`;
+  };
+
+  const getTagsUrl = () => {
+    return `${API_HOST}/tags`;
+  };
+
+  const getUsers = async () => {
+    try {
+      const token = localStorage.getItem('partnerFinderToken');
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+
+      const response = await fetch(`${API_HOST}/users`, {
+        headers: headers,
+      });
+      const data = await checkForErrors(response);
+      setUsers(data.users);
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   useEffect(() => {
@@ -132,15 +180,35 @@ export default function Home() {
       .then((data) => {
         setLeads(data.leads);
       })
-      .catch((error) => console.error(error.message));
+      .catch((error) => {
+        console.log(error);
+        setErrorMessage('Failed to fetch Leads!');
+      });
 
-    fetch(getPagesUrl(), {
+    fetch(getPagesUrl(search), {
       headers: headers,
     })
       .then((response) => checkForErrors(response))
       .then((data) => setMaxPages(data.pages))
-      .catch((error) => console.error(error.message));
-  }, [page, perpage, search, maxpages, newLead]);
+      .catch((error) => {
+        setErrorMessage('Failed to fetch Pages!');
+      });
+
+    fetch(getTagsUrl(), {
+      headers: headers,
+    })
+      .then((response) => checkForErrors(response))
+      .then((data) => setTagOptions(data.tags))
+      .catch((error) => {
+        setErrorMessage('Failed to fetch Tags!');
+      });
+
+    getUsers();
+  }, [page, perpage, search, maxpages, newLead, tag]);
+
+  const checkAssignedUserExists = (assignedUser) => {
+    return users.includes(assignedUser);
+  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -163,9 +231,40 @@ export default function Home() {
     })
       .then((response) => checkForErrors(response))
       .then(() => handleClose())
-      .then(() => setNewLead(true))
       //TODO: should render an error inside of the modal instead of just console.error
       .catch((err) => console.error(err));
+  };
+
+  const editLead = (newValue, id) => {
+    const token = localStorage.getItem('partnerFinderToken');
+    const url = `${API_HOST}/leads/${id}`;
+    fetch(url, {
+      method: 'PUT',
+      body: JSON.stringify(newValue),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => checkForErrors(response))
+      .then(() => setNewLead(true))
+      .catch((err) => console.error(err));
+  };
+
+  useEffect(() => {
+    if (errorMessage) {
+      setShowErrorSnackbar(true);
+    }
+  }, [errorMessage]);
+
+  const onCloseErrorSnackbar = () => {
+    setShowErrorSnackbar(false);
+  };
+
+  // function to remove token from local storage and redirect user when logging out
+  const logout = () => {
+    localStorage.removeItem('partnerFinderToken');
+    history.push('/login');
   };
 
   return (
@@ -184,11 +283,37 @@ export default function Home() {
         </Typography>
         <Typography variant="h6" component="h6">
           {username}
+          {'\u0009'}
+          <button onClick={logout}>Logout</button>
         </Typography>
         <Search
           debounceTime={DEBOUNCE_TIME_MS}
-          onDebounce={(event) => setSearch(event.target.value)}
+          onDebounce={(event) => {
+            setSearch(event.target.value);
+            setPage(1);
+          }}
         />
+        <FormControl className={classes.formControl}>
+          <InputLabel id="select-tag-label">Tag</InputLabel>
+          <Select
+            labelId="select-tag-label"
+            id="select-tag"
+            value={tag ? tag : ''}
+            onChange={(event) => {
+              setTag(event.target.value);
+              setPage(1);
+            }}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            {tagOptions.map((tagOption) => (
+              <MenuItem key={tagOption.tag} value={tagOption.tag}>
+                {tagOption.tag}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Header>
       <Box
         marginX="15px" // TODO: there must be a cleaner way to get the margins
@@ -214,10 +339,16 @@ export default function Home() {
             setPerpage={setPerpage}
           />
         </Box>
-        <LeadTable leads={leads} />
+        <LeadTable leads={leads} users={users} editLead={editLead} />
       </Box>
 
       <Button className={classes.aboutFooter}>About</Button>
+
+      <ErrorSnackbar
+        open={showErrorSnackbar}
+        onClose={onCloseErrorSnackbar}
+        message={errorMessage}
+      />
     </div>
   );
 }
