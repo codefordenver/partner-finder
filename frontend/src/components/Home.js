@@ -123,8 +123,6 @@ export default function Home() {
     })
       .then((response) => checkForErrors(response))
       .then((leadTags) => {
-        // console.log('leadTags', leadTags);
-        console.log('lead', lead)
         return { ...lead, tags: leadTags.tags };
       })
       .catch((error) => {

@@ -67,16 +67,15 @@ const SocialMediaLink = ({ lead }) => {
 };
 
 export const LeadRow = ({ lead, users, editLead }) => {
-  // const [assignee, setAssignee] = useState('');
+  const [assignee, setAssignee] = useState(lead.assigned);
 
   const classes = useStyles();
 
   const handleChange = (event, newAssignee) => {
-    // setAssignee(newAssignee);
+    setAssignee(newAssignee);
     editLead({ 
       assigned: newAssignee
     }, lead.id);
-    console.log(lead);
   };
 
   return (
@@ -107,7 +106,7 @@ export const LeadRow = ({ lead, users, editLead }) => {
             options={users}
             sx={{ width: 250 }}
             defaultValue={lead.assigned}
-            // value={assignee}
+            value={assignee}
             renderInput={(params) => <TextField {...params} label={'Assignee'} />}
             onChange={(event, newAssignee) => handleChange(event, newAssignee)}
            />
