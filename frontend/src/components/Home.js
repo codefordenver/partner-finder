@@ -223,7 +223,6 @@ export default function Home() {
       });
 
     getUsers();
-
   }, [page, perpage, search, maxpages, newLead, tag]);
 
   const checkAssignedUserExists = (assignedUser) => {
