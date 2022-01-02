@@ -88,6 +88,7 @@ export default function Home() {
   const [username, setUsername] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
+  const [users, setUsers] = useState([]);
 
   const history = useHistory();
 
@@ -129,6 +130,24 @@ export default function Home() {
       });
   };
 
+  const getUsers = async () => {
+    try {
+      const token = localStorage.getItem('partnerFinderToken');
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+
+      const response = await fetch(`${API_HOST}/users`, {
+        headers: headers,
+      });
+      const data = await checkForErrors(response);
+      setUsers(data.users);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   useEffect(() => {
     setUsername(localStorage.getItem('username'));
     const token = localStorage.getItem('partnerFinderToken');
@@ -147,6 +166,7 @@ export default function Home() {
       .then((response) => checkForErrors(response))
       .then((data) => {
         // for each lead in data, add a new property called 'tags' fetch tags from endpoint /leads/{lead.id}/tags
+        // console.log(data);
         const leadsWithTags = data['leads'].map(addTag(headers));
 
         Promise.all(leadsWithTags).then((leadsWithTagsResult) => {
@@ -166,7 +186,13 @@ export default function Home() {
       .catch((error) => {
         setErrorMessage('Failed to fetch Pages!');
       });
+
+    getUsers();
   }, [page, perpage, search, maxpages, newLead]);
+
+  const checkAssignedUserExists = (assignedUser) => {
+    return users.includes(assignedUser);
+  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -189,8 +215,23 @@ export default function Home() {
     })
       .then((response) => checkForErrors(response))
       .then(() => handleClose())
-      .then(() => setNewLead(true))
       //TODO: should render an error inside of the modal instead of just console.error
+      .catch((err) => console.error(err));
+  };
+
+  const editLead = (newValue, id) => {
+    const token = localStorage.getItem('partnerFinderToken');
+    const url = `${API_HOST}/leads/${id}`;
+    fetch(url, {
+      method: 'PUT',
+      body: JSON.stringify(newValue),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => checkForErrors(response))
+      .then(() => setNewLead(true))
       .catch((err) => console.error(err));
   };
 
@@ -258,7 +299,7 @@ export default function Home() {
             setPerpage={setPerpage}
           />
         </Box>
-        <LeadTable leads={leads} />
+        <LeadTable leads={leads} users={users} editLead={editLead} />
       </Box>
 
       <Button className={classes.aboutFooter}>About</Button>

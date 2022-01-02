@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TableRow, TableCell, Box, Chip } from '@material-ui/core';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
@@ -8,7 +8,8 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import Avatar from '@material-ui/core/Avatar';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 const SocialMediaLink = ({ lead }) => {
   const availableLinks = [];
@@ -64,8 +65,20 @@ const SocialMediaLink = ({ lead }) => {
   return <div>{availableLinks}</div>;
 };
 
-export const LeadRow = ({ lead }) => {
+export const LeadRow = ({ lead, users, editLead }) => {
+  const [assignee, setAssignee] = useState(lead.assigned);
+
   const classes = useStyles();
+
+  const handleChange = (event, newAssignee) => {
+    setAssignee(newAssignee);
+    editLead(
+      {
+        assigned: newAssignee,
+      },
+      lead.id
+    );
+  };
 
   return (
     <TableRow>
@@ -88,13 +101,19 @@ export const LeadRow = ({ lead }) => {
         <SocialMediaLink lead={lead} />
       </TableCell>
       <TableCell>
-        {lead['assigned'] && (
-          <Avatar className={classes.avatar}>
-            <p title={lead['assigned']}>
-              {lead['assigned'].charAt(0).toUpperCase()}
-            </p>
-          </Avatar>
-        )}
+        {/* {lead['assigned'] && ( */}
+        <Autocomplete
+          disablePortal
+          id="assignee-field"
+          options={users}
+          sx={{ width: 250 }}
+          defaultValue={lead.assigned}
+          value={assignee}
+          renderInput={(params) => <TextField {...params} label={'Assignee'} />}
+          onChange={(event, newAssignee) => handleChange(event, newAssignee)}
+        />
+
+        {/* )} */}
       </TableCell>
       <TableCell>
         {lead['tags'].map((tag) => (
@@ -120,3 +139,9 @@ export const LeadRow = ({ lead }) => {
     </TableRow>
   );
 };
+
+//  {/* <Avatar className={classes.avatar}>
+//             <p title={lead['assigned']}>
+//               {lead['assigned'].charAt(0).toUpperCase()}
+//             </p>
+//           </Avatar> */}
