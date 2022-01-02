@@ -204,7 +204,7 @@ export default function Home() {
         setErrorMessage('Failed to fetch Leads!');
       });
 
-    fetch(getPagesUrl(), {
+    fetch(getPagesUrl(search), {
       headers: headers,
     })
       .then((response) => checkForErrors(response))
@@ -307,7 +307,10 @@ export default function Home() {
         </Typography>
         <Search
           debounceTime={DEBOUNCE_TIME_MS}
-          onDebounce={(event) => setSearch(event.target.value)}
+          onDebounce={(event) => {
+            setSearch(event.target.value);
+            setPage(1);
+          }}
         />
         <FormControl className={classes.formControl}>
           <InputLabel id="select-tag-label">Tag</InputLabel>
