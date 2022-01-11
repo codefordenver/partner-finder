@@ -1,0 +1,45 @@
+version: '3'
+services:
+    postgres:
+        build: ./backend/database
+        environment:
+           - POSTGRES_PASSWORD=password
+           - POSTGRES_USER=cfd_partner_finder
+           - POSTGRES_DB=cfd_partner_finder
+        ports:
+            - "5432:5432"
+    api:
+        build: ./backend
+        environment:
+            - FLASK_APP=api/app:app
+            - FLASK_ENV=development
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_USER=cfd_partner_finder
+            - POSTGRES_DB=cfd_partner_finder
+            - POSTGRES_HOST=postgres
+            - POSTGRES_PORT=5432
+            - SECRET_KEY=supersafe
+        volumes: ["./backend:/app"]
+        ports:
+            - "8000:8000"
+        depends_on:
+            - postgres
+        command: >
+            /bin/bash -c "alembic upgrade head
+            && sleep 1
+            && python database/create_dev_users.py
+            && python database/scrape_CNP.py
+            && python database/create_tags.py
+            && gunicorn run_app:app -w 1 --threads 1 -b 0.0.0.0:8000 --reload"
+    frontend:
+        build: 
+            context: ./frontend
+            dockerfile: ./Dockerfile.dev
+        environment:
+            - API_HOST=http://localhost:8000
+            - API_USER=user@gmail.com
+            - API_PASSWORD=password
+        volumes: ["./frontend/src:/app/src"]
+        ports:
+            - "1234:1234"
+            - "1235:1235"
