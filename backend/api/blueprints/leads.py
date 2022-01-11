@@ -9,7 +9,7 @@ from sqlalchemy import text
 from ..auth import auth
 from ..db import db
 from ..pagination import parse_pagination_params
-from .users import get_all_users
+from .users import get_user_by_username
 from pydantic import BaseModel, ValidationError
 
 leads_bp = Blueprint("leads", __name__)
@@ -372,19 +372,17 @@ def _create_new_lead(request, valid_data_sources=VALID_DATA_SOURCES):
         email: EmailStr
         socialLink: HttpUrl
 
-        @validator("phoneNum")
+        @validator("phoneNum", allow_reuse=True)
         def check_phoneNumber_format(cls, v):
             regExs = (r"\(\w{3}\) \w{3}\-\w{4}", r"^\w{3}\-\w{4}$")
             if not re.search(regExs[0], v):
                 return ValueError("not match")
             return v
 
-        @validator("assigned")
+        @validator("assigned", allow_reuse=True)
         def check_assigned(cls, v):
-            users_response = get_all_users()
-            if not users_response:
-                raise ValueError("get_all_users() doesnt work")
-            if v not in users_response["users"]:
+            user_response = get_user_by_username(v)
+            if not user_response:
                 raise ValueError(f"{v!r} is not a registered user")
             return v
 
