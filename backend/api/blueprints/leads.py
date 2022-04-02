@@ -324,7 +324,8 @@ def leads_number_of_pages():
 
 def _parse_search_param(request):
 
-    return request.args.get("search")
+    multi_term_fix = request.args.get("search").replace(" ", "&")
+    return multi_term_fix
 
 
 def _parse_tag_param(request):
